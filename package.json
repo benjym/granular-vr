@@ -4,7 +4,11 @@
   "description": "Granular mechanics in VR",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch": "webpack --watch",
+    "start": "webpack serve --open",
+    "build": "webpack",
+    "build_apk": "./oculus-packaging/ovr-platform-util create-pwa -o granular-vr.apk --android-sdk /Users/bmar5496/Library/Android/sdk --package-name com.scigem.granular-vr --manifest-content-file manifest.webmanifest --apk-template ./oculus-packaging/pwa-template.apk --apk-tool ./oculus-packaging/apktool --keystore ./oculus-packaging/debug.keystore",
+    "deploy": "adb install granular-vr.apk"
   },
   "repository": {
     "type": "git",
