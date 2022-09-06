@@ -26,9 +26,10 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: cp manifest.webmanifest dist/manifest.webmanifest
+      - run: cp *.html dist/
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
           branch: gh-pages
-          folder: .
+          folder: dist
