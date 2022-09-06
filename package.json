@@ -1,0 +1,42 @@
+{
+  "name": "granular-vr",
+  "version": "1.0.0",
+  "description": "Granular mechanics in VR",
+  "main": "index.js",
+  "scripts": {
+    "watch": "webpack --watch",
+    "start": "webpack serve --open",
+    "build": "webpack",
+    "build_apk": "./oculus-packaging/ovr-platform-util create-pwa -o granular-vr.apk --android-sdk /Users/bmar5496/Library/Android/sdk --package-name com.scigem.granular-vr --manifest-content-file manifest.webmanifest --apk-template ./oculus-packaging/pwa-template.apk --apk-tool ./oculus-packaging/apktool --keystore ./oculus-packaging/debug.keystore",
+    "deploy": "adb install granular-vr.apk"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benjym/granular-vr.git"
+  },
+  "keywords": [
+    "Granular",
+    "materials",
+    "Virtual",
+    "reality",
+    "Education"
+  ],
+  "author": "Benjy Marks",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/benjym/granular-vr/issues"
+  },
+  "homepage": "https://github.com/benjym/granular-vr#readme",
+  "devDependencies": {
+    "style-loader": "^3.3.1",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.10.0"
+  },
+  "dependencies": {
+    "@depasquale/three-immersive-controls": "^0.0.12",
+    "css-loader": "^6.7.1",
+    "html-webpack-plugin": "^5.5.0",
+    "three": "^0.143.0"
+  }
+}
