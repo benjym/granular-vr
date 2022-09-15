@@ -1,18 +1,20 @@
 import css from "../css/main.css";
 
-import * as THREE from 'three';
+// import * as THREE from 'three';
 
 console.debug('Using threejs version ' + THREE.REVISION)
 
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 // import { Lut } from 'three/examples/jsm/math/Lut.js';
 // import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-// import * as CONTROLLERS from './controllers.js';
+import * as CONTROLLERS from './controllers.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import ImmersiveControls from '@depasquale/three-immersive-controls';
 
 import * as SPHERES from "./SphereHandler.js"
 import * as WALLS from "./WallHandler.js"
+import * as BUTTONS from "./buttons";
+
 // import * as LAYOUT from './Layout.js'
 // import { NDSTLLoader, renderSTL } from '../libs/NDSTLLoader.js';
 
@@ -34,7 +36,7 @@ let NDsolids, material;
 let meshes = new THREE.Group();
 let loading_direction = 1;
 
-var params = {
+export let params = {
     dimension: 3,
     // L: 4, //system size
     L:0.025,
@@ -66,7 +68,6 @@ var params = {
     particle_opacity: 1.0,
     hideaxes: false,
 }
-set_derived_properties();
 
 function set_derived_properties() {
     params.average_radius = (params.r_min + params.r_max)/2.;
@@ -95,26 +96,26 @@ function reset_particles() {
     loading_direction = 1;
     set_derived_properties();
     SPHERES.randomise_particles_isotropic(params, S);
-    WALLS.add_cuboid_walls(params,scene);
-    WALLS.update_isotropic_wall(params, S, scene);
+    WALLS.add_cuboid_walls(params);
+    WALLS.update_isotropic_wall(params, S);
     setup_CG();
     started = false;
     startTime = clock.getElapsedTime()
 }
 
-if ( urlParams.has('dimension') ) {
-    params.dimension = parseInt(urlParams.get('dimension'));
-}
-if ( params.dimension === 4) {
-    params.L = 2.5;
-    params.N = 300
-    params.particle_volume = Math.PI*Math.PI*Math.pow(params.average_radius,4)/2.;
-}
-if ( urlParams.has('quality') ) { params.quality = parseInt(urlParams.get('quality')); }
-
 SPHERES.createNDParticleShader(params).then( init() );
 
 async function init() {
+    set_derived_properties();
+    if ( urlParams.has('dimension') ) {
+        params.dimension = parseInt(urlParams.get('dimension'));
+    }
+    if ( params.dimension === 4) {
+        params.L = 2.5;
+        params.N = 300
+        params.particle_volume = Math.PI*Math.PI*Math.pow(params.average_radius,4)/2.;
+    }
+    if ( urlParams.has('quality') ) { params.quality = parseInt(urlParams.get('quality')); }
 
     await NDDEMPhysics();
     camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1e-5, 1000 );
@@ -135,9 +136,12 @@ async function init() {
     dirLight.shadow.camera.zoom = 2;
     scene.add( dirLight );
 
-    WALLS.add_cuboid_walls(params,scene);
-    WALLS.update_isotropic_wall(params, S, scene);
-    WALLS.add_scale(params, scene);
+    WALLS.add_cuboid_walls(params);
+    WALLS.walls.rotateX(-Math.PI/2.); // fix y/z up compared to NDDEM
+    WALLS.walls.rotateZ(Math.PI); // fix y/z up compared to NDDEM
+    scene.add(WALLS.walls);
+    WALLS.update_isotropic_wall(params, S);
+    WALLS.add_scale(params);
 
     SPHERES.add_spheres(S,params,scene);
 
@@ -191,18 +195,21 @@ async function init() {
     // controls.update();
     const controls = new ImmersiveControls(camera, renderer, scene, {
         initialPosition: new THREE.Vector3(0, 0, 0.1),
-        moveSpeed: { keyboard: 0.05, vr: 0.025 }
+        moveSpeed: { keyboard: 0.025, vr: 0.025 }
     });
 
     window.addEventListener( 'resize', onWindowResize, false );
 
+    BUTTONS.add_url_button('index', 'Main menu', [-0.06,0,0], 0.02, controls, scene);
+
+    BUTTONS.add_action_button('loading_active', 'Loading active', CONTROLLERS.selectStartLoading, CONTROLLERS.selectEndLoading, [-0.06,0.02,0], 0.02, controls, scene);
     // make_graph();
-    WALLS.update_isotropic_wall(params, S, scene);
+    WALLS.update_isotropic_wall(params, S);
     animate();
 }
 
 function new_load_path() {
-    WALLS.update_isotropic_wall(params, S, scene);
+    WALLS.update_isotropic_wall(params, S);
     // var data = [{
     //               type: 'scatter',
     //               mode: 'lines',
@@ -252,7 +259,7 @@ function animate() {
                         if ( (params.epsilonv <= 1e-4 || pressure<params.unloading_stress) && (loading_direction < 0) ) {
                             loading_direction *= 0.5; // slow down gradually
                         }
-                        WALLS.update_isotropic_wall(params, S, scene);
+                        WALLS.update_isotropic_wall(params, S);
                         // update_graph();
                         
 

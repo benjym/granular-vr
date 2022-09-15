@@ -25,94 +25,96 @@ const wall_geometry = new BoxGeometry( 1, 1, 1 );
 const wall_material = new MeshLambertMaterial();
 wall_material.wireframe = true;
 
+export const walls = new Group();
+
 const arrow_colour = 0xDDDDDD;
 const arrow_material = new MeshLambertMaterial({ color: arrow_colour });
 
-export function add_left(params, scene) {
-    if ( left !== undefined ) { scene.remove(left); }
+export function add_left(params) {
+    if ( left !== undefined ) { walls.remove(left); }
     left = new Mesh( wall_geometry, wall_material );
     left.scale.y = params.thickness;
     left.position.y = - params.L - params.thickness/2.;
     // floor.receiveShadow = true;
-    scene.add( left );
+    walls.add( left );
 }
 
-export function add_right(params, scene) {
-    if ( right !== undefined ) { scene.remove(right); }
+export function add_right(params) {
+    if ( right !== undefined ) { walls.remove(right); }
     right = new Mesh( wall_geometry, wall_material );
     right.scale.y = params.thickness;
     right.position.y = params.L + params.thickness/2.;
     // top.receiveShadow = true;
-    scene.add( right );
+    walls.add( right );
 }
 
-export function add_floor(params, scene) {
-    if ( floor !== undefined ) { scene.remove(floor); }
+export function add_floor(params) {
+    if ( floor !== undefined ) { walls.remove(floor); }
     floor = new Mesh( wall_geometry, wall_material );
     floor.scale.y = params.thickness;
     floor.rotation.x = Math.PI/2.;
     floor.position.z = - params.L*params.aspect_ratio - params.thickness/2.;
     // left.receiveShadow = true;
-    scene.add( floor );
+    walls.add( floor );
 }
 
-export function add_roof(params, scene) {
-    if ( roof !== undefined ) { scene.remove(roof); }
+export function add_roof(params) {
+    if ( roof !== undefined ) { walls.remove(roof); }
     roof = new Mesh( wall_geometry, wall_material );
     roof.scale.y = params.thickness;
     roof.rotation.x = Math.PI/2.;
     roof.position.z = params.L*params.aspect_ratio + params.thickness/2.;
     // right.receiveShadow = true;
-    scene.add( roof );
+    walls.add( roof );
 }
 
-export function add_front(params, scene) {
-    if ( front !== undefined ) { scene.remove(front); }
+export function add_front(params) {
+    if ( front !== undefined ) { walls.remove(front); }
     front = new Mesh( wall_geometry, wall_material );
     front.scale.y = params.thickness;
     front.rotation.z = Math.PI/2.;
     front.position.x = params.L + params.thickness/2.;
     // back.receiveShadow = true;
-    scene.add( front );
+    walls.add( front );
 }
 
-export function add_back(params, scene) {
-    if ( back !== undefined ) { scene.remove(back); }
+export function add_back(params) {
+    if ( back !== undefined ) { walls.remove(back); }
     back = new Mesh( wall_geometry, wall_material );
     back.scale.y = params.thickness;
     back.rotation.z = Math.PI/2.;
     back.position.x = -params.L - params.thickness/2.;
     // front.receiveShadow = true;
-    scene.add( back );
+    walls.add( back );
 }
 
-export function add_cuboid_walls(params, scene) {
+export function add_cuboid_walls(params) {
 
     // const wall_geometry = new THREE.BoxGeometry( params.L*2 + params.thickness*2, params.thickness, params.L*2 + params.thickness*2 );
     // const wall_material = new THREE.ShadowMaterial( )
 
-    add_left(params,scene);
-    add_right(params,scene);
-    add_floor(params, scene);
-    add_roof(params, scene);
-    add_front(params, scene);
-    add_back(params, scene);
+    add_left(params,walls);
+    add_right(params,walls);
+    add_floor(params, walls);
+    add_roof(params, walls);
+    add_front(params, walls);
+    add_back(params, walls);
 
 }
 
-export function add_scale(params, scene) {
+export function add_scale(params) {
     var XYaxeslength = 2 * params.L - params.thickness/2.; // length of axes vectors
 
     var fontsize = 0.1 * params.L; // font size
     var thickness = 0.02 * params.L; // line thickness
 
     if (axesHelper !== undefined) {
-        scene.remove(axesHelper);
+        walls.remove(axesHelper);
     } //else {}
     // if you haven't already made the axes
 
     axesHelper = new Group();
-    scene.add(axesHelper);
+    walls.add(axesHelper);
 
     let arrow_body = new CylinderGeometry(
       thickness,
@@ -351,7 +353,7 @@ export function update_triaxial_walls(params, S, dt=1) {
 
 }
 
-export function update_top_wall(params, S, scene, dt=0.001) {
+export function update_top_wall(params, S, dt=0.001) {
     params.packing_fraction = (params.N*params.particle_volume)/Math.pow(params.L,params.dimension-1)/(params.L_cur)/Math.pow(2,params.dimension)*2;
     // console.log(params.packing_fraction) // NOTE: STILL A BIT BUGGY!!!!
 
@@ -379,11 +381,11 @@ export function update_top_wall(params, S, scene, dt=0.001) {
         mesh.scale.z = 2*params.L + 2*params.thickness;
     });
 
-    if ( axesHelper !== undefined ) { add_scale(params, scene); }
+    if ( axesHelper !== undefined ) { add_scale(params); }
 
 }
 
-export function update_damped_wall(params, S, scene, dt) {
+export function update_damped_wall(params, S, dt) {
     vertical_wall_acceleration = (params.target_pressure - params.current_pressure - params.viscosity*vertical_wall_velocity)/params.wall_mass;
 
     vertical_wall_velocity += vertical_wall_acceleration*dt;
@@ -396,7 +398,7 @@ export function update_damped_wall(params, S, scene, dt) {
     console.log(L_cur,params.target_pressure,params.current_pressure);
 }
 
-export function update_isotropic_wall(params, S, scene, dt=0.001) {
+export function update_isotropic_wall(params, S, dt=0.001) {
     //params.packing_fraction = (params.N*params.particle_volume)/Math.pow(params.L,params.dimension-1)/(params.L_cur)/Math.pow(2,params.dimension)*2;
     // console.log(params.packing_fraction) // NOTE: STILL A BIT BUGGY!!!!
 
@@ -427,23 +429,23 @@ export function update_isotropic_wall(params, S, scene, dt=0.001) {
         mesh.scale.z = 2*params.L_cur ;//+ 2*params.thickness;
     });
 
-    if ( !params.hideaxes && axesHelper !== undefined ) { add_scale_isotropic(params, scene); }
+    if ( !params.hideaxes && axesHelper !== undefined ) { add_scale_isotropic(params); }
 
 }
 
-export function add_scale_isotropic(params, scene) {
+export function add_scale_isotropic(params) {
     var XYaxeslength = 2 * params.L_cur - params.thickness/2.; // length of axes vectors
 
     var fontsize = 0.1 * params.L; // font size
     var thickness = 0.02 * params.L; // line thickness
 
     if (axesHelper !== undefined) {
-        scene.remove(axesHelper);
+        walls.remove(axesHelper);
     } //else {}
     // if you haven't already made the axes
 
     axesHelper = new Group();
-    scene.add(axesHelper);
+    walls.add(axesHelper);
 
     let arrow_length = XYaxeslength - 2*thickness;
     if ( arrow_body === undefined ) {

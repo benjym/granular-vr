@@ -9,3 +9,7 @@ import ImmersiveControls from '@depasquale/three-immersive-controls';
 
 import * as SPHERES from "./SphereHandler.js"
 import * as WALLS from "./WallHandler.js"
+
+export let params = {
+    
+}
