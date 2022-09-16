@@ -19,7 +19,7 @@ import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 
 var loader = new FontLoader();
-loader.load("./resources/helvetiker_bold.typeface.json", function (f) { font = f });
+loader.load("../resources/helvetiker_bold.typeface.json", function (f) { font = f });
 
 const wall_geometry = new BoxGeometry( 1, 1, 1 );
 const wall_material = new MeshLambertMaterial();

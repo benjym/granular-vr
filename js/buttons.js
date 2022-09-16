@@ -5,7 +5,7 @@ import * as CONTROLLERS from "./controllers";
 let fontsize = 0.25;
 let loader = new FontLoader();
 let font;
-loader.load( '../resources/helvetiker_bold.typeface.json', function ( f ) {
+loader.load( '../../resources/helvetiker_bold.typeface.json', function ( f ) {
     // console.log('FONT DEFINED!!')
     font = f;
 });
@@ -54,7 +54,7 @@ export function add_url_button(url, name, location, scale, controls, scene) {
     }
 }
 
-export function add_action_button(type, name, selectStartFunction, selectEndFunction, location, scale, controls, scene) {
+export function add_action_button(type, name, selectStartFunction, selectEndFunction, intersectionFunction, location, scale, controls, scene) {
     if ( font !== undefined ) {
         let background;
 
@@ -79,6 +79,7 @@ export function add_action_button(type, name, selectStartFunction, selectEndFunc
 
         controls.interaction.selectStartHandlers[type] = selectStartFunction;
         controls.interaction.selectEndHandlers[type] = selectEndFunction;
+        controls.interaction.intersectionHandlers[type] = intersectionFunction;
         // controls.interaction.selectableObjects.push(button);
         controls.interaction.selectableObjects.push(background);
         

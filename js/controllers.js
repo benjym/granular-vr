@@ -1,8 +1,3 @@
-// import * as THREE from 'three';
-// import * as PHYSICS from './physics.js';
-// import { params as ISOTROPIC_params } from './isotropic.js'; // ooooooh boy
-// import { params as TRIAXIAL_params } from './triaxial.js'; // ooooooh boy
-
 export function onRedirectButtonSelectStart( object, controller ) {
     window.location.href = object.userData.url + ".html"; // simulate mouse click
 }
@@ -11,15 +6,20 @@ export function onRedirectButtonSelectEnd( object, controller ) {
     // do nothing, you're already gone
 };
 
-export function selectStartLoading( object, controller ) {
-    // ISOTROPIC_params.loading_active = !ISOTROPIC_params.loading_active;
-    // TRIAXIAL_params.loading_active = !TRIAXIAL_params.loading_active;
-    // what to do??
-
+export function selectStartLoading( params, object, controller ) {
+    params.loading_active = !params.loading_active;
+    // console.log(object.material)
+    if ( params.loading_active ) { object.material.emissiveIntensity = 1; }
+    else { object.material.emissiveIntensity = 0; }
 }
 
-export function selectEndLoading( object, controller ) {
+export function selectEndLoading( params, object, controller ) {
     // do nothing
+}
+
+export function intersectLoading( params, object ) {
+    if ( params.loading_active ) { object.material.emissiveIntensity = 1; }
+    else { object.material.emissiveIntensity = 0; }
 }
 
 

@@ -102,8 +102,10 @@ function reset_particles() {
     started = false;
     startTime = clock.getElapsedTime()
 }
+function main() {
+    SPHERES.createNDParticleShader(params).then( init() );
+}
 
-SPHERES.createNDParticleShader(params).then( init() );
 
 async function init() {
     set_derived_properties();
@@ -202,7 +204,7 @@ async function init() {
 
     BUTTONS.add_url_button('index', 'Main menu', [-0.06,0,0], 0.02, controls, scene);
 
-    BUTTONS.add_action_button('loading_active', 'Loading active', CONTROLLERS.selectStartLoading, CONTROLLERS.selectEndLoading, [-0.06,0.02,0], 0.02, controls, scene);
+    BUTTONS.add_action_button('loading_active', 'Loading active', CONTROLLERS.selectStartLoading.bind(null,params), CONTROLLERS.selectEndLoading.bind(null,params), CONTROLLERS.intersectLoading.bind(null,params), [-0.06,0.02,0], 0.02, controls, scene);
     // make_graph();
     WALLS.update_isotropic_wall(params, S);
     animate();
@@ -381,3 +383,5 @@ function setup_CG() {
     S.cg_param_from_json_string(JSON.stringify(cgparam)) ;
     S.cg_setup_CG() ;
 }
+
+main();

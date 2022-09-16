@@ -9,7 +9,12 @@ import ImmersiveControls from '@depasquale/three-immersive-controls';
 
 import * as SPHERES from "./SphereHandler.js"
 import * as WALLS from "./WallHandler.js"
+import { mapLinear } from "three/src/math/MathUtils";
 
 export let params = {
+
+}
+
+function main() {
     
 }
