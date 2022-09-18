@@ -32,9 +32,8 @@ let density;
 let started = false;
 let old_time = 0;
 let new_time = 0;
-let NDsolids, material;
-let meshes = new THREE.Group();
 let loading_direction = 1;
+let force_scale
 
 export let params = {
     dimension: 3,
@@ -65,7 +64,7 @@ export let params = {
     omegamax: 20, // max rotation rate to colour by
     loading_active: false,
     particle_density: 2700, // kg/m^3
-    particle_opacity: 1.0,
+    particle_opacity: 0.5,
     hideaxes: false,
 }
 
@@ -164,16 +163,6 @@ async function init() {
     gui.add( params, 'loading_rate', 0.001, 0.1, 0.001).name( 'Volumetric strainrate (1/s)' );
     gui.add( params, 'target_stress', 0, 1e4).name( 'Target stress - loading' );
     gui.add( params, 'unloading_stress', 0, 1e4).name( 'Target stress - unloading' );
-    if ( params.dimension == 4 ) {
-        gui.add( params.d4, 'cur', -params.L,params.L, 0.001)
-            .name( 'D4 location').listen()
-            // .onChange( function () { WALLS.update_top_wall(params, S); } );
-            .onChange( function () {
-                if ( urlParams.has('stl') ) {
-                    meshes = renderSTL( meshes, NDsolids, scene, material, params.d4.cur );
-                }
-            });
-    }
     gui.add ( params, 'particle_opacity',0,1).name('Particle opacity').listen().onChange( () => SPHERES.update_particle_material(params,
         // lut_folder
     ));
@@ -208,6 +197,8 @@ async function init() {
     // make_graph();
     WALLS.update_isotropic_wall(params, S);
     animate();
+
+    add_force_scale();
 }
 
 function new_load_path() {
@@ -236,6 +227,34 @@ function onWindowResize(){
     //     };
     // Plotly.relayout('stats', update);
 
+}
+
+function add_force_scale() {
+    force_scale = new THREE.Group();
+    let bg_mat = new THREE.MeshStandardMaterial( { color: 0x333333 } );
+    let bg_geom = new THREE.BoxGeometry( 0.1, 1, 0.1);
+    let background = new THREE.Mesh( bg_geom, bg_mat );
+
+    let fg_mat = new THREE.MeshStandardMaterial( { color: 0xaaaaaa } );
+    let fg_geom = new THREE.BoxGeometry( 0.2, 0.02, 0.2);
+    let slider = new THREE.Mesh( fg_geom, fg_mat );
+    // slider.scale.set(2,2,2);
+    // background.scale.set(10,1,1);
+    force_scale.add( slider );
+    force_scale.add( background );
+
+    force_scale.scale.set( 0.1, 0.1, 0.1);
+    force_scale.position.set ( 0.05, 0, 0);
+
+    
+    BUTTONS.add_action_button(null, "Pressure", CONTROLLERS.doNothing, CONTROLLERS.doNothing, CONTROLLERS.noEmissivity, [0.0, -0.7, 0], 0.2, controls, force_scale)
+
+    scene.add(force_scale);
+
+}
+
+function update_force_scale() {
+    force_scale.children[0].position.y = (pressure - params.unloading_stress)/(params.target_stress - params.unloading_stress) - 0.5;
 }
 
 function animate() {
@@ -279,6 +298,8 @@ function animate() {
                 sigma_zz = S.cg_get_result(0, "TC", 8)[0];
                 pressure=(sigma_xx+sigma_yy+sigma_zz)/3
                 density = S.cg_get_result(0, "RHO", 0)[0];
+
+                update_force_scale(pressure);
             }
 
 

@@ -22,6 +22,12 @@ export function intersectLoading( params, object ) {
     else { object.material.emissiveIntensity = 0; }
 }
 
+export const doNothing = () => {};
+
+export function noEmissivity( object ) {
+    object.material.emissiveIntensity = 0;
+}
+
 
 export const handleBeamSelectStart = (object, controller) => {
     // console.log(controller)

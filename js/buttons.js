@@ -4,7 +4,7 @@ import * as CONTROLLERS from "./controllers";
 
 let fontsize = 0.25;
 let loader = new FontLoader();
-let font;
+export let font;
 loader.load( '../../resources/helvetiker_bold.typeface.json', function ( f ) {
     // console.log('FONT DEFINED!!')
     font = f;
