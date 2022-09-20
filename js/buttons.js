@@ -6,10 +6,11 @@ import helvetiker_bold from "../resources/helvetiker_bold.typeface.json";
 let fontsize = 0.25;
 let loader = new FontLoader();
 export let font;
-console.log(helvetiker_bold)
+// console.log(helvetiker_bold)
 // loader.load(helvetiker_bold, function (f) {
-loader.load('../resources/helvetiker_bold.typeface.json', function (f) {
-    console.log('FONT DEFINED!!')
+loader.load('./helvetiker_bold.typeface.json', function (f) {
+    // loader.load('../resources/helvetiker_bold.typeface.json', function (f) {
+    // console.log('FONT DEFINED!!');
     font = f;
 });
 
