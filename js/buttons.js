@@ -26,7 +26,7 @@ export function add_url_button(url, name, location, scale, controls, scene) {
 
         text.position.y = -text.geometry.boundingBox.max.y / 2.;
         text.position.x = -text.geometry.boundingBox.max.x / 2.;
-        text.position.z = 0.01;
+        text.position.z = 0.05;
         text.userData.url = url;
 
         var mat = new THREE.MeshStandardMaterial({ color: 0x333333 });
@@ -69,7 +69,7 @@ export function add_action_button(type, name, selectStartFunction, selectEndFunc
 
         text.position.y = -text.geometry.boundingBox.max.y / 2.;
         text.position.x = -text.geometry.boundingBox.max.x / 2.;
-        text.position.z = 0.01;
+        text.position.z = 0.05;
 
         var mat = new THREE.MeshStandardMaterial({ color: 0x333333 });
         var geom = new THREE.BoxGeometry(fontsize + text.geometry.boundingBox.max.x, fontsize + text.geometry.boundingBox.max.y, 0.1);
