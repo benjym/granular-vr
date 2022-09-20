@@ -1,6 +1,7 @@
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import * as CONTROLLERS from "./controllers";
+import helvetiker_bold from "../resources/helvetiker_bold.typeface.json";
 
 let fontsize = 0.25;
 let loader = new FontLoader();
