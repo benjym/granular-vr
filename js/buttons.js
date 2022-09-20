@@ -6,9 +6,10 @@ import helvetiker_bold from "../resources/helvetiker_bold.typeface.json";
 let fontsize = 0.25;
 let loader = new FontLoader();
 export let font;
+console.log(helvetiker_bold)
+// loader.load(helvetiker_bold, function (f) {
 loader.load('../resources/helvetiker_bold.typeface.json', function (f) {
-    // loader.load('resources/helvetiker_bold.typeface.json', function (f) {
-    // console.log('FONT DEFINED!!')
+    console.log('FONT DEFINED!!')
     font = f;
 });
 
@@ -92,7 +93,6 @@ export function add_action_button(type, name, selectStartFunction, selectEndFunc
         return background;
     }
     else {
-        // console.log('font not loaded, waiting...')
-        setTimeout(add_url_button.bind(null, url, name, location, scale, controls, scene), 200);
+        setTimeout(add_action_button.bind(null, type, name, selectStartFunction, selectEndFunction, intersectionFunction, location, scale, controls, scene), 200);
     }
 }
