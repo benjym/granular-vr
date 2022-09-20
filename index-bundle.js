@@ -16,7 +16,7 @@
   \***********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"add_action_button\": () => (/* binding */ add_action_button),\n/* harmony export */   \"add_url_button\": () => (/* binding */ add_url_button),\n/* harmony export */   \"font\": () => (/* binding */ font)\n/* harmony export */ });\n/* harmony import */ var three_examples_jsm_loaders_FontLoader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three/examples/jsm/loaders/FontLoader.js */ \"./node_modules/three/examples/jsm/loaders/FontLoader.js\");\n/* harmony import */ var three_examples_jsm_geometries_TextGeometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/geometries/TextGeometry.js */ \"./node_modules/three/examples/jsm/geometries/TextGeometry.js\");\n/* harmony import */ var _controllers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./controllers */ \"./js/controllers.js\");\n/* provided dependency */ var THREE = __webpack_require__(/*! three */ \"./node_modules/three/build/three.module.js\");\n\n\n\n\nlet fontsize = 0.25;\nlet loader = new three_examples_jsm_loaders_FontLoader_js__WEBPACK_IMPORTED_MODULE_0__.FontLoader();\nlet font;\nloader.load('../resources/helvetiker_bold.typeface.json', function (f) {\n    // loader.load('resources/helvetiker_bold.typeface.json', function (f) {\n    // console.log('FONT DEFINED!!')\n    font = f;\n});\n\nfunction add_url_button(url, name, location, scale, controls, scene) {\n    if (font !== undefined) {\n\n        let background;\n\n        var mat = new THREE.MeshStandardMaterial({ color: 0xe72564 });\n        var geom = new three_examples_jsm_geometries_TextGeometry_js__WEBPACK_IMPORTED_MODULE_1__.TextGeometry(name, { font: font, size: fontsize, height: fontsize / 5., });\n        var text = new THREE.Mesh(geom, mat);\n        text.geometry.computeBoundingBox();\n\n        text.position.y = -text.geometry.boundingBox.max.y / 2.;\n        text.position.x = -text.geometry.boundingBox.max.x / 2.;\n        text.position.z = 0.01;\n        text.userData.url = url;\n\n        var mat = new THREE.MeshStandardMaterial({ color: 0x333333 });\n        var geom = new THREE.BoxGeometry(fontsize + text.geometry.boundingBox.max.x, fontsize + text.geometry.boundingBox.max.y, 0.1);\n        background = new THREE.Mesh(geom, mat);\n        background.userData.url = url;\n\n        background.position.set(...location);\n        background.add(text);\n\n        const type = 'button';\n        background.userData.type = type; // this sets up interaction group for controllers\n        text.userData.type = type; // this sets up interaction group for controllers\n\n        controls.interaction.selectStartHandlers[type] = _controllers__WEBPACK_IMPORTED_MODULE_2__.onRedirectButtonSelectStart;\n        controls.interaction.selectEndHandlers[type] = _controllers__WEBPACK_IMPORTED_MODULE_2__.onRedirectButtonSelectEnd;\n        // controls.interaction.selectableObjects.push(button);\n        controls.interaction.selectableObjects.push(background);\n\n        background.scale.set(scale, scale, scale);\n\n        scene.add(background);\n\n        return background\n    }\n    else {\n        // console.log('font not loaded, waiting...')\n        setTimeout(add_url_button.bind(null, url, name, location, scale, controls, scene), 200);\n    }\n}\n\nfunction add_action_button(type, name, selectStartFunction, selectEndFunction, intersectionFunction, location, scale, controls, scene) {\n    if (font !== undefined) {\n        let background;\n\n        var mat = new THREE.MeshStandardMaterial({ color: 0xe72564 });\n        var geom = new three_examples_jsm_geometries_TextGeometry_js__WEBPACK_IMPORTED_MODULE_1__.TextGeometry(name, { font: font, size: fontsize, height: fontsize / 5., });\n        var text = new THREE.Mesh(geom, mat);\n        text.geometry.computeBoundingBox();\n\n        text.position.y = -text.geometry.boundingBox.max.y / 2.;\n        text.position.x = -text.geometry.boundingBox.max.x / 2.;\n        text.position.z = 0.01;\n\n        var mat = new THREE.MeshStandardMaterial({ color: 0x333333 });\n        var geom = new THREE.BoxGeometry(fontsize + text.geometry.boundingBox.max.x, fontsize + text.geometry.boundingBox.max.y, 0.1);\n        background = new THREE.Mesh(geom, mat);\n\n        background.position.set(...location);\n        background.add(text);\n\n        background.userData.type = type; // this sets up interaction group for controllers\n        text.userData.type = type; // this sets up interaction group for controllers\n\n        controls.interaction.selectStartHandlers[type] = selectStartFunction;\n        controls.interaction.selectEndHandlers[type] = selectEndFunction;\n        controls.interaction.intersectionHandlers[type] = intersectionFunction;\n        // controls.interaction.selectableObjects.push(button);\n        controls.interaction.selectableObjects.push(background);\n\n        background.scale.set(scale, scale, scale);\n\n        scene.add(background);\n\n        return background;\n    }\n    else {\n        // console.log('font not loaded, waiting...')\n        setTimeout(add_url_button.bind(null, url, name, location, scale, controls, scene), 200);\n    }\n}\n\n//# sourceURL=webpack://granular-vr/./js/buttons.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"add_action_button\": () => (/* binding */ add_action_button),\n/* harmony export */   \"add_url_button\": () => (/* binding */ add_url_button),\n/* harmony export */   \"font\": () => (/* binding */ font)\n/* harmony export */ });\n/* harmony import */ var three_examples_jsm_loaders_FontLoader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three/examples/jsm/loaders/FontLoader.js */ \"./node_modules/three/examples/jsm/loaders/FontLoader.js\");\n/* harmony import */ var three_examples_jsm_geometries_TextGeometry_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/geometries/TextGeometry.js */ \"./node_modules/three/examples/jsm/geometries/TextGeometry.js\");\n/* harmony import */ var _controllers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./controllers */ \"./js/controllers.js\");\n/* harmony import */ var _resources_helvetiker_bold_typeface_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../resources/helvetiker_bold.typeface.json */ \"./resources/helvetiker_bold.typeface.json\");\n/* provided dependency */ var THREE = __webpack_require__(/*! three */ \"./node_modules/three/build/three.module.js\");\n\n\n\n\n\nlet fontsize = 0.25;\nlet loader = new three_examples_jsm_loaders_FontLoader_js__WEBPACK_IMPORTED_MODULE_0__.FontLoader();\nlet font;\nloader.load('../resources/helvetiker_bold.typeface.json', function (f) {\n    // loader.load('resources/helvetiker_bold.typeface.json', function (f) {\n    // console.log('FONT DEFINED!!')\n    font = f;\n});\n\nfunction add_url_button(url, name, location, scale, controls, scene) {\n    if (font !== undefined) {\n\n        let background;\n\n        var mat = new THREE.MeshStandardMaterial({ color: 0xe72564 });\n        var geom = new three_examples_jsm_geometries_TextGeometry_js__WEBPACK_IMPORTED_MODULE_1__.TextGeometry(name, { font: font, size: fontsize, height: fontsize / 5., });\n        var text = new THREE.Mesh(geom, mat);\n        text.geometry.computeBoundingBox();\n\n        text.position.y = -text.geometry.boundingBox.max.y / 2.;\n        text.position.x = -text.geometry.boundingBox.max.x / 2.;\n        text.position.z = 0.01;\n        text.userData.url = url;\n\n        var mat = new THREE.MeshStandardMaterial({ color: 0x333333 });\n        var geom = new THREE.BoxGeometry(fontsize + text.geometry.boundingBox.max.x, fontsize + text.geometry.boundingBox.max.y, 0.1);\n        background = new THREE.Mesh(geom, mat);\n        background.userData.url = url;\n\n        background.position.set(...location);\n        background.add(text);\n\n        const type = 'button';\n        background.userData.type = type; // this sets up interaction group for controllers\n        text.userData.type = type; // this sets up interaction group for controllers\n\n        controls.interaction.selectStartHandlers[type] = _controllers__WEBPACK_IMPORTED_MODULE_2__.onRedirectButtonSelectStart;\n        controls.interaction.selectEndHandlers[type] = _controllers__WEBPACK_IMPORTED_MODULE_2__.onRedirectButtonSelectEnd;\n        // controls.interaction.selectableObjects.push(button);\n        controls.interaction.selectableObjects.push(background);\n\n        background.scale.set(scale, scale, scale);\n\n        scene.add(background);\n\n        return background\n    }\n    else {\n        // console.log('font not loaded, waiting...')\n        setTimeout(add_url_button.bind(null, url, name, location, scale, controls, scene), 200);\n    }\n}\n\nfunction add_action_button(type, name, selectStartFunction, selectEndFunction, intersectionFunction, location, scale, controls, scene) {\n    if (font !== undefined) {\n        let background;\n\n        var mat = new THREE.MeshStandardMaterial({ color: 0xe72564 });\n        var geom = new three_examples_jsm_geometries_TextGeometry_js__WEBPACK_IMPORTED_MODULE_1__.TextGeometry(name, { font: font, size: fontsize, height: fontsize / 5., });\n        var text = new THREE.Mesh(geom, mat);\n        text.geometry.computeBoundingBox();\n\n        text.position.y = -text.geometry.boundingBox.max.y / 2.;\n        text.position.x = -text.geometry.boundingBox.max.x / 2.;\n        text.position.z = 0.01;\n\n        var mat = new THREE.MeshStandardMaterial({ color: 0x333333 });\n        var geom = new THREE.BoxGeometry(fontsize + text.geometry.boundingBox.max.x, fontsize + text.geometry.boundingBox.max.y, 0.1);\n        background = new THREE.Mesh(geom, mat);\n\n        background.position.set(...location);\n        background.add(text);\n\n        background.userData.type = type; // this sets up interaction group for controllers\n        text.userData.type = type; // this sets up interaction group for controllers\n\n        controls.interaction.selectStartHandlers[type] = selectStartFunction;\n        controls.interaction.selectEndHandlers[type] = selectEndFunction;\n        controls.interaction.intersectionHandlers[type] = intersectionFunction;\n        // controls.interaction.selectableObjects.push(button);\n        controls.interaction.selectableObjects.push(background);\n\n        background.scale.set(scale, scale, scale);\n\n        scene.add(background);\n\n        return background;\n    }\n    else {\n        // console.log('font not loaded, waiting...')\n        setTimeout(add_url_button.bind(null, url, name, location, scale, controls, scene), 200);\n    }\n}\n\n//# sourceURL=webpack://granular-vr/./js/buttons.js?");
 
 /***/ }),
 
@@ -147,6 +147,16 @@ eval("\n\n/* istanbul ignore next  */\nfunction apply(styleElement, options, obj
 /***/ ((module) => {
 
 eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElement) {\n  if (styleElement.styleSheet) {\n    styleElement.styleSheet.cssText = css;\n  } else {\n    while (styleElement.firstChild) {\n      styleElement.removeChild(styleElement.firstChild);\n    }\n\n    styleElement.appendChild(document.createTextNode(css));\n  }\n}\n\nmodule.exports = styleTagTransform;\n\n//# sourceURL=webpack://granular-vr/./node_modules/style-loader/dist/runtime/styleTagTransform.js?");
+
+/***/ }),
+
+/***/ "./resources/helvetiker_bold.typeface.json":
+/*!*************************************************!*\
+  !*** ./resources/helvetiker_bold.typeface.json ***!
+  \*************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+eval("module.exports = __webpack_require__.p + \"2c2a2493c62f02f2b514.json\";\n\n//# sourceURL=webpack://granular-vr/./resources/helvetiker_bold.typeface.json?");
 
 /***/ }),
 
@@ -301,6 +311,18 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -315,6 +337,26 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /******/ 			}
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/publicPath */
+/******/ 	(() => {
+/******/ 		var scriptUrl;
+/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
+/******/ 		var document = __webpack_require__.g.document;
+/******/ 		if (!scriptUrl && document) {
+/******/ 			if (document.currentScript)
+/******/ 				scriptUrl = document.currentScript.src
+/******/ 			if (!scriptUrl) {
+/******/ 				var scripts = document.getElementsByTagName("script");
+/******/ 				if(scripts.length) scriptUrl = scripts[scripts.length - 1].src
+/******/ 			}
+/******/ 		}
+/******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
+/******/ 		// or pass an empty string ("") and set the __webpack_public_path__ variable from your code to use your own logic.
+/******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
+/******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
+/******/ 		__webpack_require__.p = scriptUrl;
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/nonce */
