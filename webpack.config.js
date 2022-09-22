@@ -17,20 +17,20 @@ module.exports = [
       }),
       new HtmlWebpackPlugin({
         title: 'NDDEM in VR',
-        // favicon: "./resources/favicon512.png",
+        favicon: "./resources/favicon512.png",
         template: "index.html",
         chunks: ['index']
       }),
       new HtmlWebpackPlugin({
         title: 'Isotropic compression',
-        // favicon: "./resources/favicon512.png",
+        favicon: "./resources/favicon512.png",
         template: "index.html",
         filename: "isotropic.html",
         chunks: ['isotropic']
       }),
       new HtmlWebpackPlugin({
         title: 'Triaxial compression',
-        // favicon: "./resources/favicon512.png",
+        favicon: "./resources/favicon512.png",
         template: "index.html",
         filename: "triaxial.html",
         chunks: ['triaxial']
