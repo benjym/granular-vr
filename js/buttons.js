@@ -14,43 +14,48 @@ loader.load('./helvetiker_bold.typeface.json', function (f) {
     font = f;
 });
 
+export function make_button_object(name, location, scale) {
+    let button;
+
+    var mat = new THREE.MeshStandardMaterial({ color: 0xe72564 });
+    var geom = new TextGeometry(name, { font: font, size: fontsize, height: fontsize / 5., });
+    var text = new THREE.Mesh(geom, mat);
+    text.geometry.computeBoundingBox();
+
+    text.position.y = -text.geometry.boundingBox.max.y / 2.;
+    text.position.x = -text.geometry.boundingBox.max.x / 2.;
+    text.position.z = 0.05;
+
+    var mat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+    var geom = new THREE.BoxGeometry(fontsize + text.geometry.boundingBox.max.x, fontsize + text.geometry.boundingBox.max.y, 0.1);
+    button = new THREE.Mesh(geom, mat);
+
+    button.position.set(...location);
+    button.scale.set(scale, scale, scale);
+    button.add(text);
+
+    return button
+}
+
 export function add_url_button(url, name, location, scale, controls, scene) {
     if (font !== undefined) {
 
-        let background;
-
-        var mat = new THREE.MeshStandardMaterial({ color: 0xe72564 });
-        var geom = new TextGeometry(name, { font: font, size: fontsize, height: fontsize / 5., });
-        var text = new THREE.Mesh(geom, mat);
-        text.geometry.computeBoundingBox();
-
-        text.position.y = -text.geometry.boundingBox.max.y / 2.;
-        text.position.x = -text.geometry.boundingBox.max.x / 2.;
-        text.position.z = 0.05;
-        text.userData.url = url;
-
-        var mat = new THREE.MeshStandardMaterial({ color: 0x333333 });
-        var geom = new THREE.BoxGeometry(fontsize + text.geometry.boundingBox.max.x, fontsize + text.geometry.boundingBox.max.y, 0.1);
-        background = new THREE.Mesh(geom, mat);
-        background.userData.url = url;
-
-        background.position.set(...location);
-        background.add(text);
+        let button = make_button_object(name, location, scale);
+        button.userData.url = url;
+        button.children[0].userData.url = url;
 
         const type = 'button';
-        background.userData.type = type; // this sets up interaction group for controllers
-        text.userData.type = type; // this sets up interaction group for controllers
+        button.userData.type = type; // this sets up interaction group for controllers
+        button.children[0].userData.type = type; // this sets up interaction group for controllers
 
         controls.interaction.selectStartHandlers[type] = CONTROLLERS.onRedirectButtonSelectStart;
         controls.interaction.selectEndHandlers[type] = CONTROLLERS.onRedirectButtonSelectEnd;
         // controls.interaction.selectableObjects.push(button);
-        controls.interaction.selectableObjects.push(background);
+        controls.interaction.selectableObjects.push(button);
 
-        background.scale.set(scale, scale, scale);
+        scene.add(button);
 
-        scene.add(background);
-
-        return background
+        return button
     }
     else {
         // console.log('font not loaded, waiting...')
@@ -60,38 +65,20 @@ export function add_url_button(url, name, location, scale, controls, scene) {
 
 export function add_action_button(type, name, selectStartFunction, selectEndFunction, intersectionFunction, location, scale, controls, scene) {
     if (font !== undefined) {
-        let background;
+        let button = make_button_object(name, location, scale);
 
-        var mat = new THREE.MeshStandardMaterial({ color: 0xe72564 });
-        var geom = new TextGeometry(name, { font: font, size: fontsize, height: fontsize / 5., });
-        var text = new THREE.Mesh(geom, mat);
-        text.geometry.computeBoundingBox();
-
-        text.position.y = -text.geometry.boundingBox.max.y / 2.;
-        text.position.x = -text.geometry.boundingBox.max.x / 2.;
-        text.position.z = 0.05;
-
-        var mat = new THREE.MeshStandardMaterial({ color: 0x333333 });
-        var geom = new THREE.BoxGeometry(fontsize + text.geometry.boundingBox.max.x, fontsize + text.geometry.boundingBox.max.y, 0.1);
-        background = new THREE.Mesh(geom, mat);
-
-        background.position.set(...location);
-        background.add(text);
-
-        background.userData.type = type; // this sets up interaction group for controllers
-        text.userData.type = type; // this sets up interaction group for controllers
+        button.userData.type = type; // this sets up interaction group for controllers
+        button.userData.type = type; // this sets up interaction group for controllers
 
         controls.interaction.selectStartHandlers[type] = selectStartFunction;
         controls.interaction.selectEndHandlers[type] = selectEndFunction;
         controls.interaction.intersectionHandlers[type] = intersectionFunction;
         // controls.interaction.selectableObjects.push(button);
-        controls.interaction.selectableObjects.push(background);
+        controls.interaction.selectableObjects.push(button);
 
-        background.scale.set(scale, scale, scale);
+        scene.add(button);
 
-        scene.add(background);
-
-        return background;
+        return button;
     }
     else {
         setTimeout(add_action_button.bind(null, type, name, selectStartFunction, selectEndFunction, intersectionFunction, location, scale, controls, scene), 200);

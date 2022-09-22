@@ -1,12 +1,5 @@
 import css from "../css/main.css";
 
-// import * as THREE from 'three';
-
-console.debug('Using threejs version ' + THREE.REVISION)
-
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-// import { Lut } from 'three/examples/jsm/math/Lut.js';
-// import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import * as CONTROLLERS from './controllers.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import ImmersiveControls from '@depasquale/three-immersive-controls';
@@ -14,9 +7,8 @@ import ImmersiveControls from '@depasquale/three-immersive-controls';
 import * as SPHERES from "./SphereHandler.js"
 import * as WALLS from "./WallHandler.js"
 import * as BUTTONS from "./buttons";
-
-// import * as LAYOUT from './Layout.js'
-// import { NDSTLLoader, renderSTL } from '../libs/NDSTLLoader.js';
+import * as GRAPHS from "./graphs";
+import { GridHelper } from "three";
 
 var urlParams = new URLSearchParams(window.location.search);
 var clock = new THREE.Clock();
@@ -33,7 +25,6 @@ let started = false;
 let old_time = 0;
 let new_time = 0;
 let loading_direction = 1;
-let force_scale
 
 export let params = {
     dimension: 3,
@@ -127,6 +118,10 @@ async function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x111);
 
+    let g = new THREE.GridHelper(1, 100);
+    g.position.y = -0.02;
+    scene.add(g);
+
     const hemiLight = new THREE.HemisphereLight();
     hemiLight.intensity = 0.35;
     scene.add(hemiLight);
@@ -198,7 +193,8 @@ async function init() {
     WALLS.update_isotropic_wall(params, S);
     animate();
 
-    add_force_scale();
+    GRAPHS.add_axes("Density", "Pressure", scene);
+
 }
 
 function new_load_path() {
@@ -227,56 +223,6 @@ function onWindowResize() {
     //     };
     // Plotly.relayout('stats', update);
 
-}
-
-function add_force_scale() {
-    force_scale = new THREE.Group();
-    let bg_mat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
-    let bg_geom = new THREE.CylinderGeometry(0.01, 0.01, 1, 32);
-    let background = new THREE.Mesh(bg_geom, bg_mat);
-
-    let fg_mat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
-    let fg_geom = new THREE.SphereGeometry(0.02, 8, 8);
-    let slider = new THREE.Mesh(fg_geom, fg_mat);
-    // slider.scale.set(2,2,2);
-    // background.scale.set(10,1,1);
-    force_scale.add(slider);
-
-    let cone_geom = new THREE.CylinderGeometry(0.0, 0.02, 0.05, 32);
-    let cone1 = new THREE.Mesh(cone_geom, bg_mat);
-    cone1.position.y = 0.5;
-    background.add(cone1);
-
-    force_scale.add(background);
-
-    let background2 = new THREE.Mesh(bg_geom, bg_mat);
-    let cone2 = new THREE.Mesh(cone_geom, bg_mat);
-    cone2.position.y = 0.5;
-    background2.add(cone2);
-    background2.rotateZ(-Math.PI / 2.);
-    background2.position.x = 0.5;
-    background2.position.y = -0.5;
-
-
-    force_scale.add(background2);
-
-
-
-    force_scale.scale.set(0.1, 0.1, 0.1);
-    force_scale.position.set(0.05, 0, 0);
-
-
-    BUTTONS.add_action_button(null, "Density", CONTROLLERS.doNothing, CONTROLLERS.doNothing, CONTROLLERS.noEmissivity, [1.2, -0.5, 0], 0.2, controls, force_scale)
-    BUTTONS.add_action_button(null, "Pressure", CONTROLLERS.doNothing, CONTROLLERS.doNothing, CONTROLLERS.noEmissivity, [0.0, 0.6, 0], 0.2, controls, force_scale)
-
-    scene.add(force_scale);
-
-}
-
-function update_force_scale() {
-    let packing_fraction = density / params.particle_density;
-    force_scale.children[0].position.x = (packing_fraction / 0.64) - 0.5; // NOTE: THIS IS JUST A HACK --- REPLACE WITH REAL LOGIC
-    force_scale.children[0].position.y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress) - 0.5;
 }
 
 function animate() {
@@ -321,7 +267,11 @@ function animate() {
             pressure = (sigma_xx + sigma_yy + sigma_zz) / 3
             density = S.cg_get_result(0, "RHO", 0)[0];
 
-            update_force_scale(pressure);
+            let packing_fraction = density / params.particle_density; // NOTE: THIS IS JUST A HACK --- REPLACE WITH REAL LOGIC
+            let x = (packing_fraction / 0.64) - 0.5;
+            // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
+            let y = pressure / params.target_stress; // value between 0 and 1
+            GRAPHS.update_data(x, y);
         }
 
 
