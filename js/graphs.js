@@ -49,6 +49,8 @@ export function add_axes(xlabel, ylabel, xmin, xmax, ymin, ymax, scene) {
     }
 
     axes.add(data_points)
+
+    axes.rotateY(Math.PI / 4.);
     scene.add(axes);
 
 }
