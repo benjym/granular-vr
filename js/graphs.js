@@ -5,7 +5,7 @@ let data_points = new THREE.Group();
 data_points.last_updated = 0;
 data_points.nchildren = 1000;
 
-export function add_axes(xlabel, ylabel, scene) {
+export function add_axes(xlabel, ylabel, xmin, xmax, ymin, ymax, scene) {
     axes = new THREE.Group();
     let bg_mat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
     let bg_geom = new THREE.CylinderGeometry(0.01, 0.01, 1, 32);
@@ -28,11 +28,16 @@ export function add_axes(xlabel, ylabel, scene) {
 
     axes.add(background2);
 
-    axes.scale.set(0.1, 0.1, 0.1);
-    axes.position.set(0.05, 0, 0);
+    axes.scale.set(0.05, 0.05, 0.05);
+    axes.position.set(0.05, 0.008, 0);
 
-    axes.add(BUTTONS.make_button_object(xlabel, [1.2, -0.5, 0], 0.2));
-    axes.add(BUTTONS.make_button_object(ylabel, [0.0, 0.6, 0], 0.2));
+    axes.add(BUTTONS.make_text(xlabel, [1.05, -0.52, 0], 0.2));
+    axes.add(BUTTONS.make_text(ylabel, [-0.15, 0.55, 0], 0.2));
+
+    axes.add(BUTTONS.make_text(xmin, [0.01, -0.57, 0], 0.2));
+    axes.add(BUTTONS.make_text(xmax, [0.9, -0.57, 0], 0.2));
+    axes.add(BUTTONS.make_text(ymin, [-0.07, -0.5, 0], 0.2));
+    axes.add(BUTTONS.make_text(ymax, [-0.2, 0.47, 0], 0.2));
 
     let fg_mat = new THREE.PointsMaterial({ color: 0xaaaaaa });
     let fg_geom = new THREE.CircleGeometry(0.01, 8);

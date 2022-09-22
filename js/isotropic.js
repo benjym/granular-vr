@@ -8,7 +8,7 @@ import * as SPHERES from "./SphereHandler.js"
 import * as WALLS from "./WallHandler.js"
 import * as BUTTONS from "./buttons";
 import * as GRAPHS from "./graphs";
-import { GridHelper } from "three";
+import * as AUDIO from "./audio";
 
 var urlParams = new URLSearchParams(window.location.search);
 var clock = new THREE.Clock();
@@ -55,8 +55,8 @@ export let params = {
     omegamax: 20, // max rotation rate to colour by
     loading_active: false,
     particle_density: 2700, // kg/m^3
-    particle_opacity: 0.5,
-    hideaxes: false,
+    particle_opacity: 0.8,
+    audio: false,
 }
 
 function set_derived_properties() {
@@ -139,6 +139,7 @@ async function init() {
     WALLS.update_isotropic_wall(params, S);
     WALLS.add_scale(params);
 
+    if (params.audio) { AUDIO.make_listener(camera) }
     SPHERES.add_spheres(S, params, scene);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -193,7 +194,7 @@ async function init() {
     WALLS.update_isotropic_wall(params, S);
     animate();
 
-    GRAPHS.add_axes("Density", "Pressure", scene);
+    GRAPHS.add_axes("Solid Fraction", "Pressure", 0, 0.64, 0, params.target_stress, scene);
 
 }
 
@@ -227,7 +228,7 @@ function onWindowResize() {
 
 function animate() {
     renderer.setAnimationLoop(function () {
-        if (clock.getElapsedTime() - startTime > 3) { started = true; }
+        if (clock.getElapsedTime() - startTime > 2) { started = true; }
         // requestAnimationFrame( animate );
         SPHERES.move_spheres(S, params);
         new_time = clock.getElapsedTime() - startTime;
@@ -258,20 +259,22 @@ function animate() {
             SPHERES.draw_force_network(S, params, scene);
 
             S.simu_step_forward(5);
-            S.cg_param_read_timestep(0);
-            S.cg_process_timestep(0, false);
-            var grid = S.cg_get_gridinfo();
-            sigma_xx = S.cg_get_result(0, "TC", 0)[0];
-            sigma_yy = S.cg_get_result(0, "TC", 4)[0];
-            sigma_zz = S.cg_get_result(0, "TC", 8)[0];
-            pressure = (sigma_xx + sigma_yy + sigma_zz) / 3
-            density = S.cg_get_result(0, "RHO", 0)[0];
+            if (started) {
+                S.cg_param_read_timestep(0);
+                S.cg_process_timestep(0, false);
+                var grid = S.cg_get_gridinfo();
+                sigma_xx = S.cg_get_result(0, "TC", 0)[0];
+                sigma_yy = S.cg_get_result(0, "TC", 4)[0];
+                sigma_zz = S.cg_get_result(0, "TC", 8)[0];
+                pressure = (sigma_xx + sigma_yy + sigma_zz) / 3
+                density = S.cg_get_result(0, "RHO", 0)[0];
 
-            let packing_fraction = density / params.particle_density; // NOTE: THIS IS JUST A HACK --- REPLACE WITH REAL LOGIC
-            let x = (packing_fraction / 0.64) - 0.5;
-            // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
-            let y = pressure / params.target_stress; // value between 0 and 1
-            GRAPHS.update_data(x, y);
+                let packing_fraction = density / params.particle_density; // NOTE: THIS IS JUST A HACK --- REPLACE WITH REAL LOGIC
+                let x = (packing_fraction / 0.64) - 0.5;
+                // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
+                let y = pressure / params.target_stress; // value between 0 and 1
+                GRAPHS.update_data(x, y);
+            }
         }
 
 

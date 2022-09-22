@@ -14,6 +14,22 @@ loader.load('./helvetiker_bold.typeface.json', function (f) {
     font = f;
 });
 
+export function make_text(name, location, scale) {
+    var mat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+    var geom = new TextGeometry(String(name), { font: font, size: fontsize, height: fontsize / 5., });
+    var text = new THREE.Mesh(geom, mat);
+    text.geometry.computeBoundingBox();
+
+    text.position.y = -text.geometry.boundingBox.max.y / 2.;
+    text.position.x = -text.geometry.boundingBox.max.x / 2.;
+    // text.position.z = 0.05;
+
+    text.position.set(...location);
+    text.scale.set(scale, scale, scale);
+
+    return text
+}
+
 export function make_button_object(name, location, scale) {
     let button;
 
@@ -68,7 +84,7 @@ export function add_action_button(type, name, selectStartFunction, selectEndFunc
         let button = make_button_object(name, location, scale);
 
         button.userData.type = type; // this sets up interaction group for controllers
-        button.userData.type = type; // this sets up interaction group for controllers
+        button.children[0].userData.type = type; // this sets up interaction group for controllers
 
         controls.interaction.selectStartHandlers[type] = selectStartFunction;
         controls.interaction.selectEndHandlers[type] = selectEndFunction;

@@ -93,7 +93,10 @@ var NDDEMShader = new ShaderMaterial({
     // "if ( isnan(phi1) ) { phi1 = acos(sign(x_rotated.y)*x_rotated.y); }",
     // "if ( x_rotated.w < 0.0 ) { phi2 = 2.0*pi - phi2; }",
 
+    // "vColor.r = abs(sin(phi0*3.0));",
+    // "vColor.b = abs(sin(phi1*2.0));",
     "vColor.r = abs(sin(phi0*3.0));",
+    "vColor.b = abs(sin(phi1*2.0));",
     "vColor.g = abs(sin(phi1*2.0));",
     "vColor = vColor * abs(sin(phi0));",
     // "}",
