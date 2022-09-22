@@ -29,7 +29,7 @@ export function add_axes(xlabel, ylabel, xmin, xmax, ymin, ymax, scene) {
     axes.add(background2);
 
     axes.scale.set(0.05, 0.05, 0.05);
-    axes.position.set(0.05, 0.008, 0);
+    axes.position.set(0.05, 0.00, 0.025);
 
     axes.add(BUTTONS.make_text(xlabel, [1.05, -0.52, 0], 0.2));
     axes.add(BUTTONS.make_text(ylabel, [-0.15, 0.55, 0], 0.2));
@@ -50,7 +50,7 @@ export function add_axes(xlabel, ylabel, xmin, xmax, ymin, ymax, scene) {
 
     axes.add(data_points)
 
-    axes.rotateY(Math.PI / 4.);
+    axes.rotateY(-Math.PI / 2.);
     scene.add(axes);
 
 }

@@ -181,7 +181,7 @@ async function init() {
     // const controls = new OrbitControls( camera, container );
     // controls.update();
     const controls = new ImmersiveControls(camera, renderer, scene, {
-        initialPosition: new THREE.Vector3(0, 0, 0.1),
+        initialPosition: new THREE.Vector3(0, 0, 0.06),
         moveSpeed: { keyboard: 0.025, vr: 0.025 }
     });
 
