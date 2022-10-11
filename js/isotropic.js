@@ -188,7 +188,7 @@ async function init() {
 
     window.addEventListener('resize', onWindowResize, false);
 
-    BUTTONS.add_url_button('index', 'Main menu', [-0.06, 0, 0], 0.02, controls, scene);
+    // BUTTONS.add_url_button('index', 'Main menu', [-0.06, 0, 0], 0.02, controls, scene);
 
     BUTTONS.add_action_button('loading_active', 'Loading active', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-0.06, 0.02, 0], 0.02, controls, scene);
     // make_graph();
