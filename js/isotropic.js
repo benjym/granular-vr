@@ -27,6 +27,7 @@ let started = false;
 let old_time = 0;
 let new_time = 0;
 let loading_direction = 1;
+// let data_point_colour = '333333';
 
 export let params = {
     dimension: 3,
@@ -45,8 +46,8 @@ export let params = {
     d4: { cur: 0 },
     // r_max: 0.0033,
     // r_min: 0.0027,
-    r_max: 0.1,
-    r_min: 0.09,
+    r_max: 0.12,
+    r_min: 0.11,
     // freq: 0.05,
     new_line: false,
     loading_rate: 0.01,
@@ -194,7 +195,7 @@ async function init() {
     // const controls = new OrbitControls( camera, container );
     // controls.update();
     const controls = new ImmersiveControls(camera, renderer, scene, {
-        // initialPosition: new THREE.Vector3(0, -params.H, params.r_max*2),
+        initialPosition: new THREE.Vector3(0, 1.6, 2),
         // moveSpeed: { keyboard: 0.025, vr: 0.025 }
     });
 
@@ -202,7 +203,7 @@ async function init() {
 
     // BUTTONS.add_url_button('index', 'Main menu', [-0.06, 0, 0], 0.02, controls, scene);
 
-    let button = BUTTONS.add_action_button('loading_active', 'Loading active', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-3, 1.6,1.5*params.L], 1, controls, scene);
+    let button = BUTTONS.add_action_button('loading_active', 'Loading active', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6,2.5*params.L], 1, controls, scene);
     button.rotateY(Math.PI/2.);
     // make_graph();
     WALLS.update_isotropic_wall(params, S);
@@ -218,6 +219,7 @@ async function init() {
 
 function new_load_path() {
     WALLS.update_isotropic_wall(params, S);
+    // data_point_colour = Math.floor(Math.random()*16777215).toString(16);
     // var data = [{
     //               type: 'scatter',
     //               mode: 'lines',
@@ -246,7 +248,7 @@ function onWindowResize() {
 
 function animate() {
     renderer.setAnimationLoop(function () {
-        if (clock.getElapsedTime() - startTime > 2) { started = true; }
+        if (clock.getElapsedTime() - startTime > 3) { started = true; }
         // requestAnimationFrame( animate );
         SPHERES.move_spheres(S, params);
         new_time = clock.getElapsedTime() - startTime;
@@ -274,10 +276,10 @@ function animate() {
                 }
             }
 
-            SPHERES.draw_force_network(S, params, scene);
-
             S.simu_step_forward(5);
             if (started) {
+                SPHERES.draw_force_network(S, params, scene);
+                
                 S.cg_param_read_timestep(0);
                 S.cg_process_timestep(0, false);
                 var grid = S.cg_get_gridinfo();
@@ -291,9 +293,9 @@ function animate() {
                 let x = ((packing_fraction - 0.35) / (0.7 - 0.35));
                 // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
                 let y = pressure / params.target_stress; // value between 0 and 1
-                GRAPHS.update_data(x, y);
+                GRAPHS.update_data(x, y);//, data_point_colour);
 
-                console.log(packing_fraction)
+                // console.log(packing_fraction)
             }
         }
 

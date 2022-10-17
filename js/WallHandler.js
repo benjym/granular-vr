@@ -411,8 +411,8 @@ export function update_isotropic_wall(params, S, dt = 0.001) {
     S.simu_setBoundary(1, [-params.L_cur, params.L_cur]); // Set location of the walls in y
     S.simu_setBoundary(2, [0, 2*params.H_cur]); // Set location of the walls in z
     
-    // roof.position.z = params.roof + params.thickness / 2.;
-    // floor.position.z = params.floor - params.thickness / 2.;
+    roof.position.z = params.H_cur + params.thickness / 2.;
+    floor.position.z = -params.H_cur - params.thickness / 2.;
     left.position.y = -params.L_cur;
     right.position.y = params.L_cur;
     front.position.x = params.L_cur;
