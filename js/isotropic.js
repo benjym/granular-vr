@@ -30,8 +30,8 @@ let loading_direction = 1;
 export let params = {
     dimension: 3,
     // L: 4, //system size
-    L: 0.025,
-    H: 0.05,
+    // L: 0.025,
+    // H: 0.05,
     boxratio: 1.5,
     initial_packing_fraction: 0.4,
     N: 300,
@@ -42,22 +42,25 @@ export let params = {
     pressure_set_pt: 1e4,
     deviatoric_set_pt: 0,
     d4: { cur: 0 },
-    r_max: 0.0033,
-    r_min: 0.0027,
-    freq: 0.05,
+    // r_max: 0.0033,
+    // r_min: 0.0027,
+    r_max: 0.1,
+    r_min: 0.09,
+    // freq: 0.05,
     new_line: false,
     loading_rate: 0.05,
     // max_vertical_strain: 0.3,
-    target_stress: 5e3,
+    target_stress: 1e7,
     unloading_stress: 100,
     lut: 'None',
-    quality: 5,
-    vmax: 20, // max velocity to colour by
+    quality: 6,
+    vmax: 1, // max velocity to colour by
     omegamax: 20, // max rotation rate to colour by
     loading_active: false,
     particle_density: 2700, // kg/m^3
     particle_opacity: 0.8,
     audio: false,
+    F_mag_max: 1e-10,
 }
 
 function set_derived_properties() {
@@ -119,8 +122,8 @@ async function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x111);
 
-    let g = new THREE.GridHelper(1, 100);
-    g.position.y = -0.02;
+    let g = new THREE.GridHelper(100, 100);
+    // g.position.y = -params.H;
     scene.add(g);
 
     const hemiLight = new THREE.HemisphereLight();
@@ -136,6 +139,7 @@ async function init() {
     WALLS.add_cuboid_walls(params);
     WALLS.walls.rotateX(-Math.PI / 2.); // fix y/z up compared to NDDEM
     WALLS.walls.rotateZ(Math.PI); // fix y/z up compared to NDDEM
+    WALLS.walls.position.y = params.H;
     scene.add(WALLS.walls);
     WALLS.update_isotropic_wall(params, S);
     WALLS.add_scale(params);
@@ -182,20 +186,25 @@ async function init() {
     // const controls = new OrbitControls( camera, container );
     // controls.update();
     const controls = new ImmersiveControls(camera, renderer, scene, {
-        initialPosition: new THREE.Vector3(0, 0, 0.06),
-        moveSpeed: { keyboard: 0.025, vr: 0.025 }
+        // initialPosition: new THREE.Vector3(0, -params.H, params.r_max*2),
+        // moveSpeed: { keyboard: 0.025, vr: 0.025 }
     });
 
     window.addEventListener('resize', onWindowResize, false);
 
     // BUTTONS.add_url_button('index', 'Main menu', [-0.06, 0, 0], 0.02, controls, scene);
 
-    BUTTONS.add_action_button('loading_active', 'Loading active', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-0.06, 0.02, 0], 0.02, controls, scene);
+    let button = BUTTONS.add_action_button('loading_active', 'Loading active', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-3, 1.6,1.5*params.L], 1, controls, scene);
+    button.rotateY(Math.PI/2.);
     // make_graph();
     WALLS.update_isotropic_wall(params, S);
     animate();
 
-    GRAPHS.add_axes("Solid Fraction", "Pressure", 0, 0.64, 0, params.target_stress, scene);
+    let graph = GRAPHS.add_axes("Solid Fraction", "Pressure", 0, 0.64, 0, params.target_stress, scene);
+    graph.position.y = 1.6;
+    graph.position.z = 1.5*params.L;
+    graph.rotateY(-Math.PI / 2.);
+
 
 }
 
@@ -257,7 +266,7 @@ function animate() {
                 }
             }
 
-            SPHERES.draw_force_network(S, params, scene);
+            // SPHERES.draw_force_network(S, params, scene);
 
             S.simu_step_forward(5);
             if (started) {
@@ -320,40 +329,50 @@ function setup_NDDEM() {
     S.simu_interpret_command("radius -1 0.5");
     // now need to find the mass of a particle with diameter 1
     let m = 4. / 3. * Math.PI * 0.5 * 0.5 * 0.5 * params.particle_density;
+    
     S.simu_interpret_command("mass -1 " + String(m));
     S.simu_interpret_command("auto rho");
     S.simu_interpret_command("auto radius uniform " + params.r_min + " " + params.r_max);
     S.simu_interpret_command("auto mass");
     S.simu_interpret_command("auto inertia");
     S.simu_interpret_command("auto skin");
-    console.log(params.L, params.H)
+    // console.log(params.L, params.H)
     S.simu_interpret_command("boundary 0 WALL -" + String(params.L) + " " + String(params.L));
     S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
-    S.simu_interpret_command("boundary 2 WALL -" + String(params.H) + " " + String(params.H));
+    S.simu_interpret_command("boundary 2 WALL -" + String(0) + " " + String(2*params.H));
     if (params.gravity === true) {
         S.simu_interpret_command("gravity 0 0 " + String(-9.81) + "0 ".repeat(params.dimension - 3))
     }
     else {
         S.simu_interpret_command("gravity 0 0 0 " + "0 ".repeat(params.dimension - 3))
     }
-
     // S.simu_interpret_command("auto location randomsquare");
     S.simu_interpret_command("auto location randomdrop");
 
     let tc = 1e-3;
     let rest = 0.2; // super low restitution coeff to dampen out quickly
-    let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, params.particle_mass)
+    let min_particle_mass = params.particle_density * 4. / 3. * Math.PI * Math.pow(params.r_min, 3);
+    let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, min_particle_mass);
+    S.simu_interpret_command("set Kn " + String(vals.stiffness));
+    S.simu_interpret_command("set Kt " + String(0.8*vals.stiffness));
+    S.simu_interpret_command("set GammaN " + String(vals.dissipation));
+    S.simu_interpret_command("set GammaT " + String(vals.dissipation));
 
-    S.simu_interpret_command("set Kn 250000"); //+ String(vals.stiffness));
-    S.simu_interpret_command("set Kt 250000"); //+ String(0.8*vals.stiffness));
-    S.simu_interpret_command("set GammaN 0.2"); //+ String(vals.dissipation));
-    S.simu_interpret_command("set GammaT 0.2"); //+ String(vals.dissipation));
+    // let bulk_modulus = 1e6;
+    // let poisson_coefficient = 0.5;
+    // let tc = SPHERES.getHertzCriticalTimestep(bulk_modulus, poisson_coefficient, params.r_min, params.particle_density);
+    // S.simu_interpret_command("set Kn " + String(bulk_modulus));
+    // S.simu_interpret_command("set Kt " + String(0.8*bulk_modulus));
+    // S.simu_interpret_command("set GammaN 0.2"); //+ String(vals.dissipation));
+    // S.simu_interpret_command("set GammaT 0.2"); //+ String(vals.dissipation));
+    // S.simu_interpret_command("ContactModel Hertz");
+
     S.simu_interpret_command("set Mu 0.5");
     S.simu_interpret_command("set Mu_wall 0");
     S.simu_interpret_command("set T 150");
-    S.simu_interpret_command("set dt " + String(tc / 20));
+    S.simu_interpret_command("set dt " + String(tc / 10));
     S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
-    S.simu_interpret_command("ContactModel Hertz");
+    
     S.simu_finalise_init();
 }
 
@@ -363,8 +382,8 @@ function setup_CG() {
     cgparam["boxes"] = [1, 1, 1];
     // cgparam["boundaries"]=[[-params.L,-params.L,-params.L],[params.L,params.L,params.L]] ;
     cgparam["boundaries"] = [
-        [-params.L / 2., -params.L / 2., -params.L / 2.],
-        [params.L / 2., params.L / 2., params.L / 2.]];
+        [-params.L / 2., -params.L / 2., params.L / 2.],
+        [params.L / 2., params.L / 2., 3*params.L / 2.]];
     // [-params.L+params.r_max,-params.L+params.r_max,-params.L+params.r_max],
     // [ params.L-params.r_max, params.L-params.r_max, params.L-params.r_max]] ;
 

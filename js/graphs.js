@@ -4,14 +4,16 @@ let axes;
 let data_points = new THREE.Group();
 data_points.last_updated = 0;
 data_points.nchildren = 1000;
+// let global_scale = 0.05;
+let global_scale = 2;
 
 export function add_axes(xlabel, ylabel, xmin, xmax, ymin, ymax, scene) {
     axes = new THREE.Group();
     let bg_mat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
-    let bg_geom = new THREE.CylinderGeometry(0.01, 0.01, 1, 32);
+    let bg_geom = new THREE.CylinderGeometry(0.02, 0.02, 1, 32);
     let background = new THREE.Mesh(bg_geom, bg_mat);
 
-    let cone_geom = new THREE.CylinderGeometry(0.0, 0.02, 0.05, 32);
+    let cone_geom = new THREE.CylinderGeometry(0.0, 0.04, 0.1, 32);
     let cone1 = new THREE.Mesh(cone_geom, bg_mat);
     cone1.position.y = 0.5;
     background.add(cone1);
@@ -28,18 +30,18 @@ export function add_axes(xlabel, ylabel, xmin, xmax, ymin, ymax, scene) {
 
     axes.add(background2);
 
-    axes.scale.set(0.05, 0.05, 0.05);
-    axes.position.set(0.05, 0.00, 0.025);
+    axes.scale.set(global_scale, global_scale, global_scale);
+    axes.position.set(global_scale, 0.00, global_scale/2.);
 
     axes.add(BUTTONS.make_text(xlabel, [1.05, -0.52, 0], 0.2));
-    axes.add(BUTTONS.make_text(ylabel, [-0.15, 0.55, 0], 0.2));
+    axes.add(BUTTONS.make_text(ylabel, [-0.15, 0.65, 0], 0.2));
 
     axes.add(BUTTONS.make_text(xmin, [0.01, -0.57, 0], 0.2));
     axes.add(BUTTONS.make_text(xmax, [0.9, -0.57, 0], 0.2));
     axes.add(BUTTONS.make_text(ymin, [-0.07, -0.5, 0], 0.2));
-    axes.add(BUTTONS.make_text(ymax, [-0.2, 0.47, 0], 0.2));
+    axes.add(BUTTONS.make_text(ymax, [-0.38, 0.47, 0], 0.2));
 
-    let fg_mat = new THREE.PointsMaterial({ color: 0xaaaaaa });
+    let fg_mat = new THREE.PointsMaterial({ color: 0xeeeeee });
     let fg_geom = new THREE.CircleGeometry(0.01, 8);
     let data_point = new THREE.Mesh(fg_geom, fg_mat);
     data_point.position.set(null, null, null); // don't show to begin with
@@ -50,8 +52,9 @@ export function add_axes(xlabel, ylabel, xmin, xmax, ymin, ymax, scene) {
 
     axes.add(data_points)
 
-    axes.rotateY(-Math.PI / 2.);
     scene.add(axes);
+
+    return axes;
 
 }
 

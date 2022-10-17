@@ -6,5 +6,5 @@
     "theme_color": "#2d0",
     "start_url": "https://benjym.github.io/granular-vr/",
     "scope": "https://benjym.github.io/granular-vr/",
-    "ovr_package_name": "granular-vr.scigem.com"
+    "ovr_package_name": "com.scigem.granularvr"
 }

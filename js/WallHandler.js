@@ -409,9 +409,10 @@ export function update_isotropic_wall(params, S, dt = 0.001) {
 
     S.simu_setBoundary(0, [-params.L_cur, params.L_cur]); // Set location of the walls in x
     S.simu_setBoundary(1, [-params.L_cur, params.L_cur]); // Set location of the walls in y
-    S.simu_setBoundary(2, [-params.H_cur, params.H_cur]); // Set location of the walls in z
-    roof.position.z = params.roof + params.thickness / 2.;
-    floor.position.z = params.floor - params.thickness / 2.;
+    S.simu_setBoundary(2, [0, 2*params.H_cur]); // Set location of the walls in z
+    
+    // roof.position.z = params.roof + params.thickness / 2.;
+    // floor.position.z = params.floor - params.thickness / 2.;
     left.position.y = -params.L_cur;
     right.position.y = params.L_cur;
     front.position.x = params.L_cur;
@@ -431,6 +432,8 @@ export function update_isotropic_wall(params, S, dt = 0.001) {
     });
 
     if (!params.hideaxes && axesHelper !== undefined) { add_scale_isotropic(params); }
+
+    walls.position.y = params.H_cur; // needed when the floor is not moving
 
 }
 
@@ -468,7 +471,7 @@ export function add_scale_isotropic(params) {
     }
     if (textGeo_x !== undefined) {
         textGeo_x.dispose();
-        textGeo_y.dispose();
+        // textGeo_y.dispose();
         textGeo_z.dispose();
     }
 
@@ -509,12 +512,12 @@ export function add_scale_isotropic(params) {
     // mesh_x.position.y = XYaxeslength/2.;
     arrow_x.add(mesh_x);
 
-    textGeo_y = new TextGeometry(String((2 * params.L_cur * 1e3).toFixed(2)) + " mm", {
-        font: font,
-        size: fontsize,
-        height: fontsize / 5,
-    });
-    var mesh_y = new Mesh(textGeo_y, arrow_material);
+    // textGeo_y = new TextGeometry(String((2 * params.L_cur * 1e3).toFixed(2)) + " mm", {
+    //     font: font,
+    //     size: fontsize,
+    //     height: fontsize / 5,
+    // });
+    var mesh_y = new Mesh(textGeo_x, arrow_material);
     mesh_y.position.y = XYaxeslength / 2.;// - 6*fontsize;
     mesh_y.position.x = -2 * fontsize;
     mesh_y.rotation.z = -Math.PI / 2;

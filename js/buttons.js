@@ -40,7 +40,7 @@ export function make_button_object(name, location, scale) {
 
     text.position.y = -text.geometry.boundingBox.max.y / 2.;
     text.position.x = -text.geometry.boundingBox.max.x / 2.;
-    text.position.z = 0.05;
+    text.position.z = fontsize / 5;
 
     var mat = new THREE.MeshStandardMaterial({ color: 0x333333 });
     var geom = new THREE.BoxGeometry(fontsize + text.geometry.boundingBox.max.x, fontsize + text.geometry.boundingBox.max.y, 0.1);
