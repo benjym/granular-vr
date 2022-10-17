@@ -34,17 +34,19 @@ export function make_button_object(name, location, scale) {
     let button;
 
     var mat = new THREE.MeshStandardMaterial({ color: 0xe72564 });
-    var geom = new TextGeometry(name, { font: font, size: fontsize, height: fontsize / 5., });
+    var geom = new TextGeometry(String(name), { font: font, size: fontsize, height: fontsize / 5., });
     var text = new THREE.Mesh(geom, mat);
     text.geometry.computeBoundingBox();
 
     text.position.y = -text.geometry.boundingBox.max.y / 2.;
     text.position.x = -text.geometry.boundingBox.max.x / 2.;
-    text.position.z = fontsize / 5;
+    text.position.z = fontsize / 2;
 
     var mat = new THREE.MeshStandardMaterial({ color: 0x333333 });
     var geom = new THREE.BoxGeometry(fontsize + text.geometry.boundingBox.max.x, fontsize + text.geometry.boundingBox.max.y, 0.1);
-    button = new THREE.Mesh(geom, mat);
+    button = new THREE.Group();
+    let bg = new THREE.Mesh(geom, mat);
+    button.add( bg )
 
     button.position.set(...location);
     button.scale.set(scale, scale, scale);

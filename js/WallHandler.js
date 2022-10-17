@@ -54,7 +54,7 @@ export function add_floor(params) {
     floor = new Mesh(wall_geometry, wall_material);
     floor.scale.y = params.thickness;
     floor.rotation.x = Math.PI / 2.;
-    floor.position.z = - params.L * params.aspect_ratio - params.thickness / 2.;
+    // floor.position.z = - params.L * params.aspect_ratio - params.thickness / 2.;
     // left.receiveShadow = true;
     walls.add(floor);
 }
@@ -64,7 +64,7 @@ export function add_roof(params) {
     roof = new Mesh(wall_geometry, wall_material);
     roof.scale.y = params.thickness;
     roof.rotation.x = Math.PI / 2.;
-    roof.position.z = params.L * params.aspect_ratio + params.thickness / 2.;
+    roof.position.z = 2*params.L * params.aspect_ratio + params.thickness / 2.;
     // right.receiveShadow = true;
     walls.add(roof);
 }

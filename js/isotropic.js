@@ -10,6 +10,7 @@ import * as WALLS from "./WallHandler.js"
 import * as BUTTONS from "./buttons";
 import * as GRAPHS from "./graphs";
 import * as AUDIO from "./audio";
+import { PlaneGeometry } from "three";
 
 var urlParams = new URLSearchParams(window.location.search);
 var clock = new THREE.Clock();
@@ -48,7 +49,7 @@ export let params = {
     r_min: 0.09,
     // freq: 0.05,
     new_line: false,
-    loading_rate: 0.05,
+    loading_rate: 0.01,
     // max_vertical_strain: 0.3,
     target_stress: 1e7,
     unloading_stress: 100,
@@ -60,7 +61,7 @@ export let params = {
     particle_density: 2700, // kg/m^3
     particle_opacity: 0.8,
     audio: false,
-    F_mag_max: 1e-10,
+    F_mag_max: 1e6,
 }
 
 function set_derived_properties() {
@@ -122,9 +123,16 @@ async function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x111);
 
-    let g = new THREE.GridHelper(100, 100);
+    // let g = new THREE.GridHelper(100, 100);
     // g.position.y = -params.H;
-    scene.add(g);
+    // scene.add(g);
+
+    const base_geometry = new THREE.PlaneGeometry( 10, 10 );
+    const base_material = new THREE.MeshBasicMaterial( {color: 0x333333, side: THREE.DoubleSide} );
+    const plane = new THREE.Mesh( base_geometry, base_material );
+    plane.rotateX(Math.PI/2.);
+    plane.position.y = -0.5*params.r_min;
+    scene.add( plane );
 
     const hemiLight = new THREE.HemisphereLight();
     hemiLight.intensity = 0.35;
@@ -150,8 +158,8 @@ async function init() {
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.outputEncoding = THREE.sRGBEncoding;
+    // renderer.shadowMap.enabled = true;
+    // renderer.outputEncoding = THREE.sRGBEncoding;
 
     let container = document.getElementById('canvas');
     container.appendChild(renderer.domElement);
@@ -200,7 +208,7 @@ async function init() {
     WALLS.update_isotropic_wall(params, S);
     animate();
 
-    let graph = GRAPHS.add_axes("Solid Fraction", "Pressure", 0, 0.64, 0, params.target_stress, scene);
+    let graph = GRAPHS.add_axes("Solid Fraction", "Pressure", 0.35, 0.7, 0, params.target_stress, scene);
     graph.position.y = 1.6;
     graph.position.z = 1.5*params.L;
     graph.rotateY(-Math.PI / 2.);
@@ -266,7 +274,7 @@ function animate() {
                 }
             }
 
-            // SPHERES.draw_force_network(S, params, scene);
+            SPHERES.draw_force_network(S, params, scene);
 
             S.simu_step_forward(5);
             if (started) {
@@ -280,10 +288,12 @@ function animate() {
                 density = S.cg_get_result(0, "RHO", 0)[0];
 
                 let packing_fraction = density / params.particle_density; // NOTE: THIS IS JUST A HACK --- REPLACE WITH REAL LOGIC
-                let x = (packing_fraction / 0.64) - 0.5;
+                let x = ((packing_fraction - 0.35) / (0.7 - 0.35));
                 // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
                 let y = pressure / params.target_stress; // value between 0 and 1
                 GRAPHS.update_data(x, y);
+
+                console.log(packing_fraction)
             }
         }
 
@@ -370,7 +380,7 @@ function setup_NDDEM() {
     S.simu_interpret_command("set Mu 0.5");
     S.simu_interpret_command("set Mu_wall 0");
     S.simu_interpret_command("set T 150");
-    S.simu_interpret_command("set dt " + String(tc / 10));
+    S.simu_interpret_command("set dt " + String(tc / 20));
     S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
     
     S.simu_finalise_init();

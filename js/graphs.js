@@ -22,7 +22,7 @@ export function add_axes(xlabel, ylabel, xmin, xmax, ymin, ymax, scene) {
 
     let background2 = new THREE.Mesh(bg_geom, bg_mat);
     let cone2 = new THREE.Mesh(cone_geom, bg_mat);
-    cone2.position.y = 0.5;
+    cone2.position.y = 0.55;
     background2.add(cone2);
     background2.rotateZ(-Math.PI / 2.);
     background2.position.x = 0.5;
@@ -33,11 +33,11 @@ export function add_axes(xlabel, ylabel, xmin, xmax, ymin, ymax, scene) {
     axes.scale.set(global_scale, global_scale, global_scale);
     axes.position.set(global_scale, 0.00, global_scale/2.);
 
-    axes.add(BUTTONS.make_text(xlabel, [1.05, -0.52, 0], 0.2));
-    axes.add(BUTTONS.make_text(ylabel, [-0.15, 0.65, 0], 0.2));
+    axes.add(BUTTONS.make_text(xlabel, [1.1, -0.52, 0], 0.2));
+    axes.add(BUTTONS.make_text(ylabel, [-0.15, 0.55, 0], 0.2));
 
-    axes.add(BUTTONS.make_text(xmin, [0.01, -0.57, 0], 0.2));
-    axes.add(BUTTONS.make_text(xmax, [0.9, -0.57, 0], 0.2));
+    axes.add(BUTTONS.make_text(xmin, [0.01, -0.59, 0], 0.2));
+    axes.add(BUTTONS.make_text(xmax, [0.9, -0.59, 0], 0.2));
     axes.add(BUTTONS.make_text(ymin, [-0.07, -0.5, 0], 0.2));
     axes.add(BUTTONS.make_text(ymax, [-0.38, 0.47, 0], 0.2));
 

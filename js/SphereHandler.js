@@ -464,7 +464,7 @@ export function randomise_particles_isotropic(params, S) {
             S.simu_fixParticle(i, [
                 -params.L + params.r_max + Math.random() * 2 * (params.L - params.r_max),
                 -params.L + params.r_max + Math.random() * 2 * (params.L - params.r_max),
-                -params.H + params.r_max + Math.random() * 2 * (params.H - params.r_max)]);
+                params.r_max + Math.random() * 2 * (params.H - params.r_max)]);
         }
     }
 }
