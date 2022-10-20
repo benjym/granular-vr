@@ -156,7 +156,7 @@ async function init() {
     if (params.audio) { AUDIO.make_listener(camera) }
     SPHERES.add_spheres(S, params, scene);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true });//, logarithmicDepthBuffer: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     // renderer.shadowMap.enabled = true;
