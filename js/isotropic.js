@@ -116,7 +116,7 @@ async function init() {
     if (urlParams.has('quality')) { params.quality = parseInt(urlParams.get('quality')); }
 
     await NDDEMPhysics();
-    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1e-1, 10);
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1e-1, 100);
     // camera.position.set( 3*params.L, 3*params.L, 1.5*params.L );
     // camera.up.set(0, 0, 1);
     // camera.lookAt( 0, 0, 0 );
