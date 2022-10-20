@@ -116,7 +116,7 @@ async function init() {
     if (urlParams.has('quality')) { params.quality = parseInt(urlParams.get('quality')); }
 
     await NDDEMPhysics();
-    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1e-5, 1000);
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1e-1, 10);
     // camera.position.set( 3*params.L, 3*params.L, 1.5*params.L );
     // camera.up.set(0, 0, 1);
     // camera.lookAt( 0, 0, 0 );
@@ -156,7 +156,7 @@ async function init() {
     if (params.audio) { AUDIO.make_listener(camera) }
     SPHERES.add_spheres(S, params, scene);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     // renderer.shadowMap.enabled = true;
