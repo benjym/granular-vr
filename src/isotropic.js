@@ -1,16 +1,15 @@
 import css from "../css/main.css";
 // import * as DEMCGND from "../resources/DEMCGND.js";
 
-import * as CONTROLLERS from './controllers.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import ImmersiveControls from '@depasquale/three-immersive-controls';
 
-import * as SPHERES from "./SphereHandler.js"
-import * as WALLS from "./WallHandler.js"
-import * as BUTTONS from "./buttons";
-import * as GRAPHS from "./graphs";
-import * as AUDIO from "./audio";
-import { PlaneGeometry } from "three";
+import * as CONTROLLERS from '../libs/controllers.js';
+import * as SPHERES from "../libs/SphereHandler.js"
+import * as WALLS from "../libs/WallHandler.js"
+import * as BUTTONS from "../libs/buttons";
+import * as GRAPHS from "../libs/graphs";
+import * as AUDIO from "../libs/audio";
 
 var urlParams = new URLSearchParams(window.location.search);
 var clock = new THREE.Clock();
@@ -63,6 +62,7 @@ export let params = {
     particle_opacity: 0.8,
     audio: false,
     F_mag_max: 1e6,
+    friction_coefficient: 0.5,
 }
 
 function set_derived_properties() {
@@ -176,6 +176,7 @@ async function init() {
     gui.add(params, 'particle_opacity', 0, 1).name('Particle opacity').listen().onChange(() => SPHERES.update_particle_material(params,
         // lut_folder
     ));
+    gui.add(params, 'friction_coefficient', 0, 2).name('Friction coefficient').listen().onChange(() => S.simu_interpret_command("set Mu " + String(params.friction_coefficient)));
     gui.add(params, 'lut', ['None', 'Velocity', 'Rotation Rate']).name('Colour by')
         .onChange(() => SPHERES.update_particle_material(params,
             // lut_folder
@@ -379,7 +380,7 @@ function setup_NDDEM() {
     // S.simu_interpret_command("set GammaT 0.2"); //+ String(vals.dissipation));
     // S.simu_interpret_command("ContactModel Hertz");
 
-    S.simu_interpret_command("set Mu 0.5");
+    S.simu_interpret_command("set Mu " + String(params.friction_coefficient));
     S.simu_interpret_command("set Mu_wall 0");
     S.simu_interpret_command("set T 150");
     S.simu_interpret_command("set dt " + String(tc / 20));

@@ -1,3 +1,7 @@
+html * {
+  font-family: 'Montserrat', sans-serif;
+}
+
 body { margin: 0; }
 
 .button {
@@ -35,3 +39,8 @@ body { margin: 0; }
     right: 5px;
     z-index: 3;
   }
+
+.lil-gui {
+  --number-color: #fc2eff;
+  --string-color: #fc2eff;
+}

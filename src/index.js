@@ -1,12 +1,12 @@
 import css from "../css/main.css";
 
-import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
+// import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
+// import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import ImmersiveControls from '@depasquale/three-immersive-controls';
-import * as CONTROLLERS from "./controllers";
-import * as BUTTONS from "./buttons";
+// import * as CONTROLLERS from "../libs/controllers";
+import * as BUTTONS from "../libs/buttons";
 
-let scene, container, renderer, camera;
+let scene, container, renderer, camera, controls;
 
 function main() {
     console.debug('Using threejs version ' + THREE.REVISION)
@@ -21,8 +21,15 @@ function main() {
 
     make_lights();
     add_renderer();
-    BUTTONS.add_url_button('isotropic', 'Isotropic', [0,1.3,0], 1, controls, scene);
-    BUTTONS.add_url_button('triaxial',  'Triaxial',  [0,1.9,0], 1, controls, scene);
+    // BUTTONS.add_url_button('isotropic', 'Isotropic', [0,1.3,0], 1, controls, scene);
+    // BUTTONS.add_url_button('triaxial',  'Triaxial',  [0,1.9,0], 1, controls, scene);
+    BUTTONS.add_url_button('hyperspheres', '1. What is a hypersphere?', [0,2.1,0], 0.3, controls, scene);
+    BUTTONS.add_url_button('slice-3d', '2. Slicing space', [0,1.9,0], 0.3, controls, scene);
+    BUTTONS.add_url_button('slice-4d', '3. Intro to 4D', [0,1.7,0], 0.3, controls, scene);
+    BUTTONS.add_url_button('rotation-matrix?dimension=3', '4. Seeing 3D surfaces', [0,1.5,0], 0.3, controls, scene);
+    BUTTONS.add_url_button('rotation-matrix?dimension=4', '5. Seeing 4D surfaces', [0,1.5,0], 0.3, controls, scene);
+    BUTTONS.add_url_button('pyramid', '6. Pyramid', [0,1.3,0], 0.3, controls, scene);
+    BUTTONS.add_url_button('4d-pool', '7. 4D pool', [0,1.1,0], 0.3, controls, scene);
 
     window.addEventListener( 'resize', onWindowResize, false );
     animate();
@@ -35,8 +42,9 @@ function add_renderer() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     renderer.xr.enabled = true;
     container.appendChild( renderer.domElement );
-    const controls = new ImmersiveControls(camera, renderer, scene, {
-        initialPosition: new THREE.Vector3(0, 1.6, 2),
+    controls = new ImmersiveControls(camera, renderer, scene, {
+        initialPosition: new THREE.Vector3(0, 1.6, 1),
+        mouseControls: true,
         // moveSpeed: { keyboard: 0.05, vr: 0.025 }
     });
     

@@ -9,25 +9,40 @@ export let font;
 // console.log(helvetiker_bold)
 // loader.load(helvetiker_bold, function (f) {
 loader.load('./helvetiker_bold.typeface.json', function (f) {
-    // loader.load('../resources/helvetiker_bold.typeface.json', function (f) {
+// loader.load('../resources/helvetiker_bold.typeface.json', function (f) {
     // console.log('FONT DEFINED!!');
     font = f;
 });
 
-export function make_text(name, location, scale) {
-    var mat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
-    var geom = new TextGeometry(String(name), { font: font, size: fontsize, height: fontsize / 5., });
-    var text = new THREE.Mesh(geom, mat);
-    text.geometry.computeBoundingBox();
+export async function load_fonts() {
+    let p = await loader.loadAsync('./helvetiker_bold.typeface.json', function (f) {
+    // loader.load('../resources/helvetiker_bold.typeface.json', function (f) {
+        console.log('FONT DEFINED!!');
+        font = f;
+    });
+    return p
+}
 
-    text.position.y = -text.geometry.boundingBox.max.y / 2.;
-    text.position.x = -text.geometry.boundingBox.max.x / 2.;
-    // text.position.z = 0.05;
+export async function make_text(name, location, scale) {
+    // if (font !== undefined) {
+        console.log(font)
+        var mat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+        var geom = new TextGeometry(String(name), { font: font, size: fontsize, height: fontsize / 5., });
+        var text = new THREE.Mesh(geom, mat);
+        text.geometry.computeBoundingBox();
 
-    text.position.set(...location);
-    text.scale.set(scale, scale, scale);
+        text.position.y = -text.geometry.boundingBox.max.y / 2.;
+        text.position.x = -text.geometry.boundingBox.max.x / 2.;
+        // text.position.z = 0.05;
 
-    return text
+        text.position.set(...location);
+        text.scale.set(scale, scale, scale);
+
+        return text
+    // }
+    // else {
+    //     setTimeout(make_text.bind(null, name, location, scale), 200);
+    // }
 }
 
 export function make_button_object(name, location, scale) {
@@ -40,7 +55,7 @@ export function make_button_object(name, location, scale) {
 
     text.position.y = -text.geometry.boundingBox.max.y / 2.;
     text.position.x = -text.geometry.boundingBox.max.x / 2.;
-    text.position.z = fontsize / 2;
+    text.position.z = fontsize / 5;
 
     var mat = new THREE.MeshStandardMaterial({ color: 0x333333 });
     var geom = new THREE.BoxGeometry(fontsize + text.geometry.boundingBox.max.x, fontsize + text.geometry.boundingBox.max.y, 0.1);
@@ -68,8 +83,10 @@ export function add_url_button(url, name, location, scale, controls, scene) {
 
         controls.interaction.selectStartHandlers[type] = CONTROLLERS.onRedirectButtonSelectStart;
         controls.interaction.selectEndHandlers[type] = CONTROLLERS.onRedirectButtonSelectEnd;
-        // controls.interaction.selectableObjects.push(button);
+        controls.interaction.intersectionHandlers[type] = () => {console.log('INTERSECTION')};
+
         controls.interaction.selectableObjects.push(button);
+        controls.interaction.selectableObjects.push(button.children[0]);
 
         scene.add(button);
 
@@ -93,6 +110,7 @@ export function add_action_button(type, name, selectStartFunction, selectEndFunc
         controls.interaction.intersectionHandlers[type] = intersectionFunction;
         // controls.interaction.selectableObjects.push(button);
         controls.interaction.selectableObjects.push(button);
+        controls.interaction.selectableObjects.push(button.children[0]);
 
         scene.add(button);
 

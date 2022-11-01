@@ -42,7 +42,7 @@ export function add_axes(xlabel, ylabel, xmin, xmax, ymin, ymax, scene) {
     axes.add(BUTTONS.make_text(ymax, [-0.38, 0.47, 0], 0.2));
 
     let fg_mat = new THREE.PointsMaterial({ color: 0xeeeeee });
-    let fg_geom = new THREE.CircleGeometry(0.01, 8);
+    let fg_geom = new THREE.CircleGeometry(0.005, 8);
     let data_point = new THREE.Mesh(fg_geom, fg_mat);
     data_point.position.set(null, null, null); // don't show to begin with
 
