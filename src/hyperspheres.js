@@ -16,10 +16,11 @@ let container = document.createElement("div");
 document.body.appendChild(container);
 
 async function init() {
-    // var slice = {'loc':-1};
+    await BUTTONS.load_fonts();
+
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0x111111 );
-    camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+    camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
     renderer = new THREE.WebGLRenderer();
     controls = new ImmersiveControls(camera, renderer, scene, {
@@ -28,7 +29,6 @@ async function init() {
     });
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
-    // renderer.shadowMap.enabled = true;
     container.appendChild( renderer.domElement );
 
     var background_light = new THREE.AmbientLight( 0x777777 );
@@ -42,8 +42,7 @@ async function init() {
     const sphere_geometry = new THREE.SphereGeometry( 0.5, 256, 256 );
     const circle_geometry = new THREE.CircleGeometry( 0.5, 256 );
     const material = new THREE.MeshStandardMaterial( { color: 0xeeeeee, side: THREE.DoubleSide } );
-    const arrow_material = new THREE.MeshStandardMaterial( { color: 0xEE0000, side: THREE.DoubleSide } );
-    // const line_material = new THREE.LineBasicMaterial({ color: 0xeeeeee, linewidth: 10, });
+    const arrow_material = new THREE.MeshStandardMaterial( { color: 0xfc2eff, side: THREE.DoubleSide } );
 
     const base_geometry = new THREE.PlaneGeometry( 10, 10 );
     const base_material = new THREE.MeshBasicMaterial( {color: 0x333333, side: THREE.DoubleSide} );
@@ -59,9 +58,9 @@ async function init() {
 
     var line  = new THREE.Mesh( line_geometry, material );
     line.rotateZ(Math.PI/2);
-    sphere.position.x = 2;
+    sphere.position.x = 1.5;
     circle.position.x = 0;
-    line.position.x = -2;
+    line.position.x = -1.5;
 
 
     label1 = new THREE.Group();
@@ -73,16 +72,19 @@ async function init() {
     let arrow_body = new THREE.Mesh(body_geometry, arrow_material);
     arrow_body.rotateZ(Math.PI/2);
     arrow_body.position.x = (0.5-0.05/2.)/2.;
-    let radius_text = await BUTTONS.make_text('r', [0,0,0], 1);
+    let radius_text = await BUTTONS.make_text('r', 0xfc2eff, [0,0,0], 0.5);
+    radius_text.position.x = 0.25;
+    radius_text.position.y = -0.12;
 
     label1.add( arrow_head );
     label1.add( arrow_body );
-    // label.add( radius_text ); // NOT WORKING YET --- NEEDS ASYNC MAGIC
+    label1.add( radius_text );
+    
     label2 = label1.clone()
     label3 = label1.clone()
-    label1.position.x = -2;
+    label1.position.x = -1.5;
     label1.position.y -= 0.03 + 0.01;
-    label3.position.x = 2;
+    label3.position.x = 1.5;
 
 
     let objects = new THREE.Group();
@@ -100,16 +102,15 @@ async function init() {
 
     renderer.setAnimationLoop(function () {
         var t = clock.getDelta();
-        // console.log(t);
         label2.rotateZ(0.2*t);
         label3.rotateZ(0.2*t);
-        label3.rotateX(0.2*t);
+        label3.rotateY(0.2*t);
         if ( controls !== undefined) { controls.update(); }
         renderer.render( scene, camera );
     });
 }
 
-BUTTONS.load_fonts().then( init() );
+init();
 
 window.addEventListener( 'resize', onWindowResize, false );
 

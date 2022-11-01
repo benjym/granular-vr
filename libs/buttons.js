@@ -23,10 +23,10 @@ export async function load_fonts() {
     return p
 }
 
-export async function make_text(name, location, scale) {
+export function make_text(name, color, location, scale) {
     // if (font !== undefined) {
         console.log(font)
-        var mat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+        var mat = new THREE.MeshStandardMaterial({ color: color });
         var geom = new TextGeometry(String(name), { font: font, size: fontsize, height: fontsize / 5., });
         var text = new THREE.Mesh(geom, mat);
         text.geometry.computeBoundingBox();
