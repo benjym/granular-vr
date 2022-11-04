@@ -6,7 +6,7 @@ import css from "../css/main.css";
 import ImmersiveControls from '@depasquale/three-immersive-controls';
 // import * as CONTROLLERS from "../libs/controllers";
 import * as BUTTONS from "../libs/buttons";
-import * as AUDIO from "../libs/audio";
+// import * as AUDIO from "../libs/audio";
 
 let scene, container, renderer, camera, controls;
 
@@ -23,15 +23,25 @@ function main() {
 
     make_lights();
     add_renderer();
+    renderer = new THREE.WebGLRenderer( { antialias: true } );
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.xr.enabled = true;
+    container.appendChild( renderer.domElement );
+    controls = new ImmersiveControls(camera, renderer, scene, {
+        initialPosition: new THREE.Vector3(0, 1.6, 1),
+        // mouseControls: true,
+        // moveSpeed: { keyboard: 0.05, vr: 0.025 }
+    });
     // BUTTONS.add_url_button('isotropic', 'Isotropic', [0,1.3,0], 1, controls, scene);
     // BUTTONS.add_url_button('triaxial',  'Triaxial',  [0,1.9,0], 1, controls, scene);
-    BUTTONS.add_url_button('hyperspheres', '1. What is a hypersphere?', controls, scene, [0,2.2,0], 0.3, [0,0,0]);
-    BUTTONS.add_url_button('slice-3d', '2. Slicing space', controls, scene, [0,2.0,0], 0.3, [0,0,0]);
-    BUTTONS.add_url_button('slice-4d', '3. Intro to 4D', controls, scene, [0,1.8,0], 0.3, [0,0,0]);
-    BUTTONS.add_url_button('rotation-matrix?dimension=3', '4. Seeing 3D surfaces', controls, scene, [0,1.6,0], 0.3, [0,0,0]);
-    BUTTONS.add_url_button('rotation-matrix?dimension=4', '5. Seeing 4D surfaces', controls, scene, [0,1.4,0], 0.3, [0,0,0]);
-    BUTTONS.add_url_button('pyramid', '6. Pyramid', controls, scene, [0,1.2,0], 0.3, [0,0,0] );
-    BUTTONS.add_url_button('4d-pool', '7. 4D pool', controls, scene, [0,1.0,0], 0.3, [0,0,0] );
+    BUTTONS.add_url_button('hyperspheres.html', '1. What is a hypersphere?', controls, scene, [0,2.2,0], 0.3, [0,0,0]);
+    BUTTONS.add_url_button('slice-3d.html', '2. Slicing space', controls, scene, [0,2.0,0], 0.3, [0,0,0]);
+    BUTTONS.add_url_button('slice-4d.html', '3. Intro to 4D', controls, scene, [0,1.8,0], 0.3, [0,0,0]);
+    BUTTONS.add_url_button('rotation.html?dimension=3', '4. Rotation in 3D', controls, scene, [0,1.6,0], 0.3, [0,0,0]);
+    BUTTONS.add_url_button('rotation.html?dimension=4', '5. Rotation in 4D', controls, scene, [0,1.4,0], 0.3, [0,0,0]);
+    BUTTONS.add_url_button('pyramid.html', '6. Pyramid', controls, scene, [0,1.2,0], 0.3, [0,0,0] );
+    BUTTONS.add_url_button('4d-pool.html', '7. 4D pool', controls, scene, [0,1.0,0], 0.3, [0,0,0] );
 
     window.addEventListener( 'resize', onWindowResize, false );
     
@@ -48,16 +58,7 @@ function init() {
 
 
 function add_renderer() {
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    renderer.xr.enabled = true;
-    container.appendChild( renderer.domElement );
-    controls = new ImmersiveControls(camera, renderer, scene, {
-        initialPosition: new THREE.Vector3(0, 1.6, 1),
-        mouseControls: true,
-        // moveSpeed: { keyboard: 0.05, vr: 0.025 }
-    });
+    
     
 };
 

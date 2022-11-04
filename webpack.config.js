@@ -13,7 +13,7 @@ module.exports = [
       "triaxial": './src/triaxial.js',
       "slice-3d": './src/slice-3d.js',
       "slice-4d": './src/slice-4d.js',
-      "rotation-matrix" : './src/rotation-matrix.js',
+      "rotation" : './src/rotation.js',
       "hyperspheres" : './src/hyperspheres.js',
     },
     plugins: [
@@ -66,8 +66,8 @@ module.exports = [
         title: 'Rotations',
         favicon: "./resources/favicon512.png",
         template: "index.html",
-        filename: "rotation-matrix.html",
-        chunks: ['rotation-matrix']
+        filename: "rotation.html",
+        chunks: ['rotation']
       }),
       new HtmlWebpackPlugin({
         title: 'Hyperspheres',

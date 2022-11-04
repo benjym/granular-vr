@@ -97,8 +97,8 @@ async function init() {
 
     AUDIO.play_track('slice-3d.mp3', camera, 5000);
     
-    BUTTONS.add_url_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
-    BUTTONS.add_url_button('slice-4d', 'Intro to 4D', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
+    BUTTONS.add_url_button('menu.html', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
+    BUTTONS.add_url_button('slice-4d.html', 'Intro to 4D', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
 
 
     renderer.setAnimationLoop(function () {

@@ -1,4 +1,6 @@
 import css from "../css/main.css";
+import track1 from "../text-to-speech/rotation-3d.mp3";
+import track2 from "../text-to-speech/rotation-4d.mp3";
 
 import ImmersiveControls from '@depasquale/three-immersive-controls';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -6,11 +8,12 @@ import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import * as CONTROLLERS from '../libs/controllers.js';
 import * as SPHERES from "../libs/SphereHandler.js"
 import * as BUTTONS from "../libs/buttons";
+import * as AUDIO from "../libs/audio";
 
 var urlParams = new URLSearchParams(window.location.search);
 var clock = new THREE.Clock();
 
-let camera, scene, renderer, stats, panel, controls;
+let camera, scene, renderer, stats, panel, controls, circle;
 let gui;
 let S;
 let cg_mesh, colorbar_mesh;
@@ -83,6 +86,19 @@ async function init() {
         gui.add( params.d4, 'cur', -params.radius,params.radius, 0.001).name( 'D4 location').listen()
     }
 
+    if ( params.dimension === 3) {
+        var circle_geometry = new THREE.CircleGeometry( 0.5, 256 );
+        const loader = new THREE.TextureLoader();
+ 
+        const circle_material = new THREE.MeshBasicMaterial({
+            color: 0xFFFFFF,
+            map: loader.load('resources/favicon512.png'),
+        });
+        circle = new THREE.Mesh( circle_geometry, circle_material );
+        circle.position.y = 2.2;
+        scene.add(circle);
+    }
+
     window.addEventListener( 'resize', onWindowResize, false );
 
     controls = new ImmersiveControls(camera, renderer, scene, {
@@ -92,14 +108,20 @@ async function init() {
 
     BUTTONS.add_url_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
     if ( params.dimension === 3 ) {
-        BUTTONS.add_url_button('rotation-matrix.html?dimension=4', 'Seeing 4D surfaces', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
+        BUTTONS.add_url_button('rotation.html?dimension=4', 'Seeing 4D surfaces', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
+        AUDIO.play_track('rotation-3d.mp3', camera, 5000);
     } else if ( params.dimension === 4) {
         BUTTONS.add_url_button('pyramid.html', 'Pyramid', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
+        AUDIO.play_track('rotation-4d.mp3', camera, 5000);
     }
     
-
-    animate();
-    
+    renderer.setAnimationLoop(function () {
+        if ( controls !== undefined) { controls.update(); }
+        S.simu_step_forward(5);
+        SPHERES.move_spheres(S, params);
+        renderer.render( scene, camera );
+        if ( circle !== undefined ) { circle.rotateZ(clock.getDelta()*Math.PI/2.) }
+    });    
 }
 
 
@@ -109,15 +131,6 @@ function onWindowResize(){
     var aspect = window.innerWidth / window.innerHeight;
     renderer.setSize( window.innerWidth, window.innerHeight );
 }
-
-function animate() {
-    requestAnimationFrame( animate );
-    SPHERES.move_spheres(S,params);
-    S.simu_step_forward(5);
-    renderer.render( scene, camera );
-    controls.update();
-}
-
 
 async function NDDEMCGPhysics() {
 
@@ -171,11 +184,11 @@ async function NDDEMCGPhysics() {
             S.simu_interpret_command("omega 2 0 0 0 0 0 0.1");
         }
         else if ( params.dimension === 3 ) {
-            S.simu_interpret_command("location 0 -1 0 1.5 0");
-            S.simu_interpret_command("location 1 0 0 1.5 0");
-            S.simu_interpret_command("location 2 1 0 1.5 0");
-            S.simu_interpret_command("omega 0 0.1 0 0");
-            S.simu_interpret_command("omega 1 0 0.1 0");
+            S.simu_interpret_command("location 0 -1 0 1 0");
+            S.simu_interpret_command("location 1 0 0 1 0");
+            S.simu_interpret_command("location 2 1 0 1 0");
+            S.simu_interpret_command("omega 0 0 0.1 0");
+            S.simu_interpret_command("omega 1 0.1 0 0");
             S.simu_interpret_command("omega 2 0 0 0.1");
         }
 

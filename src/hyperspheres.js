@@ -114,8 +114,8 @@ async function init() {
 
     AUDIO.play_track('hyperspheres.mp3', camera, 5000);
 
-    BUTTONS.add_url_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
-    BUTTONS.add_url_button('slice-3d', 'Slicing space', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
+    BUTTONS.add_url_button('menu.html', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
+    BUTTONS.add_url_button('slice-3d.html', 'Slicing space', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
 }
 
 if ( BUTTONS.font === undefined ) {

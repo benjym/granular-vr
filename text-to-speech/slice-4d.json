@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+      "audioEncoding": "LINEAR16",
+      "pitch": 0,
+      "speakingRate": 0.8
+    },
+    "input": {
+      "text": "In the same way that you sliced a 3D sphere with a 2D plane to get a 2D circle, here we are going to slice a 4D hypersphere with a 3D volume to get a 3D sphere. Right now, the 4D hypersphere is being sliced through its centre. You can move the slicing volume around in the 4th dimension by NOT IMPLEMENTED YET. As you move the volume, you can see the sphere growing and shrinking. When the volume is at the middle of the sphere, the sphere is largest. You can't see the whole surface of the 4D sphere at one time, but by scanning through 4D, you can see it all. Next you will learn about how rotations work. Click on the 'Rotation in 3D' button to continue."
+    },
+    "voice": {
+      "languageCode": "en-au",
+      "name": "en-AU-Neural2-C",
+      "ssmlGender": "FEMALE"
+    }
+  }

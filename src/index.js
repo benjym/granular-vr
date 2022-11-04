@@ -155,8 +155,8 @@ async function init() {
 
     WALLS.update_isotropic_wall(params, S);
 
-    BUTTONS.add_url_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
-    BUTTONS.add_url_button('hyperspheres', 'What is a hypersphere?', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
+    BUTTONS.add_url_button('menu.html', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
+    BUTTONS.add_url_button('hyperspheres.html', 'What is a hypersphere?', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
     
     renderer.setAnimationLoop(function () {
         SPHERES.move_spheres(S, params);
