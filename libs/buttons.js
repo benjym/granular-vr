@@ -47,10 +47,10 @@ export function make_text(name, color, position, scale) {
 }
 
 export function make_button_object(name, location, scale) {
-    let button;
+    let button = new THREE.Group();
 
     var mat = new THREE.MeshStandardMaterial({ color: 0xe72564 });
-    var geom = new TextGeometry(String(name), { font: font, size: fontsize, height: fontsize / 5., });
+    var geom = new TextGeometry(String(name), { font: font, size: fontsize, height: fontsize / 10., });
     var text = new THREE.Mesh(geom, mat);
     text.geometry.computeBoundingBox();
 
@@ -60,7 +60,7 @@ export function make_button_object(name, location, scale) {
 
     var mat = new THREE.MeshStandardMaterial({ color: 0x333333 });
     var geom = new THREE.BoxGeometry(fontsize + text.geometry.boundingBox.max.x, fontsize + text.geometry.boundingBox.max.y, 0.1);
-    button = new THREE.Group();
+
     let bg = new THREE.Mesh(geom, mat);
     button.add( bg )
 
@@ -79,19 +79,21 @@ export function add_url_button(url, name, controls, scene, location, scale, rota
         //     [filename,args] = url.split('?');
         //     url = file
         // }
-        button.userData.url = url;
+        // button.userData.url = url;
         button.children[0].userData.url = url;
+        button.children[1].userData.url = url;
 
         const type = 'button';
-        button.userData.type = type; // this sets up interaction group for controllers
+        // button.userData.type = type; // this sets up interaction group for controllers
         button.children[0].userData.type = type; // this sets up interaction group for controllers
+        button.children[1].userData.type = type; // this sets up interaction group for controllers
 
         controls.interaction.selectStartHandlers[type] = CONTROLLERS.onRedirectButtonSelectStart;
         controls.interaction.selectEndHandlers[type] = CONTROLLERS.onRedirectButtonSelectEnd;
-        controls.interaction.intersectionHandlers[type] = () => {console.log('INTERSECTION')};
+        // controls.interaction.intersectionHandlers[type] = () => {console.log('INTERSECTION')};
 
-        controls.interaction.selectableObjects.push(button);
         controls.interaction.selectableObjects.push(button.children[0]);
+        controls.interaction.selectableObjects.push(button.children[1]);
 
         button.rotateX(rotation[0]);
         button.rotateY(rotation[1]);

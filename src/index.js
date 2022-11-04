@@ -11,6 +11,7 @@ import * as WALLS from "../libs/WallHandler.js"
 import * as BUTTONS from "../libs/buttons";
 import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
+import * as LIGHTS from "../libs/lights";
 
 var urlParams = new URLSearchParams(window.location.search);
 var clock = new THREE.Clock();
@@ -104,16 +105,17 @@ async function init() {
     plane.position.y = -0.5*params.r_min;
     scene.add( plane );
 
-    const hemiLight = new THREE.AmbientLight();
-    hemiLight.intensity = 0.35;
-    // hemiLight.castShadow = true;
-    // scene.add(hemiLight);
+    // const hemiLight = new THREE.AmbientLight();
+    // hemiLight.intensity = 0.35;
+    // // hemiLight.castShadow = true;
+    // // scene.add(hemiLight);
 
-    const dirLight = new THREE.PointLight();
-    dirLight.position.set(0, 1, 2);
-    dirLight.castShadow = true;
-    // dirLight.shadow.camera.zoom = 2;
-    scene.add(dirLight);
+    // const dirLight = new THREE.PointLight();
+    // dirLight.position.set(0, 1, 2);
+    // dirLight.castShadow = true;
+    // // dirLight.shadow.camera.zoom = 2;
+    // scene.add(dirLight);
+    LIGHTS.add_default_lights( scene );
 
     WALLS.add_cuboid_walls(params);
     WALLS.walls.rotateX(-Math.PI / 2.); // fix y/z up compared to NDDEM

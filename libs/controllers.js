@@ -1,5 +1,5 @@
 export function onRedirectButtonSelectStart( object, controller ) {
-    window.location.href = object.userData.url + ".html"; // simulate mouse click
+    window.location.href = object.userData.url; // simulate mouse click
 }
 
 export function onRedirectButtonSelectEnd( object, controller ) {

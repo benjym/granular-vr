@@ -9,6 +9,7 @@ import * as CONTROLLERS from '../libs/controllers.js';
 import * as SPHERES from "../libs/SphereHandler.js"
 import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
+import * as LIGHTS from "../libs/lights";
 
 var urlParams = new URLSearchParams(window.location.search);
 var clock = new THREE.Clock();
@@ -56,14 +57,15 @@ async function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0x111 );
 
-    const hemiLight = new THREE.AmbientLight();
-    hemiLight.intensity = 0.35;
-    scene.add( hemiLight );
-    //
-    const dirLight = new THREE.DirectionalLight();
-    dirLight.position.set( 5, -5, -5 );
-    dirLight.castShadow = true;
-    scene.add( dirLight );
+    LIGHTS.add_default_lights( scene );
+    // const hemiLight = new THREE.AmbientLight();
+    // hemiLight.intensity = 0.35;
+    // scene.add( hemiLight );
+    // //
+    // const dirLight = new THREE.DirectionalLight();
+    // dirLight.position.set( 5, -5, -5 );
+    // dirLight.castShadow = true;
+    // scene.add( dirLight );
 
     const base_geometry = new THREE.PlaneGeometry( 10, 10 );
     const base_material = new THREE.MeshBasicMaterial( {color: 0x333333, side: THREE.DoubleSide} );
@@ -106,7 +108,7 @@ async function init() {
         // moveSpeed: { keyboard: 0.025, vr: 0.025 }
     });
 
-    BUTTONS.add_url_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
+    BUTTONS.add_url_button('menu.html', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
     if ( params.dimension === 3 ) {
         BUTTONS.add_url_button('rotation.html?dimension=4', 'Seeing 4D surfaces', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
         AUDIO.play_track('rotation-3d.mp3', camera, 5000);

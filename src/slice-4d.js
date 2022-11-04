@@ -8,6 +8,7 @@ import ImmersiveControls from '@depasquale/three-immersive-controls';
 import * as CONTROLLERS from '../libs/controllers.js';
 import * as SPHERES from "../libs/SphereHandler.js"
 import * as BUTTONS from "../libs/buttons";
+import * as LIGHTS from "../libs/lights";
 
 const urlParams = new URLSearchParams(window.location.search);
 
@@ -56,13 +57,7 @@ async function main() {
     renderer.shadowMap.enabled = true;
     container.appendChild( renderer.domElement );
 
-    var background_light = new THREE.AmbientLight( 0x777777 );
-    scene.add( background_light );
-    var light = new THREE.PointLight(0x999999);
-    light.position.z = 8
-    light.position.x = 5
-    scene.add( light );
-
+    LIGHTS.add_default_lights( scene );
     
     SPHERES.add_spheres(S, params, scene)
 
@@ -108,7 +103,7 @@ async function main() {
         renderer.render( scene, camera );
     });
 
-    AUDIO.play_track('slice-4d.mp3', camera, 5000);
+    // AUDIO.play_track('slice-4d.mp3', camera, 5000);
 
     BUTTONS.add_url_button('menu.html', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
     BUTTONS.add_url_button('rotation.html?dimension=3', 'Seeing 3D surfaces', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);

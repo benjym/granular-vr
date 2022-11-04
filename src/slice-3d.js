@@ -11,12 +11,13 @@ import * as WALLS from "../libs/WallHandler.js"
 import * as BUTTONS from "../libs/buttons";
 import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
+import * as LIGHTS from "../libs/lights";
 
 const urlParams = new URLSearchParams(window.location.search);
 
 let slice, scene, renderer, controls, camera, circle, wall
 
-let container = document.createElement("div");
+let container = document.createElement("container");
 document.body.appendChild(container);
 
 function update_spheres(x) {
@@ -49,12 +50,7 @@ async function init() {
     renderer.shadowMap.enabled = true;
     container.appendChild( renderer.domElement );
 
-    var background_light = new THREE.AmbientLight( 0x777777 );
-    scene.add( background_light );
-    var light = new THREE.PointLight(0x999999);
-    light.position.z = 8
-    light.position.x = 5
-    scene.add( light );
+    LIGHTS.add_default_lights( scene );
 
 
     var sphere_geometry = new THREE.SphereGeometry( 0.5, 256, 256 );
@@ -114,7 +110,6 @@ if ( BUTTONS.font === undefined ) {
 }
 
 window.addEventListener( 'resize', onWindowResize, false );
-
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;

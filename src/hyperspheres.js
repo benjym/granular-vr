@@ -7,6 +7,7 @@ import ImmersiveControls from '@depasquale/three-immersive-controls';
 import * as CONTROLLERS from '../libs/controllers.js';
 import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
+import * as LIGHTS from "../libs/lights";
 
 var clock = new THREE.Clock();
 
@@ -31,13 +32,7 @@ async function init() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     container.appendChild( renderer.domElement );
 
-    var background_light = new THREE.AmbientLight( 0x777777 );
-    scene.add( background_light );
-    var light = new THREE.PointLight(0x999999);
-    // light.position.z = 8
-    // light.position.x = 5
-    light.position.set( 0, 2.5, 2 ); 
-    scene.add( light );
+    LIGHTS.add_default_lights( scene );
 
 
     const sphere_geometry = new THREE.SphereGeometry( 0.5, 256, 256 );
