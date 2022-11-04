@@ -8,22 +8,23 @@ let loader = new FontLoader();
 export let font;
 // console.log(helvetiker_bold)
 // loader.load(helvetiker_bold, function (f) {
-loader.load('./helvetiker_bold.typeface.json', function (f) {
 // loader.load('../resources/helvetiker_bold.typeface.json', function (f) {
+loader.load('./helvetiker_bold.typeface.json', function (f) {
     // console.log('FONT DEFINED!!');
     font = f;
 });
 
 export async function load_fonts() {
-    let p = await loader.loadAsync('./helvetiker_bold.typeface.json', function (f) {
+    return new Promise(resolve => { loader.loadAsync('./helvetiker_bold.typeface.json', function (f) {
     // loader.load('../resources/helvetiker_bold.typeface.json', function (f) {
         console.log('FONT DEFINED!!');
         font = f;
     });
-    return p
+    })
+
 }
 
-export function make_text(name, color, location, scale) {
+export function make_text(name, color, position, scale) {
     // if (font !== undefined) {
         console.log(font)
         var mat = new THREE.MeshStandardMaterial({ color: color });
@@ -35,13 +36,13 @@ export function make_text(name, color, location, scale) {
         text.position.x = -text.geometry.boundingBox.max.x / 2.;
         // text.position.z = 0.05;
 
-        text.position.set(...location);
+        text.position.set(...position);
         text.scale.set(scale, scale, scale);
 
         return text
     // }
     // else {
-    //     setTimeout(make_text.bind(null, name, location, scale), 200);
+        // setTimeout(make_text.bind(null, name, color, position, scale), 200);
     // }
 }
 
@@ -70,10 +71,14 @@ export function make_button_object(name, location, scale) {
     return button
 }
 
-export function add_url_button(url, name, location, scale, controls, scene) {
-    if (font !== undefined) {
+export function add_url_button(url, name, controls, scene, location, scale, rotation) {
+    // if (font !== undefined) {
 
         let button = make_button_object(name, location, scale);
+        // if ( url.includes('?') ) {
+        //     [filename,args] = url.split('?');
+        //     url = file
+        // }
         button.userData.url = url;
         button.children[0].userData.url = url;
 
@@ -88,18 +93,21 @@ export function add_url_button(url, name, location, scale, controls, scene) {
         controls.interaction.selectableObjects.push(button);
         controls.interaction.selectableObjects.push(button.children[0]);
 
+        button.rotateX(rotation[0]);
+        button.rotateY(rotation[1]);
+        button.rotateZ(rotation[2]);
         scene.add(button);
 
         return button
-    }
-    else {
-        // console.log('font not loaded, waiting...')
-        setTimeout(add_url_button.bind(null, url, name, location, scale, controls, scene), 200);
-    }
+    // }
+    // else {
+    //     // console.log('font not loaded, waiting...')
+    //     setTimeout(add_url_button.bind(null, url, name, controls, scene, location, scale, rotation), 200);
+    // }
 }
 
 export function add_action_button(type, name, selectStartFunction, selectEndFunction, intersectionFunction, location, scale, controls, scene) {
-    if (font !== undefined) {
+    // if (font !== undefined) {
         let button = make_button_object(name, location, scale);
 
         button.userData.type = type; // this sets up interaction group for controllers
@@ -115,8 +123,8 @@ export function add_action_button(type, name, selectStartFunction, selectEndFunc
         scene.add(button);
 
         return button;
-    }
-    else {
-        setTimeout(add_action_button.bind(null, type, name, selectStartFunction, selectEndFunction, intersectionFunction, location, scale, controls, scene), 200);
-    }
+    // }
+    // else {
+    //     setTimeout(add_action_button.bind(null, type, name, selectStartFunction, selectEndFunction, intersectionFunction, location, scale, controls, scene), 200);
+    // }
 }

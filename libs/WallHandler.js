@@ -31,6 +31,14 @@ export const walls = new Group();
 const arrow_colour = 0xDDDDDD;
 const arrow_material = new MeshLambertMaterial({ color: arrow_colour });
 
+export function add_shadows() {
+    for (let i = 0; i < walls.children.length; i++) {
+        var object = walls.children[i]
+        object.castShadow = true;
+        object.receiveShadow = true;
+    }
+}
+
 export function add_left(params) {
     if (left !== undefined) { walls.remove(left); }
     left = new Mesh(wall_geometry, wall_material);

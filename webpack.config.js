@@ -8,6 +8,7 @@ module.exports = [
     // mode: "production",
     entry: {
       "index": './src/index.js',
+      "menu": './src/menu.js',
       "isotropic": './src/isotropic.js',
       "triaxial": './src/triaxial.js',
       "slice-3d": './src/slice-3d.js',
@@ -24,6 +25,12 @@ module.exports = [
         favicon: "./resources/favicon512.png",
         template: "index.html",
         chunks: ['index']
+      }),
+      new HtmlWebpackPlugin({
+        title: 'NDDEM in VR',
+        favicon: "./resources/favicon512.png",
+        template: "index.html",
+        chunks: ['menu']
       }),
       new HtmlWebpackPlugin({
         title: 'Isotropic compression',

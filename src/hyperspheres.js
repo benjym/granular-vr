@@ -5,6 +5,7 @@ import ImmersiveControls from '@depasquale/three-immersive-controls';
 
 import * as CONTROLLERS from '../libs/controllers.js';
 import * as BUTTONS from "../libs/buttons";
+import * as AUDIO from "../libs/audio";
 
 var clock = new THREE.Clock();
 
@@ -16,8 +17,6 @@ let container = document.createElement("div");
 document.body.appendChild(container);
 
 async function init() {
-    await BUTTONS.load_fonts();
-
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0x111111 );
     camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -34,8 +33,9 @@ async function init() {
     var background_light = new THREE.AmbientLight( 0x777777 );
     scene.add( background_light );
     var light = new THREE.PointLight(0x999999);
-    light.position.z = 8
-    light.position.x = 5
+    // light.position.z = 8
+    // light.position.x = 5
+    light.position.set( 0, 2.5, 2 ); 
     scene.add( light );
 
 
@@ -53,7 +53,9 @@ async function init() {
     var sphere  = new THREE.Mesh( sphere_geometry, material );
     var circle  = new THREE.Mesh( circle_geometry, material.clone() );
     sphere.material.transparent = true;
-    sphere.material.opacity = 0.5;
+    sphere.material.opacity = 0.7;
+    sphere.material.roughness = 0.2;
+    sphere.material.metalness = 0.5;
     const line_geometry = new THREE.CylinderGeometry(0.01, 0.01, 1, 32);
 
     var line  = new THREE.Mesh( line_geometry, material );
@@ -72,9 +74,9 @@ async function init() {
     let arrow_body = new THREE.Mesh(body_geometry, arrow_material);
     arrow_body.rotateZ(Math.PI/2);
     arrow_body.position.x = (0.5-0.05/2.)/2.;
-    let radius_text = await BUTTONS.make_text('r', 0xfc2eff, [0,0,0], 0.5);
-    radius_text.position.x = 0.25;
-    radius_text.position.y = -0.12;
+    let radius_text = BUTTONS.make_text('r', 0xfc2eff, [0.25,-0.12,0], 0.5);
+    // radius_text.position.x = 0.25;
+    // radius_text.position.y = -0.12;
 
     label1.add( arrow_head );
     label1.add( arrow_body );
@@ -108,9 +110,19 @@ async function init() {
         if ( controls !== undefined) { controls.update(); }
         renderer.render( scene, camera );
     });
+
+    AUDIO.play_track('text-to-speech/hyperspheres.mp3', camera, 5000);
+
+    BUTTONS.add_url_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
+    BUTTONS.add_url_button('slice-3d', 'Slicing space', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
 }
 
-init();
+if ( BUTTONS.font === undefined ) {
+    setTimeout(init, 200);
+} else {
+    init();
+}
+
 
 window.addEventListener( 'resize', onWindowResize, false );
 

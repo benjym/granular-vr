@@ -33,13 +33,13 @@ export function add_axes(xlabel, ylabel, xmin, xmax, ymin, ymax, scene) {
     axes.scale.set(global_scale, global_scale, global_scale);
     axes.position.set(global_scale, 0.00, global_scale/2.);
 
-    axes.add(BUTTONS.make_text(xlabel, [1.1, -0.52, 0], 0.2));
-    axes.add(BUTTONS.make_text(ylabel, [-0.15, 0.55, 0], 0.2));
+    axes.add(BUTTONS.make_text(xlabel, 0xFFFFFF, [1.1, -0.52, 0], 0.2));
+    axes.add(BUTTONS.make_text(ylabel, 0xFFFFFF, [-0.15, 0.55, 0], 0.2));
 
-    axes.add(BUTTONS.make_text(xmin, [0.01, -0.59, 0], 0.2));
-    axes.add(BUTTONS.make_text(xmax, [0.9, -0.59, 0], 0.2));
-    axes.add(BUTTONS.make_text(ymin, [-0.07, -0.5, 0], 0.2));
-    axes.add(BUTTONS.make_text(ymax, [-0.38, 0.47, 0], 0.2));
+    axes.add(BUTTONS.make_text(xmin, 0xFFFFFF, [0.01, -0.59, 0], 0.2));
+    axes.add(BUTTONS.make_text(xmax, 0xFFFFFF, [0.9, -0.59, 0], 0.2));
+    axes.add(BUTTONS.make_text(ymin, 0xFFFFFF, [-0.07, -0.5, 0], 0.2));
+    axes.add(BUTTONS.make_text(ymax, 0xFFFFFF, [-0.38, 0.47, 0], 0.2));
 
     let fg_mat = new THREE.PointsMaterial({ color: 0xeeeeee });
     let fg_geom = new THREE.CircleGeometry(0.005, 8);

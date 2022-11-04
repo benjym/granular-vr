@@ -145,6 +145,16 @@ export function add_pool_spheres(S, params, scene) {
     // add_spheres_to_torus(params,controller1,controller2);
 }
 
+export function add_shadows() {
+    console.log(spheres)
+    for (let i = 0; i < spheres.children.length; i++) {
+        var object = spheres.children[i]
+        object.castShadow = true;
+        // console.log(object)
+        // object.receiveShadow = true;
+    }
+}
+
 export function add_spheres_to_torus(params, target) {
     const pointsGeometry = new SphereGeometry(
         1,

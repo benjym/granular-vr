@@ -34,7 +34,7 @@ let params = {
     lut: 'None',
 }
 
-async function init() {
+async function main() {
     await NDDEMPhysics();
 
     slice = {'loc':-1};
@@ -106,7 +106,19 @@ async function init() {
         SPHERES.move_spheres(S, params);
         renderer.render( scene, camera );
     });
+
+    BUTTONS.add_url_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
+    BUTTONS.add_url_button('rotation-matrix.html?dimension=3', 'Seeing 3D surfaces', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
 }
+
+function init() {
+    if ( BUTTONS.font === undefined ) {
+        setTimeout(init, 200);
+    } else {
+        main();
+    }
+}
+
 SPHERES.createNDParticleShader(params).then( init() );
 
 // function animate() {

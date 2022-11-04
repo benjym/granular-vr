@@ -34,7 +34,13 @@ if ( params.dimension === 3 ) {
     params.N = 3;
 }
 
-SPHERES.createNDParticleShader(params).then( init() );
+SPHERES.createNDParticleShader(params).then(() => {
+    if ( BUTTONS.font === undefined ) {
+        setTimeout(init, 200);
+    } else {
+        init();
+    }
+});
 
 async function init() {
 
@@ -47,14 +53,14 @@ async function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0x111 );
 
-    // const hemiLight = new THREE.HemisphereLight();
-    // hemiLight.intensity = 0.35;
-    // scene.add( hemiLight );
+    const hemiLight = new THREE.AmbientLight();
+    hemiLight.intensity = 0.35;
+    scene.add( hemiLight );
     //
-    // const dirLight = new THREE.DirectionalLight();
-    // dirLight.position.set( 5, -5, -5 );
-    // dirLight.castShadow = true;
-    // scene.add( dirLight );
+    const dirLight = new THREE.DirectionalLight();
+    dirLight.position.set( 5, -5, -5 );
+    dirLight.castShadow = true;
+    scene.add( dirLight );
 
     const base_geometry = new THREE.PlaneGeometry( 10, 10 );
     const base_material = new THREE.MeshBasicMaterial( {color: 0x333333, side: THREE.DoubleSide} );
@@ -84,8 +90,19 @@ async function init() {
         // moveSpeed: { keyboard: 0.025, vr: 0.025 }
     });
 
+    BUTTONS.add_url_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
+    if ( params.dimension === 3 ) {
+        BUTTONS.add_url_button('rotation-matrix.html?dimension=4', 'Seeing 4D surfaces', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
+    } else if ( params.dimension === 4) {
+        BUTTONS.add_url_button('pyramid.html', 'Pyramid', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
+    }
+    
+
     animate();
+    
 }
+
+
 
 function onWindowResize(){
 

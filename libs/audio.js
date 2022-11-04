@@ -2,16 +2,6 @@
 // 1. When particles collide (i.e. they weren't touching before and now they're touching), they ring like bells, with a wavelength related to the elastic wave speed and their size? --- sine wave?
 // 2. When particles rub past each other ( i.e. they are in contact and they roll/translate ), they emit a scratching noise whose magnitude is proportional to the normal force being applied? --- sawtooth wave at low frequency?
 
-// import {
-//     AudioListener,
-//     PositionalAudio,
-//     AudioLoader,
-//     Mesh,
-//     SphereGeometry,
-//     CylinderGeometry,
-//     MeshStandardMaterial
-// } from "three";
-
 let listener;
 let normal_oscillator, tangential_oscillator;
 
@@ -72,3 +62,23 @@ export function add_tangential_sound(target) {
 
 //     return target;
 // }
+
+export function play_track( filename , target, delay) {
+    const listener = new THREE.AudioListener();
+    target.add( listener );
+
+    // create a global audio source
+    const sound = new THREE.Audio( listener );
+
+    // load a sound and set it as the Audio object's buffer
+    const audioLoader = new THREE.AudioLoader();
+    audioLoader.load( filename, function( buffer ) {
+        sound.setBuffer( buffer );
+        sound.setLoop( false );
+        sound.setVolume( 0.5 );
+        setTimeout(() => {
+            sound.play()
+        }, delay);
+        
+    });
+}
