@@ -24,12 +24,14 @@ module.exports = [
         title: 'NDDEM in VR',
         favicon: "./resources/favicon512.png",
         template: "index.html",
+        filename: "index.html",
         chunks: ['index']
       }),
       new HtmlWebpackPlugin({
         title: 'NDDEM in VR',
         favicon: "./resources/favicon512.png",
         template: "index.html",
+        filename: "menu.html",
         chunks: ['menu']
       }),
       new HtmlWebpackPlugin({
