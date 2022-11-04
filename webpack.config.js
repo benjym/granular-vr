@@ -94,7 +94,7 @@ module.exports = [
           use: ["style-loader", "css-loader"],
         },
         {
-          test: /\.(json|png|svg|jpg|jpeg|gif)$/i,
+          test: /\.(json|png|svg|jpg|jpeg|gif|mp3)$/i,
           type: 'asset/resource',
           use: ["file-loader?name=[name].[ext]"]
         },

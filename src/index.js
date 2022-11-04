@@ -1,4 +1,5 @@
 import css from "../css/main.css";
+import track from "../text-to-speech/index.mp3";
 // import * as DEMCGND from "../resources/DEMCGND.js";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -173,7 +174,7 @@ async function init() {
         
     });
 
-    AUDIO.play_track('text-to-speech/index.mp3', camera, 5000);
+    AUDIO.play_track('index.mp3', camera, 5000);
 
 }
 

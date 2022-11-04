@@ -1,4 +1,5 @@
 import css from "../css/main.css";
+// import track from "../text-to-speech/slice-4d.mp3";
 // import * as DEMCGND from "../resources/DEMCGND.js";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -106,6 +107,8 @@ async function main() {
         SPHERES.move_spheres(S, params);
         renderer.render( scene, camera );
     });
+
+    // AUDIO.play_track('slice-4d.mp3', camera, 5000);
 
     BUTTONS.add_url_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
     BUTTONS.add_url_button('rotation-matrix.html?dimension=3', 'Seeing 3D surfaces', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);

@@ -1,4 +1,5 @@
 import css from "../css/main.css";
+import track from "../text-to-speech/slice-3d.mp3";
 // import * as DEMCGND from "../resources/DEMCGND.js";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -94,7 +95,7 @@ async function init() {
     gui.add( slice, 'loc').min(-1).max(1).step(0.01).listen().name('Slice').onChange( function( val ) { update_spheres(val); }) ;
     gui.open();
 
-    AUDIO.play_track('text-to-speech/slice-3d.mp3', camera, 5000);
+    AUDIO.play_track('slice-3d.mp3', camera, 5000);
     
     BUTTONS.add_url_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
     BUTTONS.add_url_button('slice-4d', 'Intro to 4D', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
