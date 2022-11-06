@@ -126,7 +126,7 @@ export function add_pool_spheres(S, params, scene) {
         object.NDDEM_ID = i;
         object.castShadow = true;
         object.receiveShadow = true;
-        if (params.audio) { AUDIO.add_normal_sound(object); }
+        // if (params.audio) { AUDIO.add_normal_sound(object); }
         spheres.add(object);
     }
 
@@ -145,8 +145,78 @@ export function add_pool_spheres(S, params, scene) {
     // add_spheres_to_torus(params,controller1,controller2);
 }
 
+export function update_fixed_sounds(S, params) {
+    if ( params.audio ) {
+        let contact_info = S.simu_getContactInfos(0x80 | 0x20000);
+        let total_dissipation = 0;
+        if ( params.lut === 'None' ) {
+            for ( let i = 0; i< params.N; i++ ) {
+                if ( spheres.children[i].material.uniforms.ambient.value !== 1 ) {
+                    spheres.children[i].material.uniforms.ambient.value = 1;
+                }
+            }
+        } else {
+            for ( let i = 0; i< params.N; i++ ) {
+                if ( spheres.children[i].material.emissiveIntensity !== 0 ) {
+                    spheres.children[i].material.emissiveIntensity = 0;
+                    spheres.children[i].material.needsUpdate = true;
+                }
+            }
+        }
+        console.log(contact_info.length)
+        for ( let i = 0; i < contact_info.length; i ++ ) {
+            let row = contact_info[i];
+            let object_ids = [row[0], row[1]];
+
+            let dissipation;
+            if ( params.dimension === 2 ) {
+                dissipation = Math.sqrt( row[2]*row[2] + row[3]*row[3] );
+            } else if ( params.dimension === 3 ) {
+                dissipation = Math.sqrt( row[2]*row[2] + row[3]*row[3] + row[4]*row[4] );
+            } else if ( params.dimension === 4 ) {
+                dissipation = Math.sqrt( row[2]*row[2] + row[3]*row[3] + row[4]*row[4] + row[5]*row[5] );
+            }
+            // dissipation *= params.particle_volume*0.;
+            dissipation *= 1e-6;
+            console.log(params.particle_volume)
+            // dissipation = Math.log10(dissipation)/5e3;
+            // dissipation = isFinite(dissipation) ? dissipation : 0.0; // remove non-finite values
+            // let cutoff = 2e-2;
+            
+                if ( dissipation > 1./params.audio_sensitivity ) {
+                    if ( params.lut === 'None' ) {
+                        spheres.children[row[0]].material.uniforms.ambient.value += dissipation*params.audio_sensitivity; // make them glow
+                    }
+                    else { 
+                        spheres.children[row[0]].material.emissiveIntensity += dissipation*params.audio_sensitivity; // make them glow
+                    }
+                    total_dissipation += dissipation;
+                }
+            
+            
+        }
+        // console.log(total_dissipation/params.N/1e5);
+        
+        AUDIO.fixed_sound_source.children[0].gain.gain.value = total_dissipation/params.N;
+    }
+    else { 
+        if ( AUDIO.fixed_sound_source.children[0].gain.gain.value !== 0 ) {
+            AUDIO.fixed_sound_source.children[0].gain.gain.value = 0;
+            if ( params.lut === 'None' ) {
+                for ( let i = 0; i< params.N; i++ ) {
+                    spheres.children[i].material.uniforms.ambient.value = 1.0;
+                }
+            } else {
+                for ( let i = 0; i< params.N; i++ ) {
+                    spheres.children[i].material.emissiveIntensity = 0;
+                    spheres.children[i].material.needsUpdate = true;
+                }
+            }
+        }
+    }
+}
+
 export function add_shadows() {
-    console.log(spheres)
     for (let i = 0; i < spheres.children.length; i++) {
         var object = spheres.children[i]
         object.castShadow = true;
@@ -530,7 +600,7 @@ export function draw_force_network(S, params, scene) {
                                 width * F_mag / F_mag_max,
                                 distance);
                             c.lookAt(a);
-                            if (params.audio) { AUDIO.add_normal_sound(c); }
+                            // if (params.audio) { AUDIO.add_normal_sound(c); }
 
                             // c.material.emissiveIntensity = F_mag/F_mag_max;
 

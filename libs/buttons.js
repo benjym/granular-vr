@@ -17,7 +17,7 @@ loader.load('./helvetiker_bold.typeface.json', function (f) {
 export async function load_fonts() {
     return new Promise(resolve => { loader.loadAsync('./helvetiker_bold.typeface.json', function (f) {
     // loader.load('../resources/helvetiker_bold.typeface.json', function (f) {
-        console.log('FONT DEFINED!!');
+        // console.log('FONT DEFINED!!');
         font = f;
     });
     })
@@ -26,7 +26,7 @@ export async function load_fonts() {
 
 export function make_text(name, color, position, scale) {
     // if (font !== undefined) {
-        console.log(font)
+        // console.log(font)
         var mat = new THREE.MeshStandardMaterial({ color: color });
         var geom = new TextGeometry(String(name), { font: font, size: fontsize, height: fontsize / 5., });
         var text = new THREE.Mesh(geom, mat);

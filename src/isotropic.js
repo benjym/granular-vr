@@ -61,6 +61,7 @@ export let params = {
     particle_density: 2700, // kg/m^3
     particle_opacity: 0.8,
     audio: false,
+    audio_sensitivity: 1,
     F_mag_max: 1e6,
     friction_coefficient: 0.5,
 }
@@ -153,7 +154,6 @@ async function init() {
     WALLS.update_isotropic_wall(params, S);
     WALLS.add_scale(params);
 
-    if (params.audio) { AUDIO.make_listener(camera) }
     SPHERES.add_spheres(S, params, scene);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });//, logarithmicDepthBuffer: true });
@@ -191,6 +191,17 @@ async function init() {
     // gui.add ( params, 'new_line').name('New loading path').listen().onChange( new_load_path );
     //gui.add ( params, 'paused').name('Paused').listen();
     // gui.add(params, 'hideaxes').name("Static axes (allow many cycles)").listen() ;
+    gui.add ( params, 'audio_sensitivity', 1, 1e3, 1).name('Audio sensitivity');
+    gui.add ( params, 'audio').name('Audio').listen().onChange(() => {
+        if ( AUDIO.listener === undefined ) {
+            AUDIO.make_listener( camera );
+            AUDIO.add_fixed_sound_source ( [0,0,0] );
+            // SPHERES.add_normal_sound_to_all_spheres();
+        } else {
+            // AUDIO.remove_listener( camera ); // doesn't do anything at the moment...
+            // SPHERES.mute_sounds();
+        }
+    });
     gui.add(params, 'loading_active').name('Loading active').listen();
 
     // const controls = new OrbitControls( camera, container );
@@ -251,6 +262,7 @@ function animate() {
     renderer.setAnimationLoop(function () {
         if (clock.getElapsedTime() - startTime > 3) { started = true; }
         // requestAnimationFrame( animate );
+        S.simu_step_forward(50);
         SPHERES.move_spheres(S, params);
         new_time = clock.getElapsedTime() - startTime;
         if (!params.paused) {
@@ -272,13 +284,12 @@ function animate() {
                     }
                     WALLS.update_isotropic_wall(params, S);
                     // update_graph();
-
-
                 }
-            }
 
-            S.simu_step_forward(5);
-            if (started) {
+                if ( AUDIO.listener !== undefined ){
+                    SPHERES.update_fixed_sounds(S, params);
+                }
+           
                 SPHERES.draw_force_network(S, params, scene);
                 
                 S.cg_param_read_timestep(0);
@@ -382,6 +393,7 @@ function setup_NDDEM() {
 
     S.simu_interpret_command("set Mu " + String(params.friction_coefficient));
     S.simu_interpret_command("set Mu_wall 0");
+    S.simu_interpret_command("set damping 0.01");
     S.simu_interpret_command("set T 150");
     S.simu_interpret_command("set dt " + String(tc / 20));
     S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
