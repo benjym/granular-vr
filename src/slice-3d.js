@@ -32,7 +32,7 @@ function update_spheres(x) {
 };
 
 async function init() { 
-    slice = {'loc':-1};
+    slice = {'loc':0};
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0x111111 );
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -71,7 +71,7 @@ async function init() {
     wall  = new THREE.Mesh( wall_geometry, wall_material );
     sphere.position.x = 0
     circle.position.x = 3
-    circle.visible = false;
+    circle.visible = true;
     wall.rotation.y = Math.PI/2.;
     wall.position.x = slice.loc;
     wall.scale.set(4,4,4);

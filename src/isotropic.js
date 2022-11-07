@@ -35,7 +35,7 @@ export let params = {
     // H: 0.05,
     boxratio: 1.5,
     initial_packing_fraction: 0.4,
-    N: 300,
+    N: 500,
     epsilonv: 0,
     gravity: false,
     paused: false,
@@ -54,7 +54,7 @@ export let params = {
     target_stress: 1e7,
     unloading_stress: 100,
     lut: 'None',
-    quality: 6,
+    quality: 5,
     vmax: 1, // max velocity to colour by
     omegamax: 20, // max rotation rate to colour by
     loading_active: false,

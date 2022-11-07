@@ -12,7 +12,7 @@ export function make_listener(target) {
     target.add(listener);
 
     normal_oscillator = listener.context.createOscillator();
-    normal_oscillator.type = 'sawtooth';
+    normal_oscillator.type = 'sine';
     normal_oscillator.frequency.setValueAtTime(500, listener.context.currentTime);
     normal_oscillator.start();
 

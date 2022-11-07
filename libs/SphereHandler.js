@@ -147,7 +147,8 @@ export function add_pool_spheres(S, params, scene) {
 
 export function update_fixed_sounds(S, params) {
     if ( params.audio ) {
-        let contact_info = S.simu_getContactInfos(0x80 | 0x20000);
+        let contact_info = S.simu_getContactInfos(0x80 | 0x20000); // FT_vis
+        // let contact_info = S.simu_getContactInfos(0x80 | 0x8000);
         let total_dissipation = 0;
         if ( params.lut === 'None' ) {
             for ( let i = 0; i< params.N; i++ ) {
@@ -163,7 +164,7 @@ export function update_fixed_sounds(S, params) {
                 }
             }
         }
-        console.log(contact_info.length)
+        // console.log(contact_info.length)
         for ( let i = 0; i < contact_info.length; i ++ ) {
             let row = contact_info[i];
             let object_ids = [row[0], row[1]];
