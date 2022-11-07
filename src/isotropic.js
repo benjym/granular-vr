@@ -262,7 +262,7 @@ function animate() {
     renderer.setAnimationLoop(function () {
         if (clock.getElapsedTime() - startTime > 3) { started = true; }
         // requestAnimationFrame( animate );
-        S.simu_step_forward(50);
+        S.simu_step_forward(5);
         SPHERES.move_spheres(S, params);
         new_time = clock.getElapsedTime() - startTime;
         if (!params.paused) {
@@ -308,6 +308,7 @@ function animate() {
                 GRAPHS.update_data(x, y);//, data_point_colour);
 
                 // console.log(packing_fraction)
+                // console.log(density)
             }
         }
 
@@ -407,8 +408,8 @@ function setup_CG() {
     cgparam["boxes"] = [1, 1, 1];
     // cgparam["boundaries"]=[[-params.L,-params.L,-params.L],[params.L,params.L,params.L]] ;
     cgparam["boundaries"] = [
-        [-params.L / 2., -params.L / 2., params.L / 2.],
-        [params.L / 2., params.L / 2., 3*params.L / 2.]];
+        [-params.L / 2., -params.L / 2.,   params.boxratio*params.L / 2.],
+        [ params.L / 2.,  params.L / 2., 3*params.boxratio*params.L / 2.]];
     // [-params.L+params.r_max,-params.L+params.r_max,-params.L+params.r_max],
     // [ params.L-params.r_max, params.L-params.r_max, params.L-params.r_max]] ;
 

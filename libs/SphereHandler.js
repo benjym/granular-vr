@@ -177,8 +177,8 @@ export function update_fixed_sounds(S, params) {
                 dissipation = Math.sqrt( row[2]*row[2] + row[3]*row[3] + row[4]*row[4] + row[5]*row[5] );
             }
             // dissipation *= params.particle_volume*0.;
-            dissipation *= 1e-6;
-            console.log(params.particle_volume)
+            dissipation *= 1e-5;
+            // console.log(params.particle_volume)
             // dissipation = Math.log10(dissipation)/5e3;
             // dissipation = isFinite(dissipation) ? dissipation : 0.0; // remove non-finite values
             // let cutoff = 2e-2;
