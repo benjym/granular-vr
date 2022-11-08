@@ -1,8 +1,19 @@
+import { move_to } from "../src/index.js";
+
 export function onRedirectButtonSelectStart( object, controller ) {
     window.location.href = object.userData.url; // simulate mouse click
 }
 
 export function onRedirectButtonSelectEnd( object, controller ) {
+    // do nothing, you're already gone
+};
+
+export function onSceneChangeButtonSelectStart( object, controller ) {
+    move_to(object.userData.new_scene);
+    
+}
+
+export function onSceneChangeButtonSelectEnd( object, controller ) {
     // do nothing, you're already gone
 };
 

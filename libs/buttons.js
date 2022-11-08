@@ -68,6 +68,8 @@ export function make_button_object(name, location, scale) {
     button.scale.set(scale, scale, scale);
     button.add(text);
 
+    button.remove_me = true;
+
     return button
 }
 
@@ -106,6 +108,32 @@ export function add_url_button(url, name, controls, scene, location, scale, rota
     //     // console.log('font not loaded, waiting...')
     //     setTimeout(add_url_button.bind(null, url, name, controls, scene, location, scale, rotation), 200);
     // }
+}
+
+export function add_scene_change_button(new_scene, label, controls, scene, location, scale, rotation) {
+    let button = make_button_object(label, location, scale);
+
+    button.children[0].userData.new_scene = new_scene;
+    button.children[1].userData.new_scene = new_scene;
+
+    const type = 'scene_change';
+    // button.userData.type = type; // this sets up interaction group for controllers
+    button.children[0].userData.type = type; // this sets up interaction group for controllers
+    button.children[1].userData.type = type; // this sets up interaction group for controllers
+
+    controls.interaction.selectStartHandlers[type] = CONTROLLERS.onSceneChangeButtonSelectStart;
+    controls.interaction.selectEndHandlers[type] = CONTROLLERS.onSceneChangeButtonSelectEnd;
+    // controls.interaction.intersectionHandlers[type] = () => {console.log('INTERSECTION')};
+
+    controls.interaction.selectableObjects.push(button.children[0]);
+    controls.interaction.selectableObjects.push(button.children[1]);
+
+    button.rotateX(rotation[0]);
+    button.rotateY(rotation[1]);
+    button.rotateZ(rotation[2]);
+    scene.add(button);
+
+    return button
 }
 
 export function add_action_button(type, name, selectStartFunction, selectEndFunction, intersectionFunction, location, scale, controls, scene) {

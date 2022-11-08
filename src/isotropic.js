@@ -11,22 +11,13 @@ import * as BUTTONS from "../libs/buttons";
 import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 
-var urlParams = new URLSearchParams(window.location.search);
-var clock = new THREE.Clock();
-var startTime = clock.getElapsedTime()
+// var clock = new THREE.Clock();
 
-let camera, scene, renderer;
+import { camera, scene, renderer, controls, clock, move_to } from "./index";
 let S;
-let pressure = 0;
-let sigma_xx = 0;
-let sigma_yy = 0;
-let sigma_zz = 0;
-let density;
-let started = false;
-let old_time = 0;
-let new_time = 0;
-let loading_direction = 1;
-// let data_point_colour = '333333';
+
+move_to('isotropic');
+
 
 export let params = {
     dimension: 3,
@@ -64,6 +55,12 @@ export let params = {
     audio_sensitivity: 1,
     F_mag_max: 1e6,
     friction_coefficient: 0.5,
+    pressure : 0,
+    started : false,
+    old_time : 0,
+    new_time : 0,
+    loading_direction : 1,
+    startTime : clock.getElapsedTime(),
 }
 
 function set_derived_properties() {
@@ -90,40 +87,31 @@ function set_derived_properties() {
 function reset_particles() {
     params.loading_active = false;
     params.vertical_displacement = 0;
-    loading_direction = 1;
+    params.loading_direction = 1;
     set_derived_properties();
     SPHERES.randomise_particles_isotropic(params, S);
     WALLS.add_cuboid_walls(params);
     WALLS.update_isotropic_wall(params, S);
     setup_CG();
-    started = false;
-    startTime = clock.getElapsedTime()
+    params.started = false;
+    params.startTime = clock.getElapsedTime()
 }
-function main() {
-    SPHERES.createNDParticleShader(params).then(init());
+export function init() {
+    SPHERES.createNDParticleShader(params).then(main());
 }
 
 
-async function init() {
+async function main() {
     set_derived_properties();
-    if (urlParams.has('dimension')) {
-        params.dimension = parseInt(urlParams.get('dimension'));
-    }
-    if (params.dimension === 4) {
-        params.L = 2.5;
-        params.N = 300
-        params.particle_volume = Math.PI * Math.PI * Math.pow(params.average_radius, 4) / 2.;
-    }
-    if (urlParams.has('quality')) { params.quality = parseInt(urlParams.get('quality')); }
 
     await NDDEMPhysics();
-    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1e-1, 100);
+    // camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1e-1, 100);
     // camera.position.set( 3*params.L, 3*params.L, 1.5*params.L );
     // camera.up.set(0, 0, 1);
     // camera.lookAt( 0, 0, 0 );
 
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x111);
+    // scene = new THREE.Scene();
+    // scene.background = new THREE.Color(0x111);
 
     // let g = new THREE.GridHelper(100, 100);
     // g.position.y = -params.H;
@@ -156,14 +144,14 @@ async function init() {
 
     SPHERES.add_spheres(S, params, scene);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true });//, logarithmicDepthBuffer: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    // renderer = new THREE.WebGLRenderer({ antialias: true });//, logarithmicDepthBuffer: true });
+    // renderer.setPixelRatio(window.devicePixelRatio);
+    // renderer.setSize(window.innerWidth, window.innerHeight);
     // renderer.shadowMap.enabled = true;
     // renderer.outputEncoding = THREE.sRGBEncoding;
 
-    let container = document.getElementById('canvas');
-    container.appendChild(renderer.domElement);
+    // let container = document.getElementById('canvas');
+    // container.appendChild(renderer.domElement);
 
     let gui = new GUI();
     gui.width = 450;
@@ -206,12 +194,12 @@ async function init() {
 
     // const controls = new OrbitControls( camera, container );
     // controls.update();
-    const controls = new ImmersiveControls(camera, renderer, scene, {
-        initialPosition: new THREE.Vector3(0, 1.6, 2),
-        // moveSpeed: { keyboard: 0.025, vr: 0.025 }
-    });
+    // controls = new ImmersiveControls(camera, renderer, scene, {
+    //     initialPosition: new THREE.Vector3(0, 1.6, 2),
+    //     // moveSpeed: { keyboard: 0.025, vr: 0.025 }
+    // });
 
-    window.addEventListener('resize', onWindowResize, false);
+    // window.addEventListener('resize', onWindowResize, false);
 
     // BUTTONS.add_url_button('index', 'Main menu', [-0.06, 0, 0], 0.02, controls, scene);
 
@@ -260,27 +248,27 @@ function onWindowResize() {
 
 function animate() {
     renderer.setAnimationLoop(function () {
-        if (clock.getElapsedTime() - startTime > 3) { started = true; }
+        if (clock.getElapsedTime() - params.startTime > 3) { params.started = true; }
         // requestAnimationFrame( animate );
         S.simu_step_forward(5);
         SPHERES.move_spheres(S, params);
-        new_time = clock.getElapsedTime() - startTime;
+        params.new_time = clock.getElapsedTime() - params.startTime;
         if (!params.paused) {
-            if (started) {
+            if (params.started) {
                 if (params.loading_active) {
-                    var dt = new_time - old_time;
-                    params.epsilonv += loading_direction * params.loading_rate * dt;
-                    if ((pressure >= params.target_stress) && (loading_direction === 1)) { // just run this once
-                        window.setTimeout(() => { loading_direction = -1 }, 3000) // wait then reverse
+                    var dt = params.new_time - params.old_time;
+                    params.epsilonv += params.loading_direction * params.loading_rate * dt;
+                    if ((params.pressure >= params.target_stress) && (params.loading_direction === 1)) { // just run this once
+                        window.setTimeout(() => { params.loading_direction = -1 }, 3000) // wait then reverse
                     }
-                    if ((pressure >= params.target_stress) && (loading_direction > 0)) {
-                        loading_direction *= 0.5; // slow down gradually
+                    if ((params.pressure >= params.target_stress) && (params.loading_direction > 0)) {
+                        params.loading_direction *= 0.5; // slow down gradually
                     }
-                    if ((params.epsilonv <= 1e-4 || pressure < params.unloading_stress) && (loading_direction === -1)) { // just run this once
-                        window.setTimeout(() => { loading_direction = 1; new_load_path(); }, 3000) // wait then reverse
+                    if ((params.epsilonv <= 1e-4 || params.pressure < params.unloading_stress) && (params.loading_direction === -1)) { // just run this once
+                        window.setTimeout(() => { params.loading_direction = 1; new_load_path(); }, 3000) // wait then reverse
                     }
-                    if ((params.epsilonv <= 1e-4 || pressure < params.unloading_stress) && (loading_direction < 0)) {
-                        loading_direction *= 0.5; // slow down gradually
+                    if ((params.epsilonv <= 1e-4 || params.pressure < params.unloading_stress) && (params.loading_direction < 0)) {
+                        params.loading_direction *= 0.5; // slow down gradually
                     }
                     WALLS.update_isotropic_wall(params, S);
                     // update_graph();
@@ -294,17 +282,17 @@ function animate() {
                 
                 S.cg_param_read_timestep(0);
                 S.cg_process_timestep(0, false);
-                var grid = S.cg_get_gridinfo();
-                sigma_xx = S.cg_get_result(0, "TC", 0)[0];
-                sigma_yy = S.cg_get_result(0, "TC", 4)[0];
-                sigma_zz = S.cg_get_result(0, "TC", 8)[0];
-                pressure = (sigma_xx + sigma_yy + sigma_zz) / 3
-                density = S.cg_get_result(0, "RHO", 0)[0];
+                // var grid = S.cg_get_gridinfo();
+                let sigma_xx = S.cg_get_result(0, "TC", 0)[0];
+                let sigma_yy = S.cg_get_result(0, "TC", 4)[0];
+                let sigma_zz = S.cg_get_result(0, "TC", 8)[0];
+                params.pressure = (sigma_xx + sigma_yy + sigma_zz) / 3
+                let density = S.cg_get_result(0, "RHO", 0)[0];
 
                 let packing_fraction = density / params.particle_density; // NOTE: THIS IS JUST A HACK --- REPLACE WITH REAL LOGIC
                 let x = ((packing_fraction - 0.35) / (0.7 - 0.35));
                 // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
-                let y = pressure / params.target_stress; // value between 0 and 1
+                let y = params.pressure / params.target_stress; // value between 0 and 1
                 GRAPHS.update_data(x, y);//, data_point_colour);
 
                 // console.log(packing_fraction)
@@ -316,7 +304,7 @@ function animate() {
         controls.update();
         renderer.render(scene, camera);
 
-        old_time = new_time;
+        params.old_time = params.new_time;
     });
     // renderer.render( scene, camera );
 
@@ -428,4 +416,4 @@ function setup_CG() {
     S.cg_setup_CG();
 }
 
-main();
+// main();

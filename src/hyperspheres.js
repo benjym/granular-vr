@@ -2,36 +2,16 @@ import css from "../css/main.css";
 import track from "../text-to-speech/hyperspheres.mp3";
 
 // import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
-import ImmersiveControls from '@depasquale/three-immersive-controls';
+// import ImmersiveControls from '@depasquale/three-immersive-controls';
 
-import * as CONTROLLERS from '../libs/controllers.js';
+// import * as CONTROLLERS from '../libs/controllers.js';
 import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-var clock = new THREE.Clock();
+import { camera, scene, renderer, controls, clock } from "./index";
 
-const urlParams = new URLSearchParams(window.location.search);
-
-let renderer, scene, camera, controls
-let label1, label2, label3;
-let container = document.createElement("div");
-document.body.appendChild(container);
-
-async function init() {
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0x111111 );
-    camera = new THREE.PerspectiveCamera( 50, window.innerWidth/window.innerHeight, 0.1, 1000 );
-
-    renderer = new THREE.WebGLRenderer();
-    controls = new ImmersiveControls(camera, renderer, scene, {
-        initialPosition: new THREE.Vector3(0, 1.6, 2),
-        // moveSpeed: { keyboard: 0.025, vr: 0.025 }
-    });
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    container.appendChild( renderer.domElement );
-
+export function init() {
     LIGHTS.add_default_lights( scene );
 
 
@@ -61,7 +41,7 @@ async function init() {
     line.position.x = -1.5;
 
 
-    label1 = new THREE.Group();
+    let label1 = new THREE.Group();
     const head_geometry = new THREE.CylinderGeometry(0.03, 0.0, 0.05, 32);
     let arrow_head = new THREE.Mesh(head_geometry, arrow_material);
     arrow_head.rotateZ(Math.PI/2);
@@ -78,8 +58,8 @@ async function init() {
     label1.add( arrow_body );
     label1.add( radius_text );
     
-    label2 = label1.clone()
-    label3 = label1.clone()
+    let label2 = label1.clone()
+    let label3 = label1.clone()
     label1.position.x = -1.5;
     label1.position.y -= 0.03 + 0.01;
     label3.position.x = 1.5;
@@ -95,7 +75,7 @@ async function init() {
     objects.add( label3 );
 
     objects.position.y = 1.6;
-
+    objects.remove_me = true;
     scene.add(objects);
 
     renderer.setAnimationLoop(function () {
@@ -109,22 +89,6 @@ async function init() {
 
     AUDIO.play_track('hyperspheres.mp3', camera, 5000);
 
-    BUTTONS.add_url_button('menu.html', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
-    BUTTONS.add_url_button('slice-3d.html', 'Slicing space', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
+    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
+    BUTTONS.add_scene_change_button('slice-3d', 'Slicing space', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
 }
-
-if ( BUTTONS.font === undefined ) {
-    setTimeout(init, 200);
-} else {
-    init();
-}
-
-
-window.addEventListener( 'resize', onWindowResize, false );
-
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    // if ( controls !== undefined) { controls.handleResize(); }
-};

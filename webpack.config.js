@@ -9,11 +9,13 @@ module.exports = [
     entry: {
       "index": './src/index.js',
       "menu": './src/menu.js',
+      "box": './src/box.js',
       "isotropic": './src/isotropic.js',
       "triaxial": './src/triaxial.js',
       "slice-3d": './src/slice-3d.js',
       "slice-4d": './src/slice-4d.js',
-      "rotation" : './src/rotation.js',
+      "rotation-3d" : './src/rotation-3d.js',
+      "rotation-4d" : './src/rotation-4d.js',
       "hyperspheres" : './src/hyperspheres.js',
     },
     plugins: [
@@ -33,6 +35,13 @@ module.exports = [
         template: "index.html",
         filename: "menu.html",
         chunks: ['menu']
+      }),
+      new HtmlWebpackPlugin({
+        title: 'NDDEM in VR',
+        favicon: "./resources/favicon512.png",
+        template: "index.html",
+        filename: "box.html",
+        chunks: ['box']
       }),
       new HtmlWebpackPlugin({
         title: 'Isotropic compression',
@@ -66,8 +75,15 @@ module.exports = [
         title: 'Rotations',
         favicon: "./resources/favicon512.png",
         template: "index.html",
-        filename: "rotation.html",
-        chunks: ['rotation']
+        filename: "rotation-3d.html",
+        chunks: ['rotation-3d']
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Rotations',
+        favicon: "./resources/favicon512.png",
+        template: "index.html",
+        filename: "rotation-4d.html",
+        chunks: ['rotation-4d']
       }),
       new HtmlWebpackPlugin({
         title: 'Hyperspheres',

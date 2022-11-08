@@ -27,6 +27,7 @@ const wall_material = new MeshLambertMaterial();
 wall_material.wireframe = true;
 
 export const walls = new Group();
+walls.remove_me = true;
 
 const arrow_colour = 0xDDDDDD;
 const arrow_material = new MeshLambertMaterial({ color: arrow_colour });
