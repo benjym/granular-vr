@@ -133,7 +133,7 @@ async function main() {
 
         controls.update();
         renderer.render(scene, camera);
-        CONTROLLERS.moveInD4(params, controls);
+        params = CONTROLLERS.moveInD4(params, controls);
 
 
     });

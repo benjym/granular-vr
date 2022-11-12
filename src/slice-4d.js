@@ -53,7 +53,7 @@ async function main() {
         CONTROLLERS.moveInD4(params, controls);
     });
 
-    // AUDIO.play_track('slice-4d.mp3', camera, 5000);
+    AUDIO.play_track('slice-4d.mp3', camera, 5000);
 
     BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     BUTTONS.add_scene_change_button('rotation-3d', 'Seeing 3D surfaces', controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
