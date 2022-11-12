@@ -32,13 +32,13 @@ cylinder_material.emissive = new THREE.Color(0x0000ff);
 cylinder_material.transparent = false;
 const cylinder = new THREE.Mesh(cylinder_geometry, cylinder_material);
 
-ray = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(0, -3, 0),
-        new THREE.Vector3(0, 0, 0),
-    ]),
-    new THREE.LineBasicMaterial({ color: 0xffffff })
-);
+// ray = new THREE.Line(
+//     new THREE.BufferGeometry().setFromPoints([
+//         new THREE.Vector3(0, -3, 0),
+//         new THREE.Vector3(0, 0, 0),
+//     ]),
+//     new THREE.LineBasicMaterial({ color: 0xffffff })
+// );
 
 export async function createNDParticleShader(params) {
     import("./" + params.dimension + "DShader.js").then((module) => {
@@ -134,7 +134,7 @@ export function add_pool_spheres(S, params, scene) {
     // spheres.children[11].material.uniforms.ambient.value = 1.;
 
     if (!params.vr) {
-        spheres.children[0].add(ray); // add line
+        // spheres.children[0].add(ray); // add line
     }
 
     // add_spheres_to_torus(params,controller1,controller2);

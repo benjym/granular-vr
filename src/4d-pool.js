@@ -172,7 +172,7 @@ async function main() {
 
     gui.add(params.d4, 'cur', -params.L4, params.L4, 0.001).name('D4 location (e/q)').listen();
     gui.add(params, 'strength', 0, 1, 0.01).name('Strength (r/f)').listen().onChange(() => {
-        SPHERES.ray.scale.y = 2 * params.strength;
+        // SPHERES.ray.scale.y = 2 * params.strength;
     });
     gui.add(params, 'track_white_ball').name('Track white ball (Space)').listen();
     gui.add(params, 'audio').name('Audio').listen().onChange(() => {
@@ -317,7 +317,7 @@ function update() {
     direction.z /= l;
     direction.d4 = d4offset / l;
 
-    SPHERES.ray.rotation.x = -Math.atan2(direction.z, direction.x);
+    // SPHERES.ray.rotation.x = -Math.atan2(direction.z, direction.x);
     // console.log(SPHERES.spheres.children[0].position)
     // console.log(direction)
 

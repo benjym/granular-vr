@@ -11,6 +11,7 @@ export function moveInD4(params, controller) {
             params.d4.cur = params.d4.max;
         }
     }
+    return params
 }
 
 export function onRedirectButtonSelectStart(object, controller) {
