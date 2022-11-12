@@ -26,15 +26,15 @@ N_tag.id = "N_tag";
 N_tag.innerHTML = "0";
 document.body.appendChild(N_tag)
 
-const hit_me = document.createElement("div");
-hit_me.id = "hit_me";
-hit_me.innerHTML = "Shoot";
-document.body.appendChild(hit_me)
+// const hit_me = document.createElement("div");
+// hit_me.id = "hit_me";
+// hit_me.innerHTML = "Shoot";
+// document.body.appendChild(hit_me)
 
-const web_instructions = document.createElement("div");
-web_instructions.id = "web_instructions";
-web_instructions.innerHTML = "Press Enter to shoot.";
-document.body.appendChild(web_instructions)
+// const web_instructions = document.createElement("div");
+// web_instructions.id = "web_instructions";
+// web_instructions.innerHTML = "Press Enter to shoot.";
+// document.body.appendChild(web_instructions)
 
 var urlParams = new URLSearchParams(window.location.search);
 
@@ -186,8 +186,8 @@ async function main() {
     // controls.target.y = params.table_height-params.L2;
     // controls.update();
 
-    document.getElementById('hit_me').hidden = true;
-    document.getElementById("web_instructions").hidden = false;
+    // document.getElementById('hit_me').hidden = true;
+    // document.getElementById("web_instructions").hidden = false;
 
     // }
 
