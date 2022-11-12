@@ -38,7 +38,7 @@ export let camera, scene, renderer, controls, clock;
 async function add_common_properties() {
     clock = new THREE.Clock();
 
-    
+
     // if (urlParams.has('quality')) { params.quality = parseInt(urlParams.get('quality')); }
 
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1e-2, 100);
@@ -55,7 +55,7 @@ async function add_common_properties() {
     // renderer.outputEncoding = THREE.sRGBEncoding;
 
 
-    container.appendChild( renderer.domElement );
+    container.appendChild(renderer.domElement);
     // document.body.appendChild( VRButton.createButton( renderer, VR_only ) );
 
     // wipe_scene();
@@ -70,6 +70,9 @@ async function add_common_properties() {
         // moveSpeed: { keyboard: 0.025, vr: 0.025 }
     });
     controls.keep_me = true;
+    console.log(controls)
+    console.log(controls.player)
+    console.log(controls.vrControls)
     // console.log(controls.constructor.name)
 
     window.addEventListener('resize', onWindowResize, false);
@@ -78,7 +81,7 @@ async function add_common_properties() {
 
 
 async function wipe_scene() {
-    if ( scene !== undefined ) { 
+    if (scene !== undefined) {
         // scene.traverse( (o) => {
         //     console.log(o)
         //     if (o.keep_me !== undefined ) {
@@ -88,7 +91,7 @@ async function wipe_scene() {
         //         o.geometry.dispose()
         //         // console.log("dispose geometry ", o.geometry)                        
         //     }
-    
+
         //     if (o.material) {
         //         if (o.material.length) {
         //             for (let i = 0; i < o.material.length; ++i) {
@@ -102,13 +105,13 @@ async function wipe_scene() {
         //         }
         //     }
         // });   
-        for ( let i = scene.children.length-1; i>=0; i -- ) {
-			let object = scene.children[ i ];
+        for (let i = scene.children.length - 1; i >= 0; i--) {
+            let object = scene.children[i];
             // scene.traverse( (object) => {
-            if ( object.remove_me !== undefined ) { 
+            if (object.remove_me !== undefined) {
                 scene.remove(object);
             } else {
-                if (object.keep_me === undefined && object.children.length === 0 && object !== scene ) {
+                if (object.keep_me === undefined && object.children.length === 0 && object !== scene) {
                     // console.log('REMOVING')
                     // console.log(object)
                     scene.remove(object);
@@ -117,16 +120,16 @@ async function wipe_scene() {
                     // console.log(object)
                 }
             }
-		};
+        };
         controls.interaction.selectStartHandlers = {};
         controls.interaction.selectEndHandlers = {};
         controls.interaction.selectableObjects = [];
 
         SPHERES.reset_spheres();
-		// scene.children.length = 0;
+        // scene.children.length = 0;
         // console.log(scene);
     }
-    
+
     // scene = new THREE.Scene();
     // scene.background = new THREE.Color(0x111);
     // controls = new ImmersiveControls(camera, renderer, scene, {
@@ -149,16 +152,16 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-export function move_to( filename ) {
+export function move_to(filename) {
     console.log('CHANGING TO ' + filename)
-        import("./" + filename).then((module) => {
-            wipe_scene().then( module.init() );
-        });
+    import("./" + filename).then((module) => {
+        wipe_scene().then(module.init());
+    });
 }
 
-if ( !VR_only ) { 
+if (!VR_only) {
     // splash.style.visibility = 'hidden';
     if (window.location.pathname === '/') {
-        move_to( 'box' );
+        move_to('box');
     }
 }

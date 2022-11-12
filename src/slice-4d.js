@@ -16,46 +16,47 @@ import { camera, scene, renderer, controls, clock } from "./index";
 let S;
 
 let params = {
-    N : 1,
+    N: 1,
     quality: 7,
     dimension: 4,
-    d4 : { cur: 0, min: -1, max: 1 },
+    d4: { cur: 0, min: -1, max: 1 },
     lut: 'None',
 }
 
 async function main() {
     await NDDEMPhysics();
 
-    LIGHTS.add_default_lights( scene );
-    
+    LIGHTS.add_default_lights(scene);
+
     SPHERES.add_spheres(S, params, scene)
 
-    var sphere_geometry = new THREE.SphereGeometry( 0.5, 256, 256 );
-    var material = new THREE.MeshStandardMaterial( { color: 0xeeeeee, side: THREE.DoubleSide } );//, opacity: 0.9 } );
+    var sphere_geometry = new THREE.SphereGeometry(0.5, 256, 256);
+    var material = new THREE.MeshStandardMaterial({ color: 0xeeeeee, side: THREE.DoubleSide });//, opacity: 0.9 } );
     // material.transparent = true;
-    var wall_material = new THREE.MeshStandardMaterial( { color: 0xe72564, side: THREE.DoubleSide } );
+    var wall_material = new THREE.MeshStandardMaterial({ color: 0xe72564, side: THREE.DoubleSide });
 
-    const base_geometry = new THREE.PlaneGeometry( 10, 10 );
-    const base_material = new THREE.MeshBasicMaterial( {color: 0x333333, side: THREE.DoubleSide} );
-    const plane = new THREE.Mesh( base_geometry, base_material );
-    plane.rotateX(Math.PI/2.);
+    const base_geometry = new THREE.PlaneGeometry(10, 10);
+    const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
+    const plane = new THREE.Mesh(base_geometry, base_material);
+    plane.rotateX(Math.PI / 2.);
     plane.remove_me = true;
-    scene.add( plane );
+    scene.add(plane);
 
     var gui = new GUI();
-    gui.add( params.d4, 'cur').min(params.d4.min).max(params.d4.max).step(0.01).listen().name('Slice');//.onChange( function( val ) { update_spheres(val); }) ;
+    gui.add(params.d4, 'cur').min(params.d4.min).max(params.d4.max).step(0.01).listen().name('Slice');//.onChange( function( val ) { update_spheres(val); }) ;
     gui.open();
 
     renderer.setAnimationLoop(function () {
-        if ( controls !== undefined) { controls.update(); }
+        if (controls !== undefined) { controls.update(); }
         SPHERES.move_spheres(S, params);
-        renderer.render( scene, camera );
+        renderer.render(scene, camera);
+        CONTROLLERS.moveInD4(params, controls);
     });
 
     // AUDIO.play_track('slice-4d.mp3', camera, 5000);
 
-    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
-    BUTTONS.add_scene_change_button('rotation-3d', 'Seeing 3D surfaces', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
+    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button('rotation-3d', 'Seeing 3D surfaces', controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
 }
 
 // function init() {
@@ -66,20 +67,20 @@ async function main() {
 //     }
 // }
 
-export function init() { 
-    SPHERES.createNDParticleShader(params).then( main() );
+export function init() {
+    SPHERES.createNDParticleShader(params).then(main());
 }
 
 // function animate() {
-    
+
 // };
-window.addEventListener( 'resize', onWindowResize, false );
+window.addEventListener('resize', onWindowResize, false);
 // animate();
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setSize(window.innerWidth, window.innerHeight);
     // if ( controls !== undefined) { controls.handleResize(); }
 };
 
@@ -118,15 +119,15 @@ function setup_NDDEM() {
     S.simu_interpret_command("auto skin");
 
     S.simu_interpret_command("location 0 0 0 1.6 0");
-    
+
     // S.simu_interpret_command("boundary 0 WALL -" + String(params.L) + " " + String(params.L));
     // S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
     // S.simu_interpret_command("boundary 2 WALL -" + String(0) + " " + String(2*params.H));
     // if (params.gravity === true) {
-        // S.simu_interpret_command("gravity 0 0 " + String(-9.81) + "0 ".repeat(params.dimension - 3))
+    // S.simu_interpret_command("gravity 0 0 " + String(-9.81) + "0 ".repeat(params.dimension - 3))
     // }
     // else {
-        // S.simu_interpret_command("gravity 0 0 0 " + "0 ".repeat(params.dimension - 3))
+    // S.simu_interpret_command("gravity 0 0 0 " + "0 ".repeat(params.dimension - 3))
     // }
     // S.simu_interpret_command("auto location randomsquare");
     // S.simu_interpret_command("auto location randomdrop");
@@ -154,6 +155,6 @@ function setup_NDDEM() {
     // S.simu_interpret_command("set T 150");
     // S.simu_interpret_command("set dt " + String(tc / 20));
     // S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
-    
+
     S.simu_finalise_init();
 }

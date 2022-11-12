@@ -4,7 +4,7 @@ import track from "../text-to-speech/pyramid.mp3";
 import ImmersiveControls from '@depasquale/three-immersive-controls';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
-// import * as CONTROLLERS from '../libs/controllers.js';
+import * as CONTROLLERS from '../libs/controllers.js';
 import * as SPHERES from "../libs/SphereHandler.js"
 import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
@@ -63,6 +63,7 @@ async function main() {
         SPHERES.move_spheres(S, params);
         renderer.render(scene, camera);
         // console.log(controls.player.position)
+        CONTROLLERS.moveInD4(params, controls);
     });
 
     AUDIO.play_track('pyramid.mp3', camera, 3000);

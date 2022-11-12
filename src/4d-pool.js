@@ -56,7 +56,7 @@ var params = {
     L4: 0.5,
     pocket_size: 0.15,
     pyramid_size: 5,
-    d4: { cur: 0 },
+    d4: { cur: 0, min: -0.5, max: 0.5 },
     particle_density: 2700,
     track_white_ball: true,
     strength: 0.5,
@@ -209,6 +209,7 @@ async function main() {
     renderer.setAnimationLoop(function () {
         update();
         renderer.render(scene, camera);
+        CONTROLLERS.moveInD4(params, controls);
     });
 
     AUDIO.play_track('4d-pool.mp3', camera, 3000);

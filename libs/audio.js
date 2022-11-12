@@ -22,7 +22,7 @@ export function make_listener(target) {
     tangential_oscillator.frequency.setValueAtTime(200, listener.context.currentTime);
     tangential_oscillator.start();
 
-    current_sound = new THREE.Audio( listener );
+    current_sound = new THREE.Audio(listener);
     // console.log('made an object the audio listener')
 }
 
@@ -67,48 +67,49 @@ export function add_tangential_sound(target) {
 //     return target;
 // }
 
-export function add_fixed_sound_source( loc ) {
-    let sound = new THREE.PositionalAudio( listener );
+export function add_fixed_sound_source(loc) {
+    let sound = new THREE.PositionalAudio(listener);
     let oscillator = listener.context.createOscillator();
-	oscillator.type = 'square';
+    oscillator.type = 'square';
 
-    oscillator.frequency.setValueAtTime( 700 , listener.context.currentTime);
-	oscillator.start( );
+    oscillator.frequency.setValueAtTime(700, listener.context.currentTime);
+    oscillator.start();
 
     // sound.setNodeSource( normal_oscillator );
-    sound.setNodeSource( oscillator );
+    sound.setNodeSource(oscillator);
 
     sound.gain.gain.value = 0;
     // sound.setRefDistance( 20 );
 
-    fixed_sound_source.add( sound )
-    fixed_sound_source.position.set( ...loc );
+    fixed_sound_source.add(sound)
+    fixed_sound_source.position.set(...loc);
 }
 
-export function play_track( filename, target, delay) {
+export function play_track(filename, target, delay) {
     const listener = new THREE.AudioListener();
-    target.add( listener );
+    target.add(listener);
 
     // create a global audio source
-    current_sound = new THREE.Audio( listener );
+    current_sound = new THREE.Audio(listener);
 
     // load a sound and set it as the Audio object's buffer
     const audioLoader = new THREE.AudioLoader();
-    audioLoader.load( filename, function( buffer ) {
-        current_sound.setBuffer( buffer );
-        current_sound.setLoop( false );
-        current_sound.setVolume( 0.5 );
+    audioLoader.load(filename, function (buffer) {
+        current_sound.setBuffer(buffer);
+        current_sound.setLoop(false);
+        current_sound.setVolume(0.5);
         setTimeout(() => {
             current_sound.play()
         }, delay);
         // current_sound.play()
-        
+
     });
 }
 
 export function end_current_track() {
     // console.log(current_sound)
-    if ( current_sound !== undefined ) {
-        if ( current_sound.isPlaying ) { current_sound.stop(); }
+    if (current_sound !== undefined) {
+        if (current_sound.isPlaying) { current_sound.stop(); }
+        else { clearTimeout(current_sound); }
     }
 }
