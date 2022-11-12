@@ -1,6 +1,7 @@
 import css from "../css/main.css";
 import pool_css from "../css/pool.css";
 import track from "../text-to-speech/4d-pool.mp3";
+import table from "../resources/4d-pool.stl";
 
 import * as THREE from "three";
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -133,7 +134,7 @@ async function main() {
 
     SPHERES.add_pool_spheres(S, params, scene);
 
-    STLFilename = '../resources/4d-pool.stl'; // this one has crap pockets
+    STLFilename = './4d-pool.stl'; // this one has crap pockets
     // STLFilename = './stls/4d-pool-no-holes.stl';
     // const texture = new THREE.TextureLoader().load( 'textures/golfball.jpg', function(t) {
     // t.encoding = THREE.sRGBEncoding;

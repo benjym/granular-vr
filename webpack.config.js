@@ -14,9 +14,9 @@ module.exports = [
       "triaxial": './src/triaxial.js',
       "slice-3d": './src/slice-3d.js',
       "slice-4d": './src/slice-4d.js',
-      "rotation-3d" : './src/rotation-3d.js',
-      "rotation-4d" : './src/rotation-4d.js',
-      "hyperspheres" : './src/hyperspheres.js',
+      "rotation-3d": './src/rotation-3d.js',
+      "rotation-4d": './src/rotation-4d.js',
+      "hyperspheres": './src/hyperspheres.js',
     },
     plugins: [
       new webpack.ProvidePlugin({
@@ -110,7 +110,7 @@ module.exports = [
           use: ["style-loader", "css-loader"],
         },
         {
-          test: /\.(json|png|svg|jpg|jpeg|gif|mp3)$/i,
+          test: /\.(json|png|svg|jpg|jpeg|gif|mp3|stl)$/i,
           type: 'asset/resource',
           use: ["file-loader?name=[name].[ext]"]
         },
