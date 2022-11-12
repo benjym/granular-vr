@@ -1,5 +1,6 @@
 import css from "../css/main.css";
 import track1 from "../text-to-speech/rotation-3d.mp3";
+import logo from "../resources/usyd.png";
 // import track2 from "../text-to-speech/rotation-4d.mp3";
 
 // import ImmersiveControls from '@depasquale/three-immersive-controls';
@@ -96,7 +97,7 @@ async function main() {
 
         const circle_material = new THREE.MeshBasicMaterial({
             color: 0xFFFFFF,
-            map: loader.load('resources/usyd.png'),
+            map: loader.load('./usyd.png'),
         });
         circle = new THREE.Mesh(circle_geometry, circle_material);
         circle.position.y = 2.2;
