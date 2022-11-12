@@ -13,7 +13,7 @@ import { VRButton } from "../libs/VRButton";
 // let file = 'box';
 let VR_only = false;
 
-// let urlParams = new URLSearchParams(window.location.search);
+let urlParams = new URLSearchParams(window.location.search);
 // if ( urlParams.has('VR') || urlParams.has('vr') ) { VR_only = true; }
 
 // if ( VR_only ) {
@@ -159,9 +159,12 @@ export function move_to(filename) {
     });
 }
 
-if (!VR_only) {
+// if (!VR_only) {
+if (urlParams.has('fname')) {
+    move_to(urlParams.get('fname'));
+} else {
     // splash.style.visibility = 'hidden';
-    if (window.location.pathname === '/') {
-        move_to('box');
-    }
+    // if (window.location.pathname === '/') {
+    move_to('box');
 }
+// }
