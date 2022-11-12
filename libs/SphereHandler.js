@@ -53,7 +53,7 @@ export function add_spheres(S, params, scene) {
         total_particle_volume += 4. / 3. * Math.PI * Math.pow(radii[i], 3);
     }
     console.log('Actual particle volume: ' + total_particle_volume);
-    
+
     scene.add(spheres);
     // const material = new THREE.MeshStandardMaterial();
 
@@ -84,7 +84,7 @@ export function add_spheres(S, params, scene) {
         // spheres.setColorAt( i, color.setHex( 0xffffff * Math.random() ) );
 
     }
-    
+
     var lut_folder;
     update_particle_material(params, lut_folder)
 }
@@ -93,6 +93,7 @@ export function add_pool_spheres(S, params, scene) {
     radii = S.simu_getRadii();
 
     spheres = new THREE.Group();
+    spheres.remove_me = true;
     scene.add(spheres);
 
     const geometrySphere = new THREE.SphereGeometry(0.5, Math.pow(2, params.quality), Math.pow(2, params.quality));
@@ -140,36 +141,36 @@ export function add_pool_spheres(S, params, scene) {
 }
 
 export function update_fixed_sounds(S, params) {
-    if ( params.audio ) {
+    if (params.audio) {
         let contact_info = S.simu_getContactInfos(0x80 | 0x20000); // FT_vis
         // let contact_info = S.simu_getContactInfos(0x80 | 0x8000);
         let total_dissipation = 0;
-        if ( params.lut === 'None' ) {
-            for ( let i = 0; i< params.N; i++ ) {
-                if ( spheres.children[i].material.uniforms.ambient.value !== 1 ) {
+        if (params.lut === 'None') {
+            for (let i = 0; i < params.N; i++) {
+                if (spheres.children[i].material.uniforms.ambient.value !== 1) {
                     spheres.children[i].material.uniforms.ambient.value = 1;
                 }
             }
         } else {
-            for ( let i = 0; i< params.N; i++ ) {
-                if ( spheres.children[i].material.emissiveIntensity !== 0 ) {
+            for (let i = 0; i < params.N; i++) {
+                if (spheres.children[i].material.emissiveIntensity !== 0) {
                     spheres.children[i].material.emissiveIntensity = 0;
                     spheres.children[i].material.needsUpdate = true;
                 }
             }
         }
         // console.log(contact_info.length)
-        for ( let i = 0; i < contact_info.length; i ++ ) {
+        for (let i = 0; i < contact_info.length; i++) {
             let row = contact_info[i];
             let object_ids = [row[0], row[1]];
 
             let dissipation;
-            if ( params.dimension === 2 ) {
-                dissipation = Math.sqrt( row[2]*row[2] + row[3]*row[3] );
-            } else if ( params.dimension === 3 ) {
-                dissipation = Math.sqrt( row[2]*row[2] + row[3]*row[3] + row[4]*row[4] );
-            } else if ( params.dimension === 4 ) {
-                dissipation = Math.sqrt( row[2]*row[2] + row[3]*row[3] + row[4]*row[4] + row[5]*row[5] );
+            if (params.dimension === 2) {
+                dissipation = Math.sqrt(row[2] * row[2] + row[3] * row[3]);
+            } else if (params.dimension === 3) {
+                dissipation = Math.sqrt(row[2] * row[2] + row[3] * row[3] + row[4] * row[4]);
+            } else if (params.dimension === 4) {
+                dissipation = Math.sqrt(row[2] * row[2] + row[3] * row[3] + row[4] * row[4] + row[5] * row[5]);
             }
             // dissipation *= params.particle_volume*0.;
             dissipation *= 1e-5;
@@ -177,32 +178,32 @@ export function update_fixed_sounds(S, params) {
             // dissipation = Math.log10(dissipation)/5e3;
             // dissipation = isFinite(dissipation) ? dissipation : 0.0; // remove non-finite values
             // let cutoff = 2e-2;
-            
-                if ( dissipation > 1./params.audio_sensitivity ) {
-                    if ( params.lut === 'None' ) {
-                        spheres.children[row[0]].material.uniforms.ambient.value += dissipation*params.audio_sensitivity; // make them glow
-                    }
-                    else { 
-                        spheres.children[row[0]].material.emissiveIntensity += dissipation*params.audio_sensitivity; // make them glow
-                    }
-                    total_dissipation += dissipation;
+
+            if (dissipation > 1. / params.audio_sensitivity) {
+                if (params.lut === 'None') {
+                    spheres.children[row[0]].material.uniforms.ambient.value += dissipation * params.audio_sensitivity; // make them glow
                 }
-            
-            
+                else {
+                    spheres.children[row[0]].material.emissiveIntensity += dissipation * params.audio_sensitivity; // make them glow
+                }
+                total_dissipation += dissipation;
+            }
+
+
         }
         // console.log(total_dissipation/params.N/1e5);
-        
-        AUDIO.fixed_sound_source.children[0].gain.gain.value = total_dissipation/params.N;
+
+        AUDIO.fixed_sound_source.children[0].gain.gain.value = total_dissipation / params.N;
     }
-    else { 
-        if ( AUDIO.fixed_sound_source.children[0].gain.gain.value !== 0 ) {
+    else {
+        if (AUDIO.fixed_sound_source.children[0].gain.gain.value !== 0) {
             AUDIO.fixed_sound_source.children[0].gain.gain.value = 0;
-            if ( params.lut === 'None' ) {
-                for ( let i = 0; i< params.N; i++ ) {
+            if (params.lut === 'None') {
+                for (let i = 0; i < params.N; i++) {
                     spheres.children[i].material.uniforms.ambient.value = 1.0;
                 }
             } else {
-                for ( let i = 0; i< params.N; i++ ) {
+                for (let i = 0; i < params.N; i++) {
                     spheres.children[i].material.emissiveIntensity = 0;
                     spheres.children[i].material.needsUpdate = true;
                 }
@@ -360,7 +361,7 @@ export function update_particle_material(params, lut_folder) {
 
 export function move_spheres(S, params, controller1, controller2) {
     x = S.simu_getX();
-    if ( x.length === spheres.children.length ) {
+    if (x.length === spheres.children.length) {
 
         // console.log(params.N)
         // console.log(x.length)
