@@ -113,7 +113,7 @@ async function main() {
 
     BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     if (params.dimension === 3) {
-        BUTTONS.add_scene_change_button('rotation-4d', 'Seeing 4D surfaces', controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+        BUTTONS.add_scene_change_button('rotation-4d', 'Rotation in 4D', controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
         AUDIO.play_track('rotation-3d.mp3', camera, 5000);
     } else if (params.dimension === 4) {
         BUTTONS.add_scene_change_button('pyramid', 'Pyramid', controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);

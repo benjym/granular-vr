@@ -17,16 +17,16 @@ import { camera, scene, renderer, controls, clock } from "./index";
 
 // let scene, renderer, controls, camera
 
-let params = {'loc' : 0};
+let params = { 'loc': 0 };
 
 function update_spheres(x, circle, wall) {
-    let R_draw = 2*Math.sqrt(0.5*0.5 - x*x);
-    circle.scale.set(R_draw,R_draw,R_draw);
+    let R_draw = 2 * Math.sqrt(0.5 * 0.5 - x * x);
+    circle.scale.set(R_draw, R_draw, R_draw);
     wall.position.x = x;
 };
 
-export function init() { 
-    
+export function init() {
+
     // scene = new THREE.Scene();
     // scene.background = new THREE.Color( 0x111111 );
     // camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -43,38 +43,38 @@ export function init() {
     // document.body.appendChild(container);
     // container.appendChild( renderer.domElement );
 
-    LIGHTS.add_default_lights( scene );
+    LIGHTS.add_default_lights(scene);
 
 
-    let sphere_geometry = new THREE.SphereGeometry( 0.5, 256, 256 );
-    let circle_geometry = new THREE.CircleGeometry( 0.5, 256 );
-    let wall_geometry = new THREE.PlaneBufferGeometry( 0.5, 0.5 );
-    let material = new THREE.MeshStandardMaterial( { color: 0xeeeeee, side: THREE.DoubleSide } );//, opacity: 0.9 } );
+    let sphere_geometry = new THREE.SphereGeometry(0.5, 256, 256);
+    let circle_geometry = new THREE.CircleGeometry(0.5, 256);
+    let wall_geometry = new THREE.PlaneBufferGeometry(0.5, 0.5);
+    let material = new THREE.MeshStandardMaterial({ color: 0xeeeeee, side: THREE.DoubleSide });//, opacity: 0.9 } );
     // material.transparent = true;
-    let wall_material = new THREE.MeshStandardMaterial( { color: 0xe72564, side: THREE.DoubleSide } );
+    let wall_material = new THREE.MeshStandardMaterial({ color: 0xe72564, side: THREE.DoubleSide });
 
-    const base_geometry = new THREE.PlaneGeometry( 10, 10 );
-    const base_material = new THREE.MeshBasicMaterial( {color: 0x333333, side: THREE.DoubleSide} );
-    const plane = new THREE.Mesh( base_geometry, base_material );
-    plane.rotateX(Math.PI/2.);
+    const base_geometry = new THREE.PlaneGeometry(10, 10);
+    const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
+    const plane = new THREE.Mesh(base_geometry, base_material);
+    plane.rotateX(Math.PI / 2.);
     plane.remove_me = true;
-    scene.add( plane );
+    scene.add(plane);
 
-    let sphere = new THREE.Mesh( sphere_geometry, material );
-    let circle = new THREE.Mesh( circle_geometry, material );
-    let wall = new THREE.Mesh( wall_geometry, wall_material );
+    let sphere = new THREE.Mesh(sphere_geometry, material);
+    let circle = new THREE.Mesh(circle_geometry, material);
+    let wall = new THREE.Mesh(wall_geometry, wall_material);
     sphere.position.x = 0
     circle.position.x = 3
     circle.visible = true;
-    wall.rotation.y = Math.PI/2.;
+    wall.rotation.y = Math.PI / 2.;
     wall.position.x = params.loc;
-    wall.scale.set(4,4,4);
+    wall.scale.set(4, 4, 4);
 
     let objects = new THREE.Group();
 
-    objects.add( sphere );
-    objects.add( circle );
-    objects.add( wall );
+    objects.add(sphere);
+    objects.add(circle);
+    objects.add(wall);
 
     objects.position.x = -1.5;
     objects.position.y = 1.6;
@@ -83,18 +83,18 @@ export function init() {
     scene.add(objects);
 
     let gui = new GUI();
-    gui.add( params, 'loc').min(-1).max(1).step(0.01).listen().name('Slice').onChange( function( val ) { update_spheres(val, circle, wall); }) ;
+    gui.add(params, 'loc').min(-1).max(1).step(0.01).listen().name('Slice').onChange(function (val) { update_spheres(val, circle, wall); });
     gui.open();
 
     AUDIO.play_track('slice-3d.mp3', camera, 5000);
-    
-    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
-    BUTTONS.add_scene_change_button('slice-4d', 'Intro to 4D', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
+
+    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button('slice-4d', 'Intro to 4D', controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
 
 
     renderer.setAnimationLoop(function () {
-        if ( controls !== undefined) { controls.update(); }
-        renderer.render( scene, camera );
+        if (controls !== undefined) { controls.update(); }
+        renderer.render(scene, camera);
     });
 };
 

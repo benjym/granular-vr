@@ -493,8 +493,8 @@ function set_ball_positions() {
 
         // let pool_cue_particle_volume = Math.PI*Math.PI*Math.pow(POOLCUE.small_end_radius,4)/2.;
         // let pool_cue_particle_mass = params.particle_volume * params.particle_density/1e3;
-        // S.setRadius(params.N, POOLCUE.small_end_radius);
-        // S.setMass(params.N, params.particle_mass/10.);
+        S.setRadius(params.N, POOLCUE.small_end_radius);
+        S.setMass(params.N, params.particle_mass / 10.);
     }
 }
 

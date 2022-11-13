@@ -1,16 +1,14 @@
 import css from "../css/main.css";
 import track from "../text-to-speech/slice-4d.mp3";
-// import * as DEMCGND from "../resources/DEMCGND.js";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
-import ImmersiveControls from '@depasquale/three-immersive-controls';
 
 import * as CONTROLLERS from '../libs/controllers.js';
 import * as SPHERES from "../libs/SphereHandler.js"
 import * as BUTTONS from "../libs/buttons";
 import * as LIGHTS from "../libs/lights";
+import * as AUDIO from "../libs/audio";
 
-// let scene, camera, renderer, controls, S;
 import { camera, scene, renderer, controls, clock } from "./index";
 
 let S;
@@ -30,11 +28,6 @@ async function main() {
 
     SPHERES.add_spheres(S, params, scene)
 
-    var sphere_geometry = new THREE.SphereGeometry(0.5, 256, 256);
-    var material = new THREE.MeshStandardMaterial({ color: 0xeeeeee, side: THREE.DoubleSide });//, opacity: 0.9 } );
-    // material.transparent = true;
-    var wall_material = new THREE.MeshStandardMaterial({ color: 0xe72564, side: THREE.DoubleSide });
-
     const base_geometry = new THREE.PlaneGeometry(10, 10);
     const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
     const plane = new THREE.Mesh(base_geometry, base_material);
@@ -43,45 +36,36 @@ async function main() {
     scene.add(plane);
 
     var gui = new GUI();
-    gui.add(params.d4, 'cur').min(params.d4.min).max(params.d4.max).step(0.01).listen().name('Slice');//.onChange( function( val ) { update_spheres(val); }) ;
+    gui.add(params.d4, 'cur').min(params.d4.min).max(params.d4.max).step(0.01).listen().name('Slice');
     gui.open();
-
-    renderer.setAnimationLoop(function () {
-        if (controls !== undefined) { controls.update(); }
-        SPHERES.move_spheres(S, params);
-        renderer.render(scene, camera);
-        CONTROLLERS.moveInD4(params, controls);
-    });
 
     AUDIO.play_track('slice-4d.mp3', camera, 5000);
 
     BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    BUTTONS.add_scene_change_button('rotation-3d', 'Seeing 3D surfaces', controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button('rotation-3d', 'Rotation in 3D', controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+
+    renderer.setAnimationLoop(update);
 }
 
-// function init() {
-//     if ( BUTTONS.font === undefined ) {
-//         setTimeout(init, 200);
-//     } else {
-//         main();
-//     }
-// }
+function update() {
+    if (controls !== undefined) { controls.update(); }
+    params = CONTROLLERS.moveInD4(params, controls);
+    SPHERES.move_spheres(S, params);
+    renderer.render(scene, camera);
+    console.log('hi')
+
+}
 
 export function init() {
     SPHERES.createNDParticleShader(params).then(main());
 }
 
-// function animate() {
-
-// };
 window.addEventListener('resize', onWindowResize, false);
-// animate();
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    // if ( controls !== undefined) { controls.handleResize(); }
 };
 
 async function NDDEMPhysics() {

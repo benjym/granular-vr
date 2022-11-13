@@ -20,7 +20,7 @@ var params = {
     d4: { cur: 0, min: -1, max: 1 },
     lut: 'None',
     quality: 7,
-    pyramid_size: 5,
+    pyramid_size: 7,
     particle_density: 2700,
 
 }
@@ -76,7 +76,7 @@ function get_num_particles(L) {
         N += i * n;
         i += 1;
     }
-    return N + 1; // adding the white ball
+    return N + 2; // adding your hands
     // return L * L * L + 1; // cube
 }
 
@@ -86,10 +86,10 @@ function set_ball_positions() {
     // add the pyramid
     for (var k = 0; k < params.pyramid_size; k++) {
         let cur_pyramid_length = params.pyramid_size - k;
-        let z = k * 1.825 * params.radius + params.radius;
+        let z = k * 1.8 * params.radius;// + params.radius;
         for (var i = 0; i < cur_pyramid_length; i++) {
             for (var j = 0; j < cur_pyramid_length - i; j++) {
-                let x = i * 1.82 * params.radius - cur_pyramid_length * params.radius * 0.825;// + 2 * params.radius;
+                let x = i * 1.825 * params.radius - cur_pyramid_length * params.radius * 0.65;// + 2 * params.radius;
                 let y = j * 2.01 * params.radius - (cur_pyramid_length - i) * params.radius + params.radius;// - i%2*radius;
                 console.log(n, x, y, z);
                 S.simu_interpret_command("location " + String(n) + " " + String(x) + " " + String(y) + " " + String(z) + " " + String(0));
@@ -129,7 +129,9 @@ function set_ball_positions() {
     // add the cue stick
     // if (params.vr) {
     S.simu_interpret_command("location " + String(params.N - 1) + " 10 10 10 0");
-    console.log(params.N)
+    // console.log(params.N)
+    S.simu_interpret_command("location " + String(params.N - 2) + " 10 10 10 0");
+    // console.log(params.N)
 
     // let pool_cue_particle_volume = Math.PI*Math.PI*Math.pow(POOLCUE.small_end_radius,4)/2.;
     // let pool_cue_particle_mass = params.particle_volume * params.particle_density/1e3;

@@ -8,7 +8,7 @@ import * as BUTTONS from "../libs/buttons";
 import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
-import { VRButton } from "../libs/VRButton";
+// import { VRButton } from "../libs/VRButton";
 
 // let file = 'box';
 let VR_only = false;
@@ -17,17 +17,18 @@ let urlParams = new URLSearchParams(window.location.search);
 // if ( urlParams.has('VR') || urlParams.has('vr') ) { VR_only = true; }
 
 // if ( VR_only ) {
-//     let splash = document.createElement("div");
-//     splash.classList.add("overlay");
-//     splash.innerHTML = "Enter VR"
-//     // splash.onclick = (e) => {
-//     //     console.log(e)
-//     //     // splash.style.visibility = false;
-//     //     move_to('box');
-//     //     e.srcElement.remove()
-//     // };
-//     splash.id = 'splash';
-//     document.body.appendChild(splash);
+let splash = document.createElement("div");
+splash.classList.add("overlay");
+splash.innerHTML = "Enter VR"
+// splash.onclick = (e) => {
+//     console.log(e)
+//     // splash.style.visibility = false;
+//     move_to('box');
+//     e.srcElement.remove()
+// };
+splash.id = 'splash';
+splash.style.visibility = 'hidden';
+document.body.appendChild(splash);
 // }
 
 let container = document.createElement("div");
@@ -159,11 +160,23 @@ export function move_to(filename) {
     });
 }
 
+// renderer.xr.addEventListener('sessionstart', function (event) {
+
+//     splash.style.visibility = 'hidden';
+
+// });
+
+// renderer.xr.addEventListener('sessionend', function (event) {
+
+//     splash.style.visibility = 'visible';
+
+// });
+
 // if (!VR_only) {
 if (urlParams.has('fname')) {
     move_to(urlParams.get('fname'));
 } else {
-    // splash.style.visibility = 'hidden';
+
     // if (window.location.pathname === '/') {
     move_to('box');
 }

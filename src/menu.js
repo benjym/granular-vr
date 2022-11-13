@@ -23,8 +23,15 @@ export function init() {
 
     // camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000 ); // fov, aspect, near, far
 
-    LIGHTS.add_default_lights( scene );
-    
+    LIGHTS.add_default_lights(scene);
+
+    const base_geometry = new THREE.PlaneGeometry(10, 10);
+    const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
+    const plane = new THREE.Mesh(base_geometry, base_material);
+    plane.rotateX(Math.PI / 2.);
+    plane.remove_me = true;
+    scene.add(plane);
+
     // renderer = new THREE.WebGLRenderer( { antialias: true } );
     // renderer.setPixelRatio( window.devicePixelRatio );
     // renderer.setSize( window.innerWidth, window.innerHeight );
@@ -37,18 +44,18 @@ export function init() {
     // });
     // BUTTONS.add_url_button('isotropic', 'Isotropic', [0,1.3,0], 1, controls, scene);
     // BUTTONS.add_url_button('triaxial',  'Triaxial',  [0,1.9,0], 1, controls, scene);
-    BUTTONS.add_scene_change_button('box', '1. Welcome to hyperspace', controls, scene, [0,2.4,0], 0.3, [0,0,0]);
-    BUTTONS.add_scene_change_button('hyperspheres', '2. What is a hypersphere?', controls, scene, [0,2.2,0], 0.3, [0,0,0]);
-    BUTTONS.add_scene_change_button('slice-3d', '3. Slicing space', controls, scene, [0,2.0,0], 0.3, [0,0,0]);
-    BUTTONS.add_scene_change_button('slice-4d', '4. Intro to 4D', controls, scene, [0,1.8,0], 0.3, [0,0,0]);
-    BUTTONS.add_scene_change_button('rotation-3d', '5. Rotation in 3D', controls, scene, [0,1.6,0], 0.3, [0,0,0]);
-    BUTTONS.add_scene_change_button('rotation-4d', '6. Rotation in 4D', controls, scene, [0,1.4,0], 0.3, [0,0,0]);
-    BUTTONS.add_scene_change_button('pyramid', '7. Pyramid', controls, scene, [0,1.2,0], 0.3, [0,0,0] );
-    BUTTONS.add_scene_change_button('4d-pool', '8. 4D pool', controls, scene, [0,1.0,0], 0.3, [0,0,0] );
+    BUTTONS.add_scene_change_button('box', '1. Welcome to hyperspace', controls, scene, [0, 2.4, 0], 0.3, [0, 0, 0]);
+    BUTTONS.add_scene_change_button('hyperspheres', '2. What is a hypersphere?', controls, scene, [0, 2.2, 0], 0.3, [0, 0, 0]);
+    BUTTONS.add_scene_change_button('slice-3d', '3. Slicing space', controls, scene, [0, 2.0, 0], 0.3, [0, 0, 0]);
+    BUTTONS.add_scene_change_button('slice-4d', '4. Intro to 4D', controls, scene, [0, 1.8, 0], 0.3, [0, 0, 0]);
+    BUTTONS.add_scene_change_button('rotation-3d', '5. Rotation in 3D', controls, scene, [0, 1.6, 0], 0.3, [0, 0, 0]);
+    BUTTONS.add_scene_change_button('rotation-4d', '6. Rotation in 4D', controls, scene, [0, 1.4, 0], 0.3, [0, 0, 0]);
+    BUTTONS.add_scene_change_button('pyramid', '7. Pyramid', controls, scene, [0, 1.2, 0], 0.3, [0, 0, 0]);
+    BUTTONS.add_scene_change_button('4d-pool', '8. 4D pool', controls, scene, [0, 1.0, 0], 0.3, [0, 0, 0]);
 
     // window.addEventListener( 'resize', onWindowResize, false );
-    
-    renderer.setAnimationLoop( render );
+
+    renderer.setAnimationLoop(render);
 
     // console.log(controls.interaction)
 }
@@ -71,7 +78,7 @@ export function init() {
 
 function render() {
     controls.update();
-    renderer.render( scene, camera );
+    renderer.render(scene, camera);
 };
 
 // init();
