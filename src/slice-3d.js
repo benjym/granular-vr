@@ -3,7 +3,7 @@ import track from "../text-to-speech/slice-3d.mp3";
 // import * as DEMCGND from "../resources/DEMCGND.js";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
-import ImmersiveControls from '@depasquale/three-immersive-controls';
+// import ImmersiveControls from '@depasquale/three-immersive-controls';
 
 // import * as CONTROLLERS from '../libs/controllers.js';
 // import * as SPHERES from "../libs/SphereHandler.js"

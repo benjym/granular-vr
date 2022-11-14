@@ -16,7 +16,7 @@ import * as AUDIO from "../libs/audio";
 import { camera, scene, renderer, controls, clock, move_to } from "./index";
 let S;
 
-move_to('isotropic');
+// move_to('isotropic');
 
 
 export let params = {
@@ -55,12 +55,12 @@ export let params = {
     audio_sensitivity: 1,
     F_mag_max: 1e6,
     friction_coefficient: 0.5,
-    pressure : 0,
-    started : false,
-    old_time : 0,
-    new_time : 0,
-    loading_direction : 1,
-    startTime : clock.getElapsedTime(),
+    pressure: 0,
+    started: false,
+    old_time: 0,
+    new_time: 0,
+    loading_direction: 1,
+    startTime: clock.getElapsedTime(),
 }
 
 function set_derived_properties() {
@@ -117,12 +117,12 @@ async function main() {
     // g.position.y = -params.H;
     // scene.add(g);
 
-    const base_geometry = new THREE.PlaneGeometry( 10, 10 );
-    const base_material = new THREE.MeshBasicMaterial( {color: 0x333333, side: THREE.DoubleSide} );
-    const plane = new THREE.Mesh( base_geometry, base_material );
-    plane.rotateX(Math.PI/2.);
-    plane.position.y = -0.5*params.r_min;
-    scene.add( plane );
+    const base_geometry = new THREE.PlaneGeometry(10, 10);
+    const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
+    const plane = new THREE.Mesh(base_geometry, base_material);
+    plane.rotateX(Math.PI / 2.);
+    plane.position.y = -0.5 * params.r_min;
+    scene.add(plane);
 
     const hemiLight = new THREE.HemisphereLight();
     hemiLight.intensity = 0.35;
@@ -179,11 +179,11 @@ async function main() {
     // gui.add ( params, 'new_line').name('New loading path').listen().onChange( new_load_path );
     //gui.add ( params, 'paused').name('Paused').listen();
     // gui.add(params, 'hideaxes').name("Static axes (allow many cycles)").listen() ;
-    gui.add ( params, 'audio_sensitivity', 1, 1e3, 1).name('Audio sensitivity');
-    gui.add ( params, 'audio').name('Audio').listen().onChange(() => {
-        if ( AUDIO.listener === undefined ) {
-            AUDIO.make_listener( camera );
-            AUDIO.add_fixed_sound_source ( [0,0,0] );
+    gui.add(params, 'audio_sensitivity', 1, 1e3, 1).name('Audio sensitivity');
+    gui.add(params, 'audio').name('Audio').listen().onChange(() => {
+        if (AUDIO.listener === undefined) {
+            AUDIO.make_listener(camera);
+            AUDIO.add_fixed_sound_source([0, 0, 0]);
             // SPHERES.add_normal_sound_to_all_spheres();
         } else {
             // AUDIO.remove_listener( camera ); // doesn't do anything at the moment...
@@ -203,15 +203,15 @@ async function main() {
 
     // BUTTONS.add_url_button('index', 'Main menu', [-0.06, 0, 0], 0.02, controls, scene);
 
-    let button = BUTTONS.add_action_button('loading_active', 'Loading active', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6,2.5*params.L], 1, controls, scene);
-    button.rotateY(Math.PI/2.);
+    let button = BUTTONS.add_action_button('loading_active', 'Loading active', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
+    button.rotateY(Math.PI / 2.);
     // make_graph();
     WALLS.update_isotropic_wall(params, S);
     animate();
 
     let graph = GRAPHS.add_axes("Solid Fraction", "Pressure", 0.35, 0.7, 0, params.target_stress, scene);
     graph.position.y = 1.6;
-    graph.position.z = 1.5*params.L;
+    graph.position.z = 1.5 * params.L;
     graph.rotateY(-Math.PI / 2.);
 
 
@@ -274,12 +274,12 @@ function animate() {
                     // update_graph();
                 }
 
-                if ( AUDIO.listener !== undefined ){
+                if (AUDIO.listener !== undefined) {
                     SPHERES.update_fixed_sounds(S, params);
                 }
-           
+
                 SPHERES.draw_force_network(S, params, scene);
-                
+
                 S.cg_param_read_timestep(0);
                 S.cg_process_timestep(0, false);
                 // var grid = S.cg_get_gridinfo();
@@ -342,7 +342,7 @@ function setup_NDDEM() {
     S.simu_interpret_command("radius -1 0.5");
     // now need to find the mass of a particle with diameter 1
     let m = 4. / 3. * Math.PI * 0.5 * 0.5 * 0.5 * params.particle_density;
-    
+
     S.simu_interpret_command("mass -1 " + String(m));
     S.simu_interpret_command("auto rho");
     S.simu_interpret_command("auto radius uniform " + params.r_min + " " + params.r_max);
@@ -352,7 +352,7 @@ function setup_NDDEM() {
     // console.log(params.L, params.H)
     S.simu_interpret_command("boundary 0 WALL -" + String(params.L) + " " + String(params.L));
     S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
-    S.simu_interpret_command("boundary 2 WALL -" + String(0) + " " + String(2*params.H));
+    S.simu_interpret_command("boundary 2 WALL -" + String(0) + " " + String(2 * params.H));
     if (params.gravity === true) {
         S.simu_interpret_command("gravity 0 0 " + String(-9.81) + "0 ".repeat(params.dimension - 3))
     }
@@ -367,7 +367,7 @@ function setup_NDDEM() {
     let min_particle_mass = params.particle_density * 4. / 3. * Math.PI * Math.pow(params.r_min, 3);
     let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, min_particle_mass);
     S.simu_interpret_command("set Kn " + String(vals.stiffness));
-    S.simu_interpret_command("set Kt " + String(0.8*vals.stiffness));
+    S.simu_interpret_command("set Kt " + String(0.8 * vals.stiffness));
     S.simu_interpret_command("set GammaN " + String(vals.dissipation));
     S.simu_interpret_command("set GammaT " + String(vals.dissipation));
 
@@ -386,7 +386,7 @@ function setup_NDDEM() {
     S.simu_interpret_command("set T 150");
     S.simu_interpret_command("set dt " + String(tc / 20));
     S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
-    
+
     S.simu_finalise_init();
 }
 
@@ -396,8 +396,8 @@ function setup_CG() {
     cgparam["boxes"] = [1, 1, 1];
     // cgparam["boundaries"]=[[-params.L,-params.L,-params.L],[params.L,params.L,params.L]] ;
     cgparam["boundaries"] = [
-        [-params.L / 2., -params.L / 2.,   params.boxratio*params.L / 2.],
-        [ params.L / 2.,  params.L / 2., 3*params.boxratio*params.L / 2.]];
+        [-params.L / 2., -params.L / 2., params.boxratio * params.L / 2.],
+        [params.L / 2., params.L / 2., 3 * params.boxratio * params.L / 2.]];
     // [-params.L+params.r_max,-params.L+params.r_max,-params.L+params.r_max],
     // [ params.L-params.r_max, params.L-params.r_max, params.L-params.r_max]] ;
 
