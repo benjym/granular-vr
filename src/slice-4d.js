@@ -52,8 +52,6 @@ function update() {
     params = CONTROLLERS.moveInD4(params, controls);
     SPHERES.move_spheres(S, params);
     renderer.render(scene, camera);
-    console.log('hi')
-
 }
 
 export function init() {

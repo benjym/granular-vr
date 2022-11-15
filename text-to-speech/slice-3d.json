@@ -5,7 +5,7 @@
       "speakingRate": 0.8
     },
     "input": {
-      "text": "Here, you will learn about slicing a 3D sphere with a 2D plane. In front of you there is a white sphere and a pink plane. You can move the plane around by NOT IMPLEMENTED YET. When the plane slices the sphere, the intersection of the two is a circle. Try moving the plane around now. When the two intersect, you will be able to see a circle which is the intersection. As you move the plane, you can see the circle growing and shrinking. When the plane is at the middle of the sphere, the circle is as large as the sphere is. When the plane doesn't pass through the sphere, there is no intersection, and you can't see the circle. Next, let's try this in 4 dimensions. Click on the 'Intro to 4D' button to continue."
+      "text": "Here, you will learn about slicing a 3D sphere with a 2D plane. In front of you there is a white sphere and a pink plane. You can move the plane around by moving the right joystick up and down. When the plane slices the sphere, the intersection of the two is a circle. Try moving the plane around now. When the two intersect, you will be able to see a circle which is the intersection. As you move the plane, you can see the circle growing and shrinking. When the plane is at the middle of the sphere, the circle is as large as the sphere is. When the plane doesn't pass through the sphere, there is no intersection, and you can't see the circle. Next, let's try this in 4 dimensions. Click on the 'Intro to 4D' button to continue."
     },
     "voice": {
       "languageCode": "en-au",

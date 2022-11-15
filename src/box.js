@@ -21,7 +21,7 @@ export let params = {
     dimension: 4,
     boxratio: 1,
     // initial_packing_fraction: 0.01,
-    N: 1000,
+    N: 500,
     epsilonv: 0,
     gravity: false,
     paused: false,

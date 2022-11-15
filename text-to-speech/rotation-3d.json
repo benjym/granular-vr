@@ -5,7 +5,7 @@
     "speakingRate": 0.8
   },
   "input": {
-    "text": "In two dimensions there is only one direction that a circle can rotate in. We call this a degree of freedom. In 3D there are three degrees of freedom that any object can rotate in. To be able to see these rotations, we have to put a texture on the surface of the particles. By updating the texture, the particle appears to rotate. Next, lets see what happens in 4D."
+    "text": "In two dimensions there is only one direction that a circle can rotate in. We call this a degree of freedom. You can see the Sydney University logo spinning in this degree of freedom. In 3D there are three degrees of freedom that any object can rotate in. To be able to see these rotations, we have to put a texture on the surface of the particles. By updating the texture, the particle appears to rotate. Next, lets see what happens in 4D."
   },
   "voice": {
     "languageCode": "en-au",

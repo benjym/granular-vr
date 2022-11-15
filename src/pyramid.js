@@ -17,7 +17,7 @@ var params = {
     dimension: 4,
     radius: 0.15,
     L: 500, //system size
-    d4: { cur: 0, min: -1, max: 1 },
+    d4: { cur: 0, min: -0.3, max: 0.3 },
     lut: 'None',
     quality: 7,
     pyramid_size: 7,
@@ -58,7 +58,34 @@ async function main() {
     // AUDIO.play_track('pyramid.mp3', camera, 5000);
 
     renderer.setAnimationLoop(function () {
-        if (controls !== undefined) { controls.update(); }
+        if (controls !== undefined) {
+            controls.update();
+            if ( controls.vrControls.controllerGrips.left !== undefined ) {
+                let loc = new THREE.Vector3();
+                controls.vrControls.controllerGrips.left.getWorldPosition( loc );
+                // console.log( controls.vrControls.controllerGrips.left.position )
+                S.simu_fixParticle(params.N-1,
+                    [ loc.x,
+                      loc.z,
+                      loc.y,
+                      params.d4.cur
+                    ]
+                );
+            }
+            if ( controls.vrControls.controllerGrips.right !== undefined ) {
+                let loc = new THREE.Vector3();
+                controls.vrControls.controllerGrips.right.getWorldPosition( loc );
+                // console.log( controls.vrControls.controllerGrips.left.position )
+                S.simu_fixParticle(params.N-2,
+                    [ loc.x,
+                      loc.z,
+                      loc.y,
+                      params.d4.cur
+                    ]
+                );
+            }
+        }
+        console.log(SPHERES.spheres.children[params.N-1])
         S.simu_step_forward(5);
         SPHERES.move_spheres(S, params);
         renderer.render(scene, camera);
@@ -92,7 +119,7 @@ function set_ball_positions() {
                 let x = i * 1.825 * params.radius - cur_pyramid_length * params.radius * 0.65;// + 2 * params.radius;
                 let y = j * 2.01 * params.radius - (cur_pyramid_length - i) * params.radius + params.radius;// - i%2*radius;
                 console.log(n, x, y, z);
-                S.simu_interpret_command("location " + String(n) + " " + String(x) + " " + String(y) + " " + String(z) + " " + String(0));
+                S.simu_interpret_command("location " + String(n) + " " + String(x) + " " + String(y) + " " + String(z) + " " + String(0.01));
                 if (k === 0) {
                     S.simu_setFrozen(n);
                 }
@@ -129,8 +156,10 @@ function set_ball_positions() {
     // add the cue stick
     // if (params.vr) {
     S.simu_interpret_command("location " + String(params.N - 1) + " 10 10 10 0");
+    S.simu_setFrozen(params.N-1);
     // console.log(params.N)
     S.simu_interpret_command("location " + String(params.N - 2) + " 10 10 10 0");
+    S.simu_setFrozen(params.N-2);
     // console.log(params.N)
 
     // let pool_cue_particle_volume = Math.PI*Math.PI*Math.pow(POOLCUE.small_end_radius,4)/2.;
@@ -175,7 +204,7 @@ async function NDDEMCGPhysics() {
         S.simu_interpret_command("gravity 0 0 -10 0");
 
         if (params.dimension == 4) {
-            S.simu_interpret_command("boundary 3 WALL -1 1");
+            S.simu_interpret_command("boundary 3 WALL " + String(params.d4.min) + " " + String(params.d4.max));
         }
 
         set_ball_positions();

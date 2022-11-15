@@ -5,7 +5,7 @@ import track from "../text-to-speech/slice-3d.mp3";
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 // import ImmersiveControls from '@depasquale/three-immersive-controls';
 
-// import * as CONTROLLERS from '../libs/controllers.js';
+import * as CONTROLLERS from '../libs/controllers.js';
 // import * as SPHERES from "../libs/SphereHandler.js"
 // import * as WALLS from "../libs/WallHandler.js"
 import * as BUTTONS from "../libs/buttons";
@@ -17,7 +17,13 @@ import { camera, scene, renderer, controls, clock } from "./index";
 
 // let scene, renderer, controls, camera
 
-let params = { 'loc': 0 };
+let params = {
+    'd4': {
+        'cur': 0,
+        'min': -1,
+        'max': 1
+    }
+};
 
 function update_spheres(x, circle, wall) {
     let R_draw = 2 * Math.sqrt(0.5 * 0.5 - x * x);
@@ -67,7 +73,7 @@ export function init() {
     circle.position.x = 3
     circle.visible = true;
     wall.rotation.y = Math.PI / 2.;
-    wall.position.x = params.loc;
+    wall.position.x = params.d4.cur;
     wall.scale.set(4, 4, 4);
 
     let objects = new THREE.Group();
@@ -83,7 +89,7 @@ export function init() {
     scene.add(objects);
 
     let gui = new GUI();
-    gui.add(params, 'loc').min(-1).max(1).step(0.01).listen().name('Slice').onChange(function (val) { update_spheres(val, circle, wall); });
+    gui.add(params.d4, 'cur').min(params.d4.min).max(params.d4.max).step(0.01).listen().name('Slice').onChange(function (val) { update_spheres(val, circle, wall); });
     gui.open();
 
     AUDIO.play_track('slice-3d.mp3', camera, 5000);
@@ -93,7 +99,11 @@ export function init() {
 
 
     renderer.setAnimationLoop(function () {
-        if (controls !== undefined) { controls.update(); }
+        if (controls !== undefined) {
+            controls.update();
+            params = CONTROLLERS.moveInD4(params, controls); // acctually moving in D3...
+            update_spheres(params.d4.cur, circle, wall);
+        }
         renderer.render(scene, camera);
     });
 };
