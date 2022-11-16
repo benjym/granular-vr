@@ -13,6 +13,8 @@ import * as LIGHTS from "../libs/lights";
 // let file = 'box';
 let VR_only = false;
 
+export let apps
+
 let urlParams = new URLSearchParams(window.location.search);
 // if ( urlParams.has('VR') || urlParams.has('vr') ) { VR_only = true; }
 
@@ -71,9 +73,9 @@ async function add_common_properties() {
         // moveSpeed: { keyboard: 0.025, vr: 0.025 }
     });
     controls.keep_me = true;
-    console.log(controls)
-    console.log(controls.player)
-    console.log(controls.vrControls)
+    // console.log(controls)
+    // console.log(controls.player)
+    // console.log(controls.vrControls)
     // console.log(controls.constructor.name)
 
     window.addEventListener('resize', onWindowResize, false);
@@ -153,11 +155,29 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-export function move_to(filename) {
-    console.log('CHANGING TO ' + filename)
-    import("./" + filename).then((module) => {
-        wipe_scene().then(module.init());
-    });
+export function move_to( v ) {
+    if ( typeof v === 'number' ) {
+        apps.current = v;
+        console.log('CHANGING TO ' + apps.list[v].url)
+        import("./" + apps.list[v].url).then((module) => {
+            wipe_scene().then(module.init());
+        });
+
+    } else if ( typeof v === 'string' ) {
+        apps.list.forEach((e, index) => {
+            if ( e.url === v ) {
+                apps.current = index;
+            }
+        });
+        console.log('CHANGING TO ' + v)
+        import("./" + v).then((module) => {
+            wipe_scene().then(module.init());
+        });
+    }
+    else {
+        console.error('Unsupported type for moving between scenes')
+    }
+    
 }
 
 // renderer.xr.addEventListener('sessionstart', function (event) {
@@ -173,11 +193,16 @@ export function move_to(filename) {
 // });
 
 // if (!VR_only) {
-if (urlParams.has('fname')) {
-    move_to(urlParams.get('fname'));
-} else {
+fetch("apps.json")
+.then(response => response.json())
+.then(json => {
+    apps = json;
 
-    // if (window.location.pathname === '/') {
-    move_to('box');
-}
-// }
+    if (urlParams.has('fname')) {
+        move_to(urlParams.get('fname'));
+    } else {
+        // console.log(apps.current)
+        // if (window.location.pathname === '/') {
+        move_to( apps.current );
+    }
+});

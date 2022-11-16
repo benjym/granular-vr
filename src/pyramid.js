@@ -10,7 +10,7 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock } from "./index";
+import { camera, scene, renderer, controls, clock, apps } from "./index";
 let S;
 
 var params = {
@@ -22,7 +22,8 @@ var params = {
     quality: 7,
     pyramid_size: 7,
     particle_density: 2700,
-
+    particle_opacity: 0.8,
+    F_mag_max : 2e2,
 }
 
 params.N = get_num_particles(params.pyramid_size);
@@ -50,12 +51,12 @@ async function main() {
     if (params.dimension == 4) {
         let gui = new GUI();
         gui.width = 320;
-        gui.add(params.d4, 'cur', -1, 1, 0.001).name('D4 location').listen()
+        gui.add(params.d4, 'cur', -1, 1, 0.001).name('D4 location').listen();
+        gui.remove_me = true;
     }
 
-    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    BUTTONS.add_scene_change_button('4d-pool', '4D Pool', controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
-    // AUDIO.play_track('pyramid.mp3', camera, 5000);
+    BUTTONS.add_scene_change_button(apps.list[0].url, apps.list[0].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
 
     renderer.setAnimationLoop(function () {
         if (controls !== undefined) {
@@ -85,9 +86,10 @@ async function main() {
                 );
             }
         }
-        console.log(SPHERES.spheres.children[params.N-1])
+        // console.log(SPHERES.spheres.children[params.N-1])
         S.simu_step_forward(5);
         SPHERES.move_spheres(S, params);
+        SPHERES.draw_force_network(S, params, scene);
         renderer.render(scene, camera);
         // console.log(controls.player.position)
         CONTROLLERS.moveInD4(params, controls);
@@ -225,7 +227,7 @@ async function NDDEMCGPhysics() {
         S.simu_interpret_command("set GammaT " + String(vals.dissipation));
         S.simu_interpret_command("set Mu 0.5");
         S.simu_interpret_command("set Mu_wall 1");
-        S.simu_interpret_command("set damping 6e-4");
+        S.simu_interpret_command("set damping 1e-3");
         S.simu_interpret_command("set T 150");
         S.simu_interpret_command("set dt " + String(tc / 20));
         S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces

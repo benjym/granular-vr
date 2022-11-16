@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input": {
+        "text": "Now we're going to squeeze a whole pile of grains. Click on the Loading Active button to start squeezing. As the particles compress, you can see the forces between them as the white cylinders. You can also see a graph of the average pressure in the system as a function of the density."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}

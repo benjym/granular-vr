@@ -13,7 +13,7 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock } from "./index";
+import { camera, scene, renderer, controls, clock, apps } from "./index";
 
 // let scene, renderer, controls, camera
 
@@ -90,12 +90,12 @@ export function init() {
 
     let gui = new GUI();
     gui.add(params.d4, 'cur').min(params.d4.min).max(params.d4.max).step(0.01).listen().name('Slice').onChange(function (val) { update_spheres(val, circle, wall); });
-    gui.open();
+    gui.remove_me = true;
 
     AUDIO.play_track('slice-3d.mp3', camera, 5000);
 
-    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    BUTTONS.add_scene_change_button('slice-4d', 'Intro to 4D', controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[0].url, apps.list[0].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
 
 
     renderer.setAnimationLoop(function () {

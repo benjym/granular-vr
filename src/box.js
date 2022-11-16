@@ -13,7 +13,7 @@ import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock } from "./index";
+import { camera, scene, renderer, controls, clock, apps } from "./index";
 
 let S;
 
@@ -116,8 +116,8 @@ async function main() {
 
     WALLS.update_isotropic_wall(params, S);
 
-    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    BUTTONS.add_scene_change_button('hyperspheres', 'What is a hypersphere?', controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[0].url, apps.list[0].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
 
     let offset = 0.2;
 

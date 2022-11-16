@@ -180,27 +180,9 @@ async function main() {
             AUDIO.make_listener(camera);
             // SPHERES.add_normal_sound_to_all_spheres();
         }
-        // NOTE: NEED TO MAKE A DESTRUCTOR!
     });
-    // const controls = new OrbitControls( camera, renderer.domElement );
-    // controls.target.y = params.table_height-params.L2;
-    // controls.update();
-
-    // document.getElementById('hit_me').hidden = true;
-    // document.getElementById("web_instructions").hidden = false;
-
-    // }
-
-    // window.addEventListener('keypress', onSelectParticle, false);
-
-    // if ( params.vr ) {
-    //     POOLCUE.add_pool_cue( CONTROLLERS.controller1 );
-    //     CONTROLLERS.add_torus( CONTROLLERS.controller2, params ).then(() => {
-    //         SPHERES.add_spheres_to_torus(params, CONTROLLERS.torus1);
-    //     });
-
-    // }
-
+    gui.remove_me = true;
+    
     BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1.5, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
     // BUTTONS.add_scene_change_button('hyperspheres', 'What is a hypersphere?', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
 

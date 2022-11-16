@@ -1,4 +1,6 @@
 import css from "../css/main.css";
+import track from "../text-to-speech/isotropic.mp3";
+
 // import * as DEMCGND from "../resources/DEMCGND.js";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -13,7 +15,7 @@ import * as AUDIO from "../libs/audio";
 
 // var clock = new THREE.Clock();
 
-import { camera, scene, renderer, controls, clock, move_to } from "./index";
+import { camera, scene, renderer, controls, clock, apps } from "./index";
 let S;
 
 // move_to('isotropic');
@@ -202,6 +204,7 @@ async function main() {
     // window.addEventListener('resize', onWindowResize, false);
 
     // BUTTONS.add_url_button('index', 'Main menu', [-0.06, 0, 0], 0.02, controls, scene);
+    gui.remove_me = true;
 
     let button = BUTTONS.add_action_button('loading_active', 'Loading active', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
     button.rotateY(Math.PI / 2.);
@@ -214,6 +217,10 @@ async function main() {
     graph.position.z = 1.5 * params.L;
     graph.rotateY(-Math.PI / 2.);
 
+    AUDIO.play_track('isotropic.mp3', camera, 3000);
+
+    BUTTONS.add_scene_change_button(apps.list[0].url, apps.list[0].name, controls, scene, [-1, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1.5], 0.25, [0, -Math.PI / 4, 0]);
 
 }
 

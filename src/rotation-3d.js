@@ -16,7 +16,7 @@ import * as LIGHTS from "../libs/lights";
 // var clock = new THREE.Clock();
 
 // let camera, scene, renderer, controls, S;
-import { camera, scene, renderer, controls, clock } from "./index";
+import { camera, scene, renderer, controls, clock, apps } from "./index";
 let S;
 
 var params = {
@@ -87,7 +87,8 @@ async function main() {
     if (params.dimension == 4) {
         let gui = new GUI();
         gui.width = 320;
-        gui.add(params.d4, 'cur', -params.radius, params.radius, 0.001).name('D4 location').listen()
+        gui.add(params.d4, 'cur', -params.radius, params.radius, 0.001).name('D4 location').listen();
+        gui.remove_me = true;
     }
 
     let circle;
@@ -111,14 +112,8 @@ async function main() {
     //     // moveSpeed: { keyboard: 0.025, vr: 0.025 }
     // });
 
-    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    if (params.dimension === 3) {
-        BUTTONS.add_scene_change_button('rotation-4d', 'Rotation in 4D', controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
-        AUDIO.play_track('rotation-3d.mp3', camera, 5000);
-    } else if (params.dimension === 4) {
-        BUTTONS.add_scene_change_button('pyramid', 'Pyramid', controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
-        AUDIO.play_track('rotation-4d.mp3', camera, 5000);
-    }
+    BUTTONS.add_scene_change_button(apps.list[0].url, apps.list[0].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
 
     renderer.setAnimationLoop(function () {
         if (controls !== undefined) { controls.update(); }

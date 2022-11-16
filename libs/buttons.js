@@ -144,6 +144,7 @@ export function add_action_button(type, name, selectStartFunction, selectEndFunc
 
     button.userData.type = type; // this sets up interaction group for controllers
     button.children[0].userData.type = type; // this sets up interaction group for controllers
+    button.children[1].userData.type = type; // this sets up interaction group for controllers
 
     controls.interaction.selectStartHandlers[type] = selectStartFunction;
     controls.interaction.selectEndHandlers[type] = selectEndFunction;
@@ -151,6 +152,7 @@ export function add_action_button(type, name, selectStartFunction, selectEndFunc
     // controls.interaction.selectableObjects.push(button);
     controls.interaction.selectableObjects.push(button);
     controls.interaction.selectableObjects.push(button.children[0]);
+    controls.interaction.selectableObjects.push(button.children[1]);
 
     scene.add(button);
 

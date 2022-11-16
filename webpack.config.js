@@ -17,6 +17,7 @@ module.exports = [
       "rotation-3d": './src/rotation-3d.js',
       "rotation-4d": './src/rotation-4d.js',
       "hyperspheres": './src/hyperspheres.js',
+      "two-particle-collision": './src/two-particle-collision.js',
     },
     plugins: [
       new webpack.ProvidePlugin({

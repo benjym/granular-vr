@@ -9,7 +9,7 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock } from "./index";
+import { camera, scene, renderer, controls, clock, apps } from "./index";
 
 export function init() {
     LIGHTS.add_default_lights( scene );
@@ -89,6 +89,6 @@ export function init() {
 
     AUDIO.play_track('hyperspheres.mp3', camera, 5000);
 
-    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1, 1, 1], 0.25, [0,Math.PI/4,0]);
-    BUTTONS.add_scene_change_button('slice-3d', 'Slicing space', controls, scene, [1, 1, 1], 0.25, [0,-Math.PI/4,0]);
+    BUTTONS.add_scene_change_button(apps.list[0].url, apps.list[0].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
 }

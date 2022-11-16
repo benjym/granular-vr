@@ -564,7 +564,7 @@ export function draw_force_network(S, params, scene) {
             forces.remove_me = true;
 
             var F = S.simu_getContactInfos(0x80 | 0x100)
-
+            
             let width = radii[0] / 2.;
             if ('F_mag_max' in params) {
                 F_mag_max = params.F_mag_max;
@@ -588,7 +588,15 @@ export function draw_force_network(S, params, scene) {
                         Math.pow(F[i][4], 2)
                     )
                 }
-                if (F_mag > 0) {
+                else if (params.dimension === 4) {
+                    F_mag = Math.sqrt(
+                        Math.pow(F[i][2], 2) +
+                        Math.pow(F[i][3], 2) +
+                        Math.pow(F[i][4], 2) +
+                        Math.pow(F[i][5], 2)
+                    )
+                }
+                if (F_mag > 0 && spheres.children[F[i][0]] !== undefined ) {
                     let c = cylinder.clone();
                     let a = spheres.children[F[i][0]].position;
                     let b = spheres.children[F[i][1]].position;

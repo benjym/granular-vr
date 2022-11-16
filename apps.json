@@ -1,0 +1,16 @@
+{
+    "list" : [
+        { "url":"menu", "name": "Main menu" },
+        { "url":"box", "name": "Welcome to hyperspace" },
+        { "url":"hyperspheres", "name": "What is a hypersphere?" },
+        { "url":"slice-3d", "name": "Slicing space" },
+        { "url":"slice-4d", "name": "Intro to 4D" },
+        { "url":"rotation-3d", "name": "Rotation in 3D" },
+        { "url":"rotation-4d", "name": "Rotation in 4D" },
+        { "url":"two-particle-collision", "name": "Two particles colliding" },
+        { "url":"isotropic", "name": "Squeezing lots of grains" },
+        { "url":"pyramid", "name": "Pyramid" },
+        { "url":"4d-pool", "name": "4D pool" }
+    ],
+    "current" : 1
+}
