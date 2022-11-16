@@ -19,16 +19,6 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 /***/ }),
 
-/***/ "./libs/PoolCue.js":
-/*!*************************!*\
-  !*** ./libs/PoolCue.js ***!
-  \*************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"add_pool_cue\": () => (/* binding */ add_pool_cue),\n/* harmony export */   \"pool_cue\": () => (/* binding */ pool_cue),\n/* harmony export */   \"small_end_radius\": () => (/* binding */ small_end_radius),\n/* harmony export */   \"small_sphere\": () => (/* binding */ small_sphere),\n/* harmony export */   \"snap\": () => (/* binding */ snap)\n/* harmony export */ });\n/* provided dependency */ var THREE = __webpack_require__(/*! three */ \"./node_modules/three/build/three.module.js\");\nlet pool_cue, small_end_radius, small_sphere;\n\nasync function add_pool_cue( target ) {\n    pool_cue = new THREE.Group();\n\n    small_end_radius = 0.02; // any smaller and things go very poorly (at least using the webxr fake platform with apparently large step sizes)\n    let large_end_radius = 0.04;\n    let length = 1.4;\n\n    const cylinder_geometry = new THREE.CylinderGeometry( large_end_radius, small_end_radius, length, 16 );\n    cylinder_geometry.applyMatrix4( new THREE.Matrix4().makeRotationX( -Math.PI / 2 ) ); // rotate the geometry to make the forces point in the right direction\n    const wood_material = new THREE.MeshStandardMaterial( {color: 0x5d2906} ); // wood colour\n    const cylinder = new THREE.Mesh( cylinder_geometry, wood_material );\n    pool_cue.add(cylinder);\n\n    const small_sphere_geometry = new THREE.SphereGeometry( small_end_radius, 32, 16 );\n    const chalk = new THREE.MeshStandardMaterial( {color: 0xffffff} ); // chalk colour\n    small_sphere = new THREE.Mesh( small_sphere_geometry, chalk );\n\n    pool_cue.add(small_sphere);\n    small_sphere.position.z = length/2.;\n\n    const large_sphere_geometry = new THREE.SphereGeometry( large_end_radius, 32, 16 );\n    const large_sphere = new THREE.Mesh( large_sphere_geometry, wood_material );\n\n    pool_cue.add(large_sphere);\n    large_sphere.position.z = -length/2.;\n\n    // pool_cue.position.z = -length/4.\n\n    pool_cue.remove_me = true;\n    if ( target !== undefined ) { target.add( pool_cue ); }\n    else {\n        setTimeout(() => {add_pool_cue(target)}, 100);\n    }\n\n    return 1\n}\n\nfunction snap ( controls ) {\n    let loc = new THREE.Vector3();\n    if ( controls.vrControls.controllers.left !== undefined ) {\n        controls.vrControls.controllers.left.getWorldPosition( loc );\n        pool_cue.lookAt( loc );\n    }\n}\n\n//# sourceURL=webpack://granular-vr/./libs/PoolCue.js?");
-
-/***/ }),
-
 /***/ "./node_modules/css-loader/dist/cjs.js!./css/main.css":
 /*!************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./css/main.css ***!
