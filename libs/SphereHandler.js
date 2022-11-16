@@ -176,20 +176,22 @@ export function update_fixed_sounds(S, params) {
                 dissipation = Math.sqrt(row[2] * row[2] + row[3] * row[3] + row[4] * row[4] + row[5] * row[5]);
             }
             // dissipation *= params.particle_volume*0.;
-            dissipation *= 1e-5;
+            
             // console.log(params.particle_volume)
             // dissipation = Math.log10(dissipation)/5e3;
             // dissipation = isFinite(dissipation) ? dissipation : 0.0; // remove non-finite values
             // let cutoff = 2e-2;
-
-            if (dissipation > 1. / params.audio_sensitivity) {
-                if (params.lut === 'None') {
-                    spheres.children[row[0]].material.uniforms.ambient.value += dissipation * params.audio_sensitivity; // make them glow
+            if (isFinite(dissipation)) {
+                dissipation *= 1e-5;
+                if (dissipation > 1. / params.audio_sensitivity) {
+                    if (params.lut === 'None') {
+                        spheres.children[row[0]].material.uniforms.ambient.value += dissipation * params.audio_sensitivity; // make them glow
+                    }
+                    else {
+                        spheres.children[row[0]].material.emissiveIntensity += dissipation * params.audio_sensitivity; // make them glow
+                    }
+                    total_dissipation += dissipation;
                 }
-                else {
-                    spheres.children[row[0]].material.emissiveIntensity += dissipation * params.audio_sensitivity; // make them glow
-                }
-                total_dissipation += dissipation;
             }
 
 

@@ -8,7 +8,7 @@ import * as BUTTONS from "../libs/buttons";
 import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
-// import { VRButton } from "../libs/VRButton";
+import * as POOLCUE from "../libs/PoolCue";
 
 // let file = 'box';
 let VR_only = false;
@@ -41,9 +41,6 @@ export let camera, scene, renderer, controls, clock;
 async function add_common_properties() {
     clock = new THREE.Clock();
 
-
-    // if (urlParams.has('quality')) { params.quality = parseInt(urlParams.get('quality')); }
-
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1e-2, 100);
     camera.keep_me = true;
 
@@ -56,12 +53,8 @@ async function add_common_properties() {
     // renderer.shadowMap.mapSize = new THREE.Vector2(512,512);
     // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     // renderer.outputEncoding = THREE.sRGBEncoding;
-
-
     container.appendChild(renderer.domElement);
-    // document.body.appendChild( VRButton.createButton( renderer, VR_only ) );
-
-    // wipe_scene();
+    
     scene = new THREE.Scene();
     scene.keep_me = true;
     scene.background = new THREE.Color(0x111);
@@ -73,10 +66,6 @@ async function add_common_properties() {
         // moveSpeed: { keyboard: 0.025, vr: 0.025 }
     });
     controls.keep_me = true;
-    // console.log(controls)
-    // console.log(controls.player)
-    // console.log(controls.vrControls)
-    // console.log(controls.constructor.name)
 
     window.addEventListener('resize', onWindowResize, false);
 }
@@ -124,23 +113,13 @@ async function wipe_scene() {
                 }
             }
         };
+        if ( POOLCUE.pool_cue !== undefined && controls.vrControls.controllers.right !== undefined ) { controls.vrControls.controllers.right.remove( POOLCUE.pool_cue) }
         controls.interaction.selectStartHandlers = {};
         controls.interaction.selectEndHandlers = {};
         controls.interaction.selectableObjects = [];
 
         SPHERES.reset_spheres();
-        // scene.children.length = 0;
-        // console.log(scene);
     }
-
-    // scene = new THREE.Scene();
-    // scene.background = new THREE.Color(0x111);
-    // controls = new ImmersiveControls(camera, renderer, scene, {
-    //     initialPosition: new THREE.Vector3(0, 1.6, 2),
-    //     showEnterVRButton: true,
-    //     showExitVRButton: false,
-    //     // moveSpeed: { keyboard: 0.025, vr: 0.025 }
-    // });
 
     AUDIO.end_current_track();
 }

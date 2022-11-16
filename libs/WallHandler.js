@@ -1,4 +1,4 @@
-export let left, right, floor, roof, front, back;
+export let left, right, floor, roof, front, back, walls;
 export let axesHelper, arrow_x, arrow_y, arrow_z;
 let arrow_body, arrow_head;
 let textGeo_x, textGeo_y, textGeo_z;
@@ -7,14 +7,6 @@ let vertical_wall_acceleration = 0;
 let vertical_wall_velocity = 0;
 let vertical_wall_displacement = 0;
 
-import {
-    BoxGeometry,
-    MeshLambertMaterial,
-    Mesh,
-    Group,
-    CylinderGeometry,
-} from "three";
-
 // import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { font } from "./buttons";
@@ -22,15 +14,19 @@ import { font } from "./buttons";
 // var loader = new FontLoader();
 // loader.load("../resources/helvetiker_bold.typeface.json", function (f) { font = f });
 
-const wall_geometry = new BoxGeometry(1, 1, 1);
-const wall_material = new MeshLambertMaterial();
+const wall_geometry = new THREE.BoxGeometry(1, 1, 1);
+const wall_material = new THREE.MeshLambertMaterial();
 wall_material.wireframe = true;
 
-export const walls = new Group();
-walls.remove_me = true;
+function add_wall_group() {
+    walls = new THREE.Group();
+    walls.remove_me = true;
+}
+
+add_wall_group();
 
 const arrow_colour = 0xDDDDDD;
-const arrow_material = new MeshLambertMaterial({ color: arrow_colour });
+const arrow_material = new THREE.MeshLambertMaterial({ color: arrow_colour });
 
 export function add_shadows() {
     for (let i = 0; i < walls.children.length; i++) {
@@ -42,7 +38,7 @@ export function add_shadows() {
 
 export function add_left(params) {
     if (left !== undefined) { walls.remove(left); }
-    left = new Mesh(wall_geometry, wall_material);
+    left = new THREE.Mesh(wall_geometry, wall_material);
     left.scale.y = params.thickness;
     left.position.y = - params.L - params.thickness / 2.;
     // floor.receiveShadow = true;
@@ -51,7 +47,7 @@ export function add_left(params) {
 
 export function add_right(params) {
     if (right !== undefined) { walls.remove(right); }
-    right = new Mesh(wall_geometry, wall_material);
+    right = new THREE.Mesh(wall_geometry, wall_material);
     right.scale.y = params.thickness;
     right.position.y = params.L + params.thickness / 2.;
     // top.receiveShadow = true;
@@ -60,7 +56,7 @@ export function add_right(params) {
 
 export function add_floor(params) {
     if (floor !== undefined) { walls.remove(floor); }
-    floor = new Mesh(wall_geometry, wall_material);
+    floor = new THREE.Mesh(wall_geometry, wall_material);
     floor.scale.y = params.thickness;
     floor.rotation.x = Math.PI / 2.;
     // floor.position.z = - params.L * params.aspect_ratio - params.thickness / 2.;
@@ -70,7 +66,7 @@ export function add_floor(params) {
 
 export function add_roof(params) {
     if (roof !== undefined) { walls.remove(roof); }
-    roof = new Mesh(wall_geometry, wall_material);
+    roof = new THREE.Mesh(wall_geometry, wall_material);
     roof.scale.y = params.thickness;
     roof.rotation.x = Math.PI / 2.;
     roof.position.z = 2*params.L * params.aspect_ratio + params.thickness / 2.;
@@ -80,7 +76,7 @@ export function add_roof(params) {
 
 export function add_front(params) {
     if (front !== undefined) { walls.remove(front); }
-    front = new Mesh(wall_geometry, wall_material);
+    front = new THREE.Mesh(wall_geometry, wall_material);
     front.scale.y = params.thickness;
     front.rotation.z = Math.PI / 2.;
     front.position.x = params.L + params.thickness / 2.;
@@ -90,7 +86,7 @@ export function add_front(params) {
 
 export function add_back(params) {
     if (back !== undefined) { walls.remove(back); }
-    back = new Mesh(wall_geometry, wall_material);
+    back = new THREE.Mesh(wall_geometry, wall_material);
     back.scale.y = params.thickness;
     back.rotation.z = Math.PI / 2.;
     back.position.x = -params.L - params.thickness / 2.;
@@ -99,7 +95,7 @@ export function add_back(params) {
 }
 
 export function add_cuboid_walls(params) {
-
+    if ( walls === undefined ) { add_wall_group() }
     // const wall_geometry = new THREE.BoxGeometry( params.L*2 + params.thickness*2, params.thickness, params.L*2 + params.thickness*2 );
     // const wall_material = new THREE.ShadowMaterial( )
 
@@ -123,17 +119,17 @@ export function add_scale(params) {
     } //else {}
     // if you haven't already made the axes
 
-    axesHelper = new Group();
+    axesHelper = new THREE.Group();
     walls.add(axesHelper);
 
-    let arrow_body = new CylinderGeometry(
+    let arrow_body = new THREE.CylinderGeometry(
         thickness,
         thickness,
         XYaxeslength - 2 * thickness,
         Math.pow(2, params.quality),
         Math.pow(2, params.quality)
     );
-    let arrow_head = new CylinderGeometry(
+    let arrow_head = new THREE.CylinderGeometry(
         0,
         2 * thickness,
         4 * thickness,
@@ -141,11 +137,11 @@ export function add_scale(params) {
         Math.pow(2, params.quality)
     );
 
-    arrow_x = new Mesh(arrow_body, arrow_material);
-    arrow_y = new Mesh(arrow_body, arrow_material);
+    arrow_x = new THREE.Mesh(arrow_body, arrow_material);
+    arrow_y = new THREE.Mesh(arrow_body, arrow_material);
 
-    var arrow_head_x = new Mesh(arrow_head, arrow_material);
-    var arrow_head_y = new Mesh(arrow_head, arrow_material);
+    var arrow_head_x = new THREE.Mesh(arrow_head, arrow_material);
+    var arrow_head_y = new THREE.Mesh(arrow_head, arrow_material);
 
 
     arrow_head_x.position.y = XYaxeslength / 2.;
@@ -160,8 +156,8 @@ export function add_scale(params) {
         size: fontsize,
         height: fontsize / 5,
     });
-    var textMaterial_x = new MeshLambertMaterial({ color: 0xff0000 });
-    var mesh_x = new Mesh(textGeo_x, arrow_material);
+    var textMaterial_x = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+    var mesh_x = new THREE.Mesh(textGeo_x, arrow_material);
     mesh_x.position.y = XYaxeslength / 2. - 6 * fontsize;
     mesh_x.position.x = 2 * fontsize;
     // mesh_x.position.z = fontsize / 4;
@@ -175,8 +171,8 @@ export function add_scale(params) {
         size: fontsize,
         height: fontsize / 5,
     });
-    var textMaterial_y = new MeshLambertMaterial({ color: 0x00ff00 });
-    var mesh_y = new Mesh(textGeo_y, arrow_material);
+    var textMaterial_y = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+    var mesh_y = new THREE.Mesh(textGeo_y, arrow_material);
     // mesh_y.position.x = -0.15 * params.L;
     // mesh_y.position.y = XYaxeslength;// - fontsize*6;
     // mesh_y.position.z = fontsize / 4;
@@ -197,15 +193,15 @@ export function add_scale(params) {
     var fontsize = 0.1 * params.L; // font size
     var thickness = 0.02 * params.L; // line thickness
 
-    var arrow_body_z = new CylinderGeometry(
+    var arrow_body_z = new THREE.CylinderGeometry(
         thickness,
         thickness,
         Zaxislength - 4 * thickness,
         Math.pow(2, params.quality),
         Math.pow(2, params.quality)
     );
-    arrow_z = new Mesh(arrow_body_z, arrow_material);
-    var arrow_head_z = new Mesh(arrow_head, arrow_material);
+    arrow_z = new THREE.Mesh(arrow_body_z, arrow_material);
+    var arrow_head_z = new THREE.Mesh(arrow_head, arrow_material);
     arrow_head_z.position.y = Zaxislength / 2;
     arrow_z.add(arrow_head_z);
 
@@ -214,8 +210,8 @@ export function add_scale(params) {
         size: fontsize,
         height: fontsize / 5,
     });
-    var textMaterial_z = new MeshLambertMaterial({ color: 0x0000ff });
-    var mesh_z = new Mesh(textGeo_z, arrow_material);
+    var textMaterial_z = new THREE.MeshLambertMaterial({ color: 0x0000ff });
+    var mesh_z = new THREE.Mesh(textGeo_z, arrow_material);
     mesh_z.position.x = - 1.5 * fontsize;
     // mesh_z.position.y = fontsize / 4;
     mesh_z.position.y = Zaxislength / 2. - 6 * fontsize;// + 1.5 * fontsize;
@@ -457,12 +453,12 @@ export function add_scale_isotropic(params) {
     } //else {}
     // if you haven't already made the axes
 
-    axesHelper = new Group();
+    axesHelper = new THREE.Group();
     walls.add(axesHelper);
 
     let arrow_length = XYaxeslength - 2 * thickness;
     if (arrow_body === undefined) {
-        arrow_body = new CylinderGeometry(
+        arrow_body = new THREE.CylinderGeometry(
             thickness,
             thickness,
             1,
@@ -470,7 +466,7 @@ export function add_scale_isotropic(params) {
             Math.pow(2, params.quality)
         );
 
-        arrow_head = new CylinderGeometry(
+        arrow_head = new THREE.CylinderGeometry(
             0,
             2 * thickness,
             4 * thickness,
@@ -484,11 +480,11 @@ export function add_scale_isotropic(params) {
         textGeo_z.dispose();
     }
 
-    arrow_x = new Group();
-    arrow_y = new Group();
+    arrow_x = new THREE.Group();
+    arrow_y = new THREE.Group();
 
-    let arrow_body_x = new Mesh(arrow_body, arrow_material);
-    let arrow_body_y = new Mesh(arrow_body, arrow_material);
+    let arrow_body_x = new THREE.Mesh(arrow_body, arrow_material);
+    let arrow_body_y = new THREE.Mesh(arrow_body, arrow_material);
     arrow_body_x.scale.y = arrow_length;
     arrow_body_y.scale.y = arrow_length;
 
@@ -496,8 +492,8 @@ export function add_scale_isotropic(params) {
     arrow_x.add(arrow_body_x);
     arrow_y.add(arrow_body_y);
 
-    var arrow_head_x = new Mesh(arrow_head, arrow_material);
-    var arrow_head_y = new Mesh(arrow_head, arrow_material);
+    var arrow_head_x = new THREE.Mesh(arrow_head, arrow_material);
+    var arrow_head_y = new THREE.Mesh(arrow_head, arrow_material);
 
 
     arrow_head_x.position.y = XYaxeslength / 2.;
@@ -512,7 +508,7 @@ export function add_scale_isotropic(params) {
         size: fontsize,
         height: fontsize / 5,
     });
-    var mesh_x = new Mesh(textGeo_x, arrow_material);
+    var mesh_x = new THREE.Mesh(textGeo_x, arrow_material);
     mesh_x.position.y = XYaxeslength / 2. - 6 * fontsize;
     mesh_x.position.x = 2 * fontsize;
     // mesh_x.position.z = fontsize / 4;
@@ -526,7 +522,7 @@ export function add_scale_isotropic(params) {
     //     size: fontsize,
     //     height: fontsize / 5,
     // });
-    var mesh_y = new Mesh(textGeo_x, arrow_material);
+    var mesh_y = new THREE.Mesh(textGeo_x, arrow_material);
     mesh_y.position.y = XYaxeslength / 2.;// - 6*fontsize;
     mesh_y.position.x = -2 * fontsize;
     mesh_y.rotation.z = -Math.PI / 2;
@@ -550,12 +546,12 @@ export function add_scale_isotropic(params) {
     //   Math.pow(2, params.quality),
     //   Math.pow(2, params.quality)
     // );
-    let arrow_body_z = new Mesh(arrow_body, arrow_material);
+    let arrow_body_z = new THREE.Mesh(arrow_body, arrow_material);
     arrow_body_z.scale.y = Zaxislength - 4 * thickness;
-    var arrow_head_z = new Mesh(arrow_head, arrow_material);
+    var arrow_head_z = new THREE.Mesh(arrow_head, arrow_material);
     arrow_head_z.position.y = Zaxislength / 2;
 
-    arrow_z = new Group();
+    arrow_z = new THREE.Group();
     arrow_z.add(arrow_body_z);
     arrow_z.add(arrow_head_z);
 
@@ -565,7 +561,7 @@ export function add_scale_isotropic(params) {
         height: fontsize / 5,
     });
     //var textMaterial_z = new MeshLambertMaterial({ color: 0x0000ff });
-    var mesh_z = new Mesh(textGeo_z, arrow_material);
+    var mesh_z = new THREE.Mesh(textGeo_z, arrow_material);
     mesh_z.position.x = - 1.5 * fontsize;
     // mesh_z.position.y = fontsize / 4;
     mesh_z.position.y = Zaxislength / 2. - 6 * fontsize;// + 1.5 * fontsize;
