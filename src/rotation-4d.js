@@ -122,15 +122,10 @@ async function main() {
         if (circle !== undefined) { circle.rotateZ(clock.getDelta() * Math.PI / 2.) }
         CONTROLLERS.moveInD4(params, controls);
     });
+
+    AUDIO.play_track('rotation-4d.mp3', camera, 3000);
 }
 
-
-
-// function onWindowResize(){
-
-//     var aspect = window.innerWidth / window.innerHeight;
-//     renderer.setSize( window.innerWidth, window.innerHeight );
-// }
 
 async function NDDEMCGPhysics() {
 
