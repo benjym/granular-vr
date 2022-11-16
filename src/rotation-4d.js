@@ -1,6 +1,5 @@
 import css from "../css/main.css";
-// import track1 from "../text-to-speech/rotation-3d.mp3";
-import track2 from "../text-to-speech/rotation-4d.mp3";
+import track from "../text-to-speech/rotation-4d.mp3";
 
 import ImmersiveControls from '@depasquale/three-immersive-controls';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -11,10 +10,6 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-// var urlParams = new URLSearchParams(window.location.search);
-// var clock = new THREE.Clock();
-
-// let camera, scene, renderer, controls, S;
 import { camera, scene, renderer, controls, clock, apps } from "./index";
 let S;
 
@@ -29,21 +24,9 @@ var params = {
 
 params.N = params.dimension * (params.dimension - 1) / 2;
 
-// if ( urlParams.has('dimension') ) {
-//     params.dimension = parseInt(urlParams.get('dimension'));
-// }
-
-// if ( params.dimension === 3 ) {
-//     params.N = 3;
-// }
-
 export function init() {
     SPHERES.createNDParticleShader(params).then(() => {
-        // if ( BUTTONS.font === undefined ) {
-        // setTimeout(main, 200);
-        // } else {
         main();
-        // }
     });
 }
 
@@ -51,22 +34,7 @@ async function main() {
 
     await NDDEMCGPhysics();
 
-    // // camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    // var aspect = window.innerWidth / window.innerHeight;
-    // camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-
-    // scene = new THREE.Scene();
-    // scene.background = new THREE.Color( 0x111 );
-
     LIGHTS.add_default_lights(scene);
-    // const hemiLight = new THREE.AmbientLight();
-    // hemiLight.intensity = 0.35;
-    // scene.add( hemiLight );
-    // //
-    // const dirLight = new THREE.DirectionalLight();
-    // dirLight.position.set( 5, -5, -5 );
-    // dirLight.castShadow = true;
-    // scene.add( dirLight );
 
     const base_geometry = new THREE.PlaneGeometry(10, 10);
     const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
@@ -75,13 +43,6 @@ async function main() {
     scene.add(plane);
 
     SPHERES.add_spheres(S, params, scene);
-
-    // renderer = new THREE.WebGLRenderer( { antialias: true } );
-    // renderer.setPixelRatio( window.devicePixelRatio );
-    // renderer.setSize( window.innerWidth, window.innerHeight );
-
-    // var container = document.getElementById( 'canvas' );
-    // container.appendChild( renderer.domElement );
 
     if (params.dimension == 4) {
         let gui = new GUI();
@@ -103,13 +64,6 @@ async function main() {
         circle.position.y = 2.2;
         scene.add(circle);
     }
-
-    // window.addEventListener( 'resize', onWindowResize, false );
-
-    // controls = new ImmersiveControls(camera, renderer, scene, {
-    //     initialPosition: new THREE.Vector3(0, 1.6, 2),
-    //     // moveSpeed: { keyboard: 0.025, vr: 0.025 }
-    // });
 
     BUTTONS.add_scene_change_button(apps.list[0].url, apps.list[0].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);

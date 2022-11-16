@@ -15,15 +15,15 @@ let S;
 
 var params = {
     dimension: 4,
-    radius: 0.15,
+    radius: 0.5,
     L: 500, //system size
-    d4: { cur: 0, min: -0.3, max: 0.3 },
+    d4: { cur: 0, min: -1, max: 1 },
     lut: 'None',
     quality: 7,
     pyramid_size: 7,
     particle_density: 2700,
     particle_opacity: 0.7,
-    F_mag_max : 1e3,
+    F_mag_max : 1e6,
     N: 2,
     audio: true
 }
@@ -126,6 +126,8 @@ async function NDDEMCGPhysics() {
         params.particle_mass = params.particle_volume * params.particle_density;
 
         let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, params.particle_mass)
+        S.simu_setMass(0, params.particle_mass);
+        S.simu_setMass(1, params.particle_mass);
 
         S.simu_interpret_command("set Kn " + String(vals.stiffness));
         S.simu_interpret_command("set Kt " + String(0.8 * vals.stiffness));
