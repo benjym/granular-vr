@@ -22,7 +22,7 @@ var params = {
     quality: 7,
     pyramid_size: 7,
     particle_density: 2700,
-    particle_opacity: 0.2,
+    particle_opacity: 0.7,
     F_mag_max : 1e3,
     N: 2,
     audio: true

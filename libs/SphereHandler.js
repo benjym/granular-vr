@@ -46,6 +46,10 @@ export async function createNDParticleShader(params) {
     });
 }
 
+export function update_radii(S) {
+    radii = S.simu_getRadii();
+}
+
 export function add_spheres(S, params, scene) {
     radii = S.simu_getRadii();
     total_particle_volume = 0;
@@ -99,9 +103,9 @@ export function add_pool_spheres(S, params, scene) {
     const geometrySphere = new THREE.SphereGeometry(0.5, Math.pow(2, params.quality), Math.pow(2, params.quality));
 
     for (let i = 0; i < params.N; i++) {
-        if (i == 0) {
+        if (i == 0 || i == params.N-1) { // white ball and cue stick
             var material = new THREE.MeshStandardMaterial({
-                color: 0xaaaaaa
+                color: 0xffffff
             });
         }
         else if (i === 11) {
@@ -145,14 +149,13 @@ export function update_fixed_sounds(S, params) {
         let contact_info = S.simu_getContactInfos(0x80 | 0x20000); // FT_vis
         // let contact_info = S.simu_getContactInfos(0x80 | 0x8000);
         let total_dissipation = 0;
-        if (params.lut === 'None') {
-            for (let i = 0; i < params.N; i++) {
+        // if (params.lut === 'None') {
+        for (let i = 0; i < params.N; i++) {
+            if ( spheres.children[i].material.type === 'ShaderMaterial') {
                 if (spheres.children[i].material.uniforms.ambient.value !== 1) {
                     spheres.children[i].material.uniforms.ambient.value = 1;
                 }
-            }
-        } else {
-            for (let i = 0; i < params.N; i++) {
+            } else {
                 if (spheres.children[i].material.emissiveIntensity !== 0) {
                     spheres.children[i].material.emissiveIntensity = 0;
                     spheres.children[i].material.needsUpdate = true;
@@ -361,11 +364,9 @@ export function update_particle_material(params, lut_folder) {
 
 export function move_spheres(S, params, controller1, controller2) {
     x = S.simu_getX();
+    // console.log(x.length)
+    // console.log(spheres.children.length)
     if (x.length === spheres.children.length) {
-
-        // console.log(params.N)
-        // console.log(x.length)
-        // console.log(spheres.children.length)
 
         let orientation = S.simu_getOrientation();
         if (params.lut === 'Velocity' || params.lut === 'Fluct Velocity') {
