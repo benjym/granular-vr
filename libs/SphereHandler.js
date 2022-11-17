@@ -103,7 +103,7 @@ export function add_pool_spheres(S, params, scene) {
     const geometrySphere = new THREE.SphereGeometry(0.5, Math.pow(2, params.quality), Math.pow(2, params.quality));
 
     for (let i = 0; i < params.N; i++) {
-        if (i == 0 || i == params.N-1) { // white ball and cue stick
+        if (i == 0 || i == params.N - 1) { // white ball and cue stick
             var material = new THREE.MeshStandardMaterial({
                 color: 0xffffff
             });
@@ -151,8 +151,8 @@ export function update_fixed_sounds(S, params) {
         let total_dissipation = 0;
         // if (params.lut === 'None') {
         for (let i = 0; i < params.N; i++) {
-            if ( spheres.children[i] !== undefined ) {
-                if ( spheres.children[i].material.type === 'ShaderMaterial') {
+            if (spheres.children[i] !== undefined) {
+                if (spheres.children[i].material.type === 'ShaderMaterial') {
                     if (spheres.children[i].material.uniforms.ambient.value !== 1) {
                         spheres.children[i].material.uniforms.ambient.value = 1;
                     }
@@ -178,7 +178,7 @@ export function update_fixed_sounds(S, params) {
                 dissipation = Math.sqrt(row[2] * row[2] + row[3] * row[3] + row[4] * row[4] + row[5] * row[5]);
             }
             // dissipation *= params.particle_volume*0.;
-            
+
             // console.log(params.particle_volume)
             // dissipation = Math.log10(dissipation)/5e3;
             // dissipation = isFinite(dissipation) ? dissipation : 0.0; // remove non-finite values
@@ -569,7 +569,7 @@ export function draw_force_network(S, params, scene) {
             forces.remove_me = true;
 
             var F = S.simu_getContactInfos(0x80 | 0x100)
-            
+
             let width = radii[0] / 2.;
             if ('F_mag_max' in params) {
                 F_mag_max = params.F_mag_max;
@@ -601,7 +601,7 @@ export function draw_force_network(S, params, scene) {
                         Math.pow(F[i][5], 2)
                     )
                 }
-                if (F_mag > 0 && spheres.children[F[i][0]] !== undefined ) {
+                if (F_mag > 0 && spheres.children[F[i][0]] !== undefined) {
                     let c = cylinder.clone();
                     let a = spheres.children[F[i][0]].position;
                     let b = spheres.children[F[i][1]].position;
@@ -612,8 +612,11 @@ export function draw_force_network(S, params, scene) {
                             mid_point.addVectors(a, b);
                             mid_point.divideScalar(2);
                             c.position.copy(mid_point);
-                            c.scale.set(width * F_mag / F_mag_max,
-                                width * F_mag / F_mag_max,
+                            let scale = width
+                            // if (F_mag > F_mag_max) { scale = width }
+                            if (F_mag < F_mag_max) { scale = width * F_mag / F_mag_max; }
+                            c.scale.set(scale,
+                                scale,
                                 distance);
                             c.lookAt(a);
                             // if (params.audio) { AUDIO.add_normal_sound(c); }
