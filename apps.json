@@ -10,6 +10,7 @@
         { "url":"two-particle-collision", "name": "Two particles colliding" },
         { "url":"isotropic", "name": "Squeezing lots of grains" },
         { "url":"pyramid", "name": "Pyramid" },
+        { "url":"tennis", "name": "Tennis" },
         { "url":"4d-pool", "name": "4D pool" }
     ],
     "current" : 1

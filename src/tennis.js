@@ -1,5 +1,6 @@
 import css from "../css/main.css";
 import track from "../text-to-speech/tennis.mp3";
+import track2 from "../text-to-speech/tennis-win.mp3";
 // import * as DEMCGND from "../resources/DEMCGND.js";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -261,12 +262,15 @@ function check_side() {
 
         if (!sunk_balls.includes(i)) {
             if (SPHERES.x[i][1] < 0) {
+                let balls_left = params.N - 2 - sunk_balls.length;
 
-                console.debug('SUNK BALL ' + String(i) + '. ' + String(params.N - 2 - sunk_balls.length) + ' BALLS LEFT.');
+                console.debug('SUNK BALL ' + String(i) + '. ' + String(balls_left) + ' BALLS LEFT.');
                 // object.visible = false;
                 sunk_balls.push(i);
                 S.simu_fixParticle(i, [5 * params.L, 5 * params.L, sunk_balls.length * 2 * params.r_max, 0])
                 S.simu_setFrozen(i);
+
+                if (balls_left == 0) { AUDIO.play_track('tennis-win.mp3', camera, 0) };
             }
             // else { console.log(SPHERES.x[i]) }
         }

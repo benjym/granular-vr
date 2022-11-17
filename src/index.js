@@ -53,10 +53,12 @@ async function add_common_properties() {
     // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     // renderer.outputEncoding = THREE.sRGBEncoding;
     container.appendChild(renderer.domElement);
-    
+
     scene = new THREE.Scene();
     scene.keep_me = true;
     scene.background = new THREE.Color(0x111);
+
+
 
     controls = new ImmersiveControls(camera, renderer, scene, {
         initialPosition: new THREE.Vector3(0, 1.6, 2),
@@ -112,7 +114,7 @@ async function wipe_scene() {
                 }
             }
         };
-        if ( POOLCUE.pool_cue !== undefined && controls.vrControls.controllers.right !== undefined ) { controls.vrControls.controllers.right.remove( POOLCUE.pool_cue) }
+        if (POOLCUE.pool_cue !== undefined && controls.vrControls.controllers.right !== undefined) { controls.vrControls.controllers.right.remove(POOLCUE.pool_cue) }
         controls.interaction.selectStartHandlers = {};
         controls.interaction.selectEndHandlers = {};
         controls.interaction.selectableObjects = [];
@@ -133,29 +135,29 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-export function move_to( v ) {
-    if ( typeof v === 'number' ) {
+export function move_to(v) {
+    if (typeof v === 'number') {
         apps.current = v;
         console.log('CHANGING TO ' + apps.list[v].url)
         import("./" + apps.list[v].url).then((module) => {
             wipe_scene().then(module.init());
         });
 
-    } else if ( typeof v === 'string' ) {
+    } else if (typeof v === 'string') {
         apps.list.forEach((e, index) => {
-            if ( e.url === v ) {
+            if (e.url === v) {
                 apps.current = index;
             }
         });
         console.log('CHANGING TO ' + v)
         import("./" + v).then((module) => {
-            wipe_scene().then( module.init() );
+            wipe_scene().then(module.init());
         });
     }
     else {
         console.error('Unsupported type for moving between scenes')
     }
-    
+
 }
 
 // renderer.xr.addEventListener('sessionstart', function (event) {
@@ -172,15 +174,15 @@ export function move_to( v ) {
 
 // if (!VR_only) {
 fetch("apps.json")
-.then(response => response.json())
-.then(json => {
-    apps = json;
+    .then(response => response.json())
+    .then(json => {
+        apps = json;
 
-    if (urlParams.has('fname')) {
-        move_to(urlParams.get('fname'));
-    } else {
-        // console.log(apps.current)
-        // if (window.location.pathname === '/') {
-        move_to( apps.current );
-    }
-});
+        if (urlParams.has('fname')) {
+            move_to(urlParams.get('fname'));
+        } else {
+            // console.log(apps.current)
+            // if (window.location.pathname === '/') {
+            move_to(apps.current);
+        }
+    });
