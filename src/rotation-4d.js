@@ -20,10 +20,11 @@ var params = {
     d4: { cur: 0, min: -1, max: 1 },
     lut: 'None',
     quality: 7,
-    N : 6
+    N: 6
 }
 
 export function init() {
+    params.dimension = 4;
     SPHERES.createNDParticleShader(params).then(() => {
         main();
     });
