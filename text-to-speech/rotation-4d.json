@@ -5,7 +5,7 @@
       "speakingRate": 0.8
     },
     "input": {
-      "text": "In four dimensions there are six rotational degrees of freedom. The first three, the ones you can see at the top, are just like the rotational degrees of freedom in 3D space. The other three at the bottom are new. Try scanning through the fourth dimension by pushing the right joystick up and down to see the rest of the surface. When you're done, click on the Pyramid button to move onto your first interactive example."
+      "text": "In four dimensions there are six rotational degrees of freedom. The first three, the ones you can see at the top, are just like the rotational degrees of freedom in 3D space. The other three at the bottom are new. Try scanning through the fourth dimension by pushing the right joystick up and down to see the rest of the surface. When you're done, click on the Pyramid button to see what happen when to particles hit each others."
     },
     "voice": {
       "languageCode": "en-au",
