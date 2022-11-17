@@ -1,4 +1,5 @@
 import css from "../css/loading_screen.css";
+import json_file from "../apps.json";
 
 import ImmersiveControls from '@depasquale/three-immersive-controls';
 import * as CONTROLLERS from '../libs/controllers.js';
