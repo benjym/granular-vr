@@ -51,7 +51,7 @@ export let params = {
     audio: false,
     F_mag_max: 1e6,
     friction_coefficient: 0.5,
-    initial_speed: 500,
+    initial_speed: 0,
 }
 
 function set_derived_properties() {
