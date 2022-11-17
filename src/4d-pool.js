@@ -45,7 +45,7 @@ var params = {
 params.N = get_num_particles(params.pyramid_size);
 
 params.d4.min = -params.L4;
-params.d4.max =  params.L4;
+params.d4.max = params.L4;
 
 params.particle_volume = Math.PI * Math.PI * Math.pow(params.radius, 4) / 2.;
 params.particle_mass = params.particle_volume * params.particle_density;
@@ -59,7 +59,7 @@ export async function init() {
 async function main() {
     AUDIO.make_listener(camera);
     AUDIO.add_fixed_sound_source([0, 0, 0]);
-    
+
     await NDDEMPhysics();
 
     const base_geometry = new THREE.PlaneGeometry(4 * params.L1, 2 * params.L3 + 2 * params.L1);
@@ -99,13 +99,13 @@ async function main() {
 
     AUDIO.play_track('4d-pool.mp3', camera, 3000);
 
-    POOLCUE.add_pool_cue( controls.vrControls.controllers.right ).then(() => {
+    POOLCUE.add_pool_cue(controls.vrControls.controllers.right).then(() => {
         console.log('UPDATED RADIUS')
-        S.simu_setRadius(params.N-1, POOLCUE.small_end_radius);
-        S.simu_setMass(params.N-1, params.particle_mass / 10.);
+        S.simu_setRadius(params.N - 1, POOLCUE.small_end_radius);
+        S.simu_setMass(params.N - 1, params.particle_mass / 10.);
         SPHERES.update_radii(S);
-        SPHERES.spheres.children[params.N-1].material.transparent = true;
-        SPHERES.spheres.children[params.N-1].material.opacity = 0.;
+        SPHERES.spheres.children[params.N - 1].material.transparent = true;
+        SPHERES.spheres.children[params.N - 1].material.opacity = 0.;
     });
 }
 
@@ -128,23 +128,23 @@ function add_table_legs() {
 
 function update() {
     params = CONTROLLERS.moveInD4(params, controls);
-    POOLCUE.snap( controls );
+    POOLCUE.snap(controls);
     SPHERES.move_spheres(S, params);
     if (params.audio) {
         SPHERES.update_fixed_sounds(S, params);
     }
 
-    if ( POOLCUE.pool_cue !== undefined ) {
+    if (POOLCUE.pool_cue !== undefined) {
 
         let end_of_pool_cue = new THREE.Vector3();
 
         POOLCUE.small_sphere.getWorldPosition(end_of_pool_cue);
 
-        S.simu_fixParticle(params.N-1,
+        S.simu_fixParticle(params.N - 1,
             [end_of_pool_cue.x,
-             end_of_pool_cue.z,
-             end_of_pool_cue.y,
-             params.d4.cur
+            end_of_pool_cue.z,
+            end_of_pool_cue.y,
+            params.d4.cur
             ]);
     }
 
@@ -178,9 +178,9 @@ function in_pocket(loc) {
 }
 
 function check_pockets() {
-    for (let i = 0; i < params.N-1; i++) {
+    for (let i = 0; i < params.N - 1; i++) {
         var object = SPHERES.spheres.children[i];
-        if (!(i in sunk_balls)) {
+        if (!sunk_balls.includes(i)) {
             if (in_pocket(SPHERES.x[i])) {
                 if (i == 0) {
                     console.log('sunk white ball')
@@ -290,7 +290,7 @@ function set_ball_positions() {
 
     // add the cue stick
     // S.simu_interpret_command("location " + String(params.N) + " 0 0 0 0");
-    
+
 }
 
 function loadSTL() {
