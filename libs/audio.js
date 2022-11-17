@@ -6,6 +6,7 @@ export let listener;
 export let fixed_sound_source = new THREE.Group();
 let normal_oscillator, tangential_oscillator;
 let current_sound;
+let queued_sounds = [];
 
 export function make_listener(target) {
     // create an AudioListener and add it to the camera
@@ -98,9 +99,10 @@ export function play_track(filename, target, delay) {
         current_sound.setBuffer(buffer);
         current_sound.setLoop(false);
         current_sound.setVolume(0.5);
-        setTimeout(() => {
+        let sound_timer = setTimeout(() => {
             current_sound.play()
         }, delay);
+        queued_sounds.push(sound_timer);
         // current_sound.play()
 
     });
@@ -110,6 +112,9 @@ export function end_current_track() {
     // console.log(current_sound)
     if (current_sound !== undefined) {
         if (current_sound.isPlaying) { current_sound.stop(); }
-        else { clearTimeout(current_sound); }
     }
+    for ( let i= queued_sounds.length - 1; i>=0; i--) {    
+        clearTimeout(queued_sounds[i]);
+        queued_sounds.splice(i,1);
+    };
 }

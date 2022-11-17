@@ -20,9 +20,8 @@ var params = {
     // d4: {cur:0, min:-1, max:1},
     lut: 'None',
     quality: 7,
+    N : 3
 }
-
-params.N = params.dimension * (params.dimension - 1) / 2;
 
 export function init() {
     SPHERES.createNDParticleShader(params).then(() => {
@@ -44,27 +43,18 @@ async function main() {
 
     SPHERES.add_spheres(S, params, scene);
 
-
-    if (params.dimension == 4) {
-        let gui = new GUI();
-        gui.width = 320;
-        gui.add(params.d4, 'cur', -params.radius, params.radius, 0.001).name('D4 location').listen();
-        gui.remove_me = true;
-    }
-
     let circle;
-    if (params.dimension === 3) {
-        var circle_geometry = new THREE.CircleGeometry(0.5, 256);
-        const loader = new THREE.TextureLoader();
+    
+    var circle_geometry = new THREE.CircleGeometry(0.5, 256);
+    const loader = new THREE.TextureLoader();
 
-        const circle_material = new THREE.MeshBasicMaterial({
-            color: 0xFFFFFF,
-            map: loader.load('./usyd.png'),
-        });
-        circle = new THREE.Mesh(circle_geometry, circle_material);
-        circle.position.y = 2.2;
-        scene.add(circle);
-    }
+    const circle_material = new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF,
+        map: loader.load('./usyd.png'),
+    });
+    circle = new THREE.Mesh(circle_geometry, circle_material);
+    circle.position.y = 2.2;
+    scene.add(circle);
 
     BUTTONS.add_scene_change_button(apps.list[0].url, apps.list[0].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
@@ -91,15 +81,7 @@ async function NDDEMCGPhysics() {
     }
 
     await DEMCGND().then((NDDEMCGLib) => {
-        if (params.dimension == 3) {
-            S = new NDDEMCGLib.DEMCG3D(params.N);
-        }
-        else if (params.dimension == 4) {
-            S = new NDDEMCGLib.DEMCG4D(params.N);
-        }
-        else if (params.dimension == 5) {
-            S = new NDDEMCGLib.DEMCG5D(params.N);
-        }
+        S = new NDDEMCGLib.DEMCG3D(params.N);
         finish_setup();
     });
 
@@ -116,30 +98,12 @@ async function NDDEMCGPhysics() {
         S.simu_interpret_command("boundary 2 PBC -" + String(params.L) + " " + String(params.L));
         S.simu_interpret_command("gravity 0 0 " + "0 ".repeat(params.dimension - 3))
 
-        if (params.dimension == 4) {
-            S.simu_interpret_command("boundary 3 PBC -" + String(params.L) + " " + String(params.L));
-
-            S.simu_interpret_command("location 0 -1 0 1 0");
-            S.simu_interpret_command("location 1 0 0 1 0");
-            S.simu_interpret_command("location 2 1 0 1 0");
-            S.simu_interpret_command("location 3 -1 0 2 0");
-            S.simu_interpret_command("location 4 0 0 2 0");
-            S.simu_interpret_command("location 5 1 0 2 0");
-            S.simu_interpret_command("omega 4 0.1 0 0 0 0 0");
-            S.simu_interpret_command("omega 5 0 0.1 0 0 0 0");
-            S.simu_interpret_command("omega 0 0 0 0.1 0 0 0");
-            S.simu_interpret_command("omega 3 0 0 0 0.1 0 0");
-            S.simu_interpret_command("omega 1 0 0 0 0 0.1 0");
-            S.simu_interpret_command("omega 2 0 0 0 0 0 0.1");
-        }
-        else if (params.dimension === 3) {
-            S.simu_interpret_command("location 0 -1 0 1 0");
-            S.simu_interpret_command("location 1 0 0 1 0");
-            S.simu_interpret_command("location 2 1 0 1 0");
-            S.simu_interpret_command("omega 0 0 0.1 0");
-            S.simu_interpret_command("omega 1 0.1 0 0");
-            S.simu_interpret_command("omega 2 0 0 0.1");
-        }
+        S.simu_interpret_command("location 0 -1 0 1 0");
+        S.simu_interpret_command("location 1 0 0 1 0");
+        S.simu_interpret_command("location 2 1 0 1 0");
+        S.simu_interpret_command("omega 0 0 0.1 0");
+        S.simu_interpret_command("omega 1 0.1 0 0");
+        S.simu_interpret_command("omega 2 0 0 0.1");
 
         let tc = 0.5;
         let rest = 0.5; // super low restitution coeff to dampen out quickly
