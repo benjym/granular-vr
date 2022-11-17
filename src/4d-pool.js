@@ -102,7 +102,7 @@ async function main() {
     POOLCUE.add_pool_cue(controls.vrControls.controllers.right).then(() => {
         console.log('UPDATED RADIUS')
         S.simu_setRadius(params.N - 1, POOLCUE.small_end_radius);
-        S.simu_setMass(params.N - 1, params.particle_mass / 10.);
+        S.simu_setMass(params.N - 1, params.particle_mass / 2.);
         SPHERES.update_radii(S);
         SPHERES.spheres.children[params.N - 1].material.transparent = true;
         SPHERES.spheres.children[params.N - 1].material.opacity = 0.;
