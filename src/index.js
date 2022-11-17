@@ -14,8 +14,6 @@ import * as POOLCUE from "../libs/PoolCue";
 // let file = 'box';
 let VR_only = false;
 
-export let apps
-
 let urlParams = new URLSearchParams(window.location.search);
 // if ( urlParams.has('VR') || urlParams.has('vr') ) { VR_only = true; }
 
@@ -37,7 +35,7 @@ document.body.appendChild(splash);
 let container = document.createElement("div");
 document.body.appendChild(container);
 
-export let camera, scene, renderer, controls, clock;
+export let camera, scene, renderer, controls, clock, apps;
 
 async function add_common_properties() {
     clock = new THREE.Clock();
@@ -151,7 +149,7 @@ export function move_to( v ) {
         });
         console.log('CHANGING TO ' + v)
         import("./" + v).then((module) => {
-            wipe_scene().then(module.init());
+            wipe_scene().then( module.init() );
         });
     }
     else {

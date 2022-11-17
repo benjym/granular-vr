@@ -12,6 +12,7 @@ import * as WALLS from "../libs/WallHandler.js"
 import * as BUTTONS from "../libs/buttons";
 import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
+import * as LIGHTS from "../libs/lights";
 
 // var clock = new THREE.Clock();
 
@@ -126,23 +127,17 @@ async function main() {
     plane.position.y = -0.5 * params.r_min;
     scene.add(plane);
 
-    const hemiLight = new THREE.HemisphereLight();
-    hemiLight.intensity = 0.35;
-    scene.add(hemiLight);
-
-    const dirLight = new THREE.DirectionalLight();
-    dirLight.position.set(5, 5, 5);
-    dirLight.castShadow = true;
-    dirLight.shadow.camera.zoom = 2;
-    scene.add(dirLight);
+    LIGHTS.add_default_lights(scene);
 
     WALLS.add_cuboid_walls(params);
     WALLS.walls.rotateX(-Math.PI / 2.); // fix y/z up compared to NDDEM
     WALLS.walls.rotateZ(Math.PI); // fix y/z up compared to NDDEM
     WALLS.walls.position.y = params.H;
+    console.debug('rotated and placed walls')
     scene.add(WALLS.walls);
     WALLS.update_isotropic_wall(params, S);
     WALLS.add_scale(params);
+    
 
     SPHERES.add_spheres(S, params, scene);
 

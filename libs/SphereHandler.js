@@ -151,14 +151,16 @@ export function update_fixed_sounds(S, params) {
         let total_dissipation = 0;
         // if (params.lut === 'None') {
         for (let i = 0; i < params.N; i++) {
-            if ( spheres.children[i].material.type === 'ShaderMaterial') {
-                if (spheres.children[i].material.uniforms.ambient.value !== 1) {
-                    spheres.children[i].material.uniforms.ambient.value = 1;
-                }
-            } else {
-                if (spheres.children[i].material.emissiveIntensity !== 0) {
-                    spheres.children[i].material.emissiveIntensity = 0;
-                    spheres.children[i].material.needsUpdate = true;
+            if ( spheres.children[i] !== undefined ) {
+                if ( spheres.children[i].material.type === 'ShaderMaterial') {
+                    if (spheres.children[i].material.uniforms.ambient.value !== 1) {
+                        spheres.children[i].material.uniforms.ambient.value = 1;
+                    }
+                } else {
+                    if (spheres.children[i].material.emissiveIntensity !== 0) {
+                        spheres.children[i].material.emissiveIntensity = 0;
+                        spheres.children[i].material.needsUpdate = true;
+                    }
                 }
             }
         }

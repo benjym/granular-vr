@@ -16,11 +16,11 @@ import { font } from "./buttons";
 
 const wall_geometry = new THREE.BoxGeometry(1, 1, 1);
 const wall_material = new THREE.MeshLambertMaterial();
-wall_material.wireframe = true;
 
 function add_wall_group() {
     walls = new THREE.Group();
     walls.remove_me = true;
+    wall_material.wireframe = true;
 }
 
 add_wall_group();
@@ -95,7 +95,7 @@ export function add_back(params) {
 }
 
 export function add_cuboid_walls(params) {
-    if ( walls === undefined ) { add_wall_group() }
+    add_wall_group();
     // const wall_geometry = new THREE.BoxGeometry( params.L*2 + params.thickness*2, params.thickness, params.L*2 + params.thickness*2 );
     // const wall_material = new THREE.ShadowMaterial( )
 
