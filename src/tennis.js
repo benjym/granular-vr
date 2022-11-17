@@ -51,7 +51,7 @@ export let params = {
     audio: false,
     F_mag_max: 1e6,
     friction_coefficient: 0.5,
-    initial_speed: 0,
+    initial_speed: 500,
 }
 
 function set_derived_properties() {
@@ -257,12 +257,12 @@ function setup_NDDEM() {
 }
 
 function check_side() {
-    for (let i = 0; i < params.N - 1; i++) {
+    for (let i = 0; i < params.N - 2; i++) {
         // var object = SPHERES.spheres.children[i];
 
         if (!sunk_balls.includes(i)) {
             if (SPHERES.x[i][1] < 0) {
-                let balls_left = params.N - 2 - sunk_balls.length;
+                let balls_left = params.N - 3 - sunk_balls.length;
 
                 console.debug('SUNK BALL ' + String(i) + '. ' + String(balls_left) + ' BALLS LEFT.');
                 // object.visible = false;
