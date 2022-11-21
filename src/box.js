@@ -1,9 +1,10 @@
+let worker = new Worker(new URL('../libs/worker.js', import.meta.url));
+let wrapped_worker = Comlink.wrap(worker);
+
 import css from "../css/main.css";
 import track from "../text-to-speech/index.mp3";
-// import * as DEMCGND from "../resources/DEMCGND.js";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
-// import ImmersiveControls from '@depasquale/three-immersive-controls';
 
 import * as CONTROLLERS from '../libs/controllers.js';
 import * as SPHERES from "../libs/SphereHandler.js"
@@ -74,8 +75,13 @@ export function init() {
 
 async function main() {
     set_derived_properties();
-    await NDDEMPhysics();
+    await NDDEMPhysics().then(() => {
+        build_world();
+        renderer.setAnimationLoop(update);
+    });
+}
 
+async function build_world() {
     const base_geometry = new THREE.PlaneGeometry(params.L, params.L);
     const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
     const plane = new THREE.Mesh(base_geometry, base_material);
@@ -83,16 +89,6 @@ async function main() {
     plane.position.y = -0.5 * params.r_min;
     scene.add(plane);
 
-    // const hemiLight = new THREE.AmbientLight();
-    // hemiLight.intensity = 0.35;
-    // // hemiLight.castShadow = true;
-    // // scene.add(hemiLight);
-
-    // const dirLight = new THREE.PointLight();
-    // dirLight.position.set(0, 1, 2);
-    // dirLight.castShadow = true;
-    // // dirLight.shadow.camera.zoom = 2;
-    // scene.add(dirLight);
     LIGHTS.add_default_lights(scene);
 
     WALLS.add_cuboid_walls(params);
@@ -119,81 +115,61 @@ async function main() {
     // BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
-    let offset = 0.2;
+    AUDIO.play_track('index.mp3', camera, 3000);
+}
 
-    renderer.setAnimationLoop(function () {
+async function update() {
+    if (S !== undefined) {
         SPHERES.move_spheres(S, params);
         S.simu_step_forward(5);
+    }
+    let offset = 0.2;
+    if (controls.player.position.x < -params.L + offset) { controls.player.position.x = -params.L + offset; }
+    else if (controls.player.position.x > params.L - offset) { controls.player.position.x = params.L - offset; }
 
-        if (controls.player.position.x < -params.L + offset) { controls.player.position.x = -params.L + offset; }
-        else if (controls.player.position.x > params.L - offset) { controls.player.position.x = params.L - offset; }
+    if (controls.player.position.z < -params.L + offset) { controls.player.position.z = -params.L + offset; }
+    else if (controls.player.position.z > params.L - offset) { controls.player.position.z = params.L - offset; }
 
-        if (controls.player.position.z < -params.L + offset) { controls.player.position.z = -params.L + offset; }
-        else if (controls.player.position.z > params.L - offset) { controls.player.position.z = params.L - offset; }
-
-        controls.update();
-        renderer.render(scene, camera);
-        params = CONTROLLERS.moveInD4(params, controls);
-
-
-    });
-
-    AUDIO.play_track('index.mp3', camera, 3000);
-
+    controls.update();
+    renderer.render(scene, camera);
+    params = CONTROLLERS.moveInD4(params, controls);
 }
 
 async function NDDEMPhysics() {
-
-    if ('DEMCGND' in window === false) {
-
-        console.error('NDDEMPhysics: Couldn\'t find DEMCGND.js');
-        return;
-
-    }
-
-    await DEMCGND().then((NDDEMCGLib) => {
-        if (params.dimension == 3) {
-            S = new NDDEMCGLib.DEMCG3D(params.N);
-        }
-        else if (params.dimension == 4) {
-            S = new NDDEMCGLib.DEMCG4D(params.N);
-        }
-        else if (params.dimension == 5) {
-            S = new NDDEMCGLib.DEMCG5D(params.N);
-        }
-        setup_NDDEM();
-    });
-
+    let tt = await new wrapped_worker();
+    await tt.init(params.dimension, params.N);
+    S = tt.S;
+    await setup_NDDEM();
 }
 
-function setup_NDDEM() {
+async function setup_NDDEM() {
     S.simu_interpret_command("dimensions " + String(params.dimension) + " " + String(params.N));
-    S.simu_interpret_command("radius -1 0.5");
+    await S.simu_interpret_command("radius -1 0.5");
     // now need to find the mass of a particle with diameter 1
     let m = 4. / 3. * Math.PI * 0.5 * 0.5 * 0.5 * params.particle_density;
 
-    S.simu_interpret_command("mass -1 " + String(m));
-    S.simu_interpret_command("auto rho");
-    S.simu_interpret_command("auto radius uniform " + params.r_min + " " + params.r_max);
-    S.simu_interpret_command("auto mass");
-    S.simu_interpret_command("auto inertia");
-    S.simu_interpret_command("auto skin");
+    await S.simu_interpret_command("mass -1 " + String(m));
+    await S.simu_interpret_command("auto rho");
+    await S.simu_interpret_command("auto radius uniform " + params.r_min + " " + params.r_max);
+    await S.simu_interpret_command("auto mass");
+    await S.simu_interpret_command("auto inertia");
+    await S.simu_interpret_command("auto skin");
     // console.log(params.L, params.H)
-    S.simu_interpret_command("boundary 0 WALL -" + String(params.L) + " " + String(params.L));
-    S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
-    S.simu_interpret_command("boundary 2 WALL -" + String(0) + " " + String(2 * params.L));
-    S.simu_interpret_command("boundary 3 WALL -" + String(params.L) + " " + String(params.L));
+    await S.simu_interpret_command("boundary 0 WALL -" + String(params.L) + " " + String(params.L));
+    await S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
+    await S.simu_interpret_command("boundary 2 WALL -" + String(0) + " " + String(2 * params.L));
+    await S.simu_interpret_command("boundary 3 WALL -" + String(params.L) + " " + String(params.L));
     if (params.gravity === true) {
-        S.simu_interpret_command("gravity 0 0 " + String(-100) + "0 ".repeat(params.dimension - 3))
+        await S.simu_interpret_command("gravity 0 0 " + String(-100) + "0 ".repeat(params.dimension - 3))
     }
     else {
-        S.simu_interpret_command("gravity 0 0 0 " + "0 ".repeat(params.dimension - 3))
+        await S.simu_interpret_command("gravity 0 0 0 " + "0 ".repeat(params.dimension - 3))
     }
     // S.simu_interpret_command("auto location randomsquare");
-    S.simu_interpret_command("auto location randomdrop");
+    await S.simu_interpret_command("auto location randomdrop");
 
     for (let i = 0; i < params.N; i++) {
-        S.simu_setVelocity(i, [params.initial_speed * (Math.random() - 0.5),
+        await S.simu_setVelocity(i, [params.initial_speed * (Math.random() - 0.5),
         params.initial_speed * (Math.random() - 0.5),
         params.initial_speed * (Math.random() - 0.5),
         params.initial_speed * (Math.random() - 0.5)]);
@@ -204,10 +180,10 @@ function setup_NDDEM() {
     let rest = 0.999; // super low restitution coeff to dampen out quickly
     let min_particle_mass = params.particle_density * 4. / 3. * Math.PI * Math.pow(params.r_min, 3);
     let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, min_particle_mass);
-    S.simu_interpret_command("set Kn " + String(vals.stiffness));
-    S.simu_interpret_command("set Kt " + String(0.8 * vals.stiffness));
-    S.simu_interpret_command("set GammaN " + String(vals.dissipation));
-    S.simu_interpret_command("set GammaT " + String(vals.dissipation));
+    await S.simu_interpret_command("set Kn " + String(vals.stiffness));
+    await S.simu_interpret_command("set Kt " + String(0.8 * vals.stiffness));
+    await S.simu_interpret_command("set GammaN " + String(vals.dissipation));
+    await S.simu_interpret_command("set GammaT " + String(vals.dissipation));
 
     // let bulk_modulus = 1e6;
     // let poisson_coefficient = 0.5;
@@ -218,17 +194,18 @@ function setup_NDDEM() {
     // S.simu_interpret_command("set GammaT 0.2"); //+ String(vals.dissipation));
     // S.simu_interpret_command("ContactModel Hertz");
 
-    S.simu_interpret_command("set Mu " + String(params.friction_coefficient));
-    S.simu_interpret_command("set Mu_wall 0");
-    S.simu_interpret_command("set T 150");
-    S.simu_interpret_command("set dt " + String(tc / 20));
-    S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
+    await S.simu_interpret_command("set Mu " + String(params.friction_coefficient));
+    await S.simu_interpret_command("set Mu_wall 0");
+    await S.simu_interpret_command("set T 150");
+    await S.simu_interpret_command("set dt " + String(tc / 20));
+    await S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
 
-    S.simu_finalise_init();
+    await S.simu_finalise_init();
 }
 
 // init();
+// setTimeout(dispose, 5000);
 
 export function dispose() {
-
+    worker.terminate();
 }

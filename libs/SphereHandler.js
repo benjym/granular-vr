@@ -46,12 +46,12 @@ export async function createNDParticleShader(params) {
     });
 }
 
-export function update_radii(S) {
-    radii = S.simu_getRadii();
+export async function update_radii(S) {
+    radii = await S.simu_getRadii();
 }
 
-export function add_spheres(S, params, scene) {
-    radii = S.simu_getRadii();
+export async function add_spheres(S, params, scene) {
+    radii = await S.simu_getRadii();
     total_particle_volume = 0;
     for (let i = 0; i < radii.length; i++) {
         total_particle_volume += 4. / 3. * Math.PI * Math.pow(radii[i], 3);
@@ -93,8 +93,8 @@ export function add_spheres(S, params, scene) {
     update_particle_material(params, lut_folder)
 }
 
-export function add_pool_spheres(S, params, scene) {
-    radii = S.simu_getRadii();
+export async function add_pool_spheres(S, params, scene) {
+    radii = await S.simu_getRadii();
 
     spheres = new THREE.Group();
     spheres.remove_me = true;
@@ -144,10 +144,10 @@ export function add_pool_spheres(S, params, scene) {
     // add_spheres_to_torus(params,controller1,controller2);
 }
 
-export function update_fixed_sounds(S, params) {
+export async function update_fixed_sounds(S, params) {
     if (params.audio) {
-        let contact_info = S.simu_getContactInfos(0x80 | 0x20000); // FT_vis
-        // let contact_info = S.simu_getContactInfos(0x80 | 0x8000);
+        let contact_info = await S.simu_getContactInfos(0x80 | 0x20000); // FT_vis
+        // let contact_info = await S.simu_getContactInfos(0x80 | 0x8000);
         let total_dissipation = 0;
         // if (params.lut === 'None') {
         for (let i = 0; i < params.N; i++) {
@@ -295,7 +295,7 @@ export function update_particle_material(params, lut_folder) {
     else {
         for (let i = 0; i < params.N; i++) {
             var object = spheres.children[i];
-            object.material = new THREE.MeshStandardMaterial({side:THREE.DoubleSide});
+            object.material = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide });
             object.material.transparent = true;
             object.material.opacity = params.particle_opacity;
         }
@@ -366,18 +366,18 @@ export function update_particle_material(params, lut_folder) {
     // }
 }
 
-export function move_spheres(S, params, controller1, controller2) {
-    x = S.simu_getX();
+export async function move_spheres(S, params, controller1, controller2) {
+    x = await S.simu_getX();
     // console.log(x.length)
     // console.log(spheres.children.length)
     if (x.length === spheres.children.length) {
 
-        let orientation = S.simu_getOrientation();
+        let orientation = await S.simu_getOrientation();
         if (params.lut === 'Velocity' || params.lut === 'Fluct Velocity') {
-            v = S.simu_getVelocity();
+            v = await S.simu_getVelocity();
         }
         else if (params.lut === 'Rotation Rate') {
-            omegaMag = S.simu_getRotationRate();
+            omegaMag = await S.simu_getRotationRate();
         }
         else if (params.lut === 'Particle Stress') {
             // forceMag = S.simu_getParticleStress(); // NOTE: NOT IMPLEMENTED YET
@@ -472,8 +472,8 @@ export function move_spheres(S, params, controller1, controller2) {
                 object.visible = true;
                 object.scale.setScalar(2 * R_draw);
                 // spheres.setMatrixAt( i, matrix );
-                if ( params.dimension > 2) { object.position.set(x[i][0], x[i][2], x[i][1]); } 
-                else if ( params.dimension === 2 ) { object.position.set(x[i][1], x[i][0], 0);}
+                if (params.dimension > 2) { object.position.set(x[i][0], x[i][2], x[i][1]); }
+                else if (params.dimension === 2) { object.position.set(x[i][1], x[i][0], 0); }
                 else { object.position.set(x[i][0], 0, 0); }
             }
             if (object.material.type === 'ShaderMaterial') { // found a custom shader material
@@ -536,10 +536,10 @@ export function getHertzCriticalTimestep(bulk_modulus, poisson_coefficient, radi
     return critical_timestep
 }
 
-export function randomise_particles(params, S) {
+export async function randomise_particles(params, S) {
     if (S !== undefined) {
         for (let i = 0; i < params.N; i++) {
-            S.simu_fixParticle(i, [
+            await simu_fixParticle(i, [
                 -params.L + Math.random() * 2 * params.L,
                 -params.L + Math.random() * 2 * params.L,
                 -params.L + Math.random() * 2 * params.L]);
@@ -547,10 +547,10 @@ export function randomise_particles(params, S) {
     }
 }
 
-export function randomise_particles_isotropic(params, S) {
+export async function randomise_particles_isotropic(params, S) {
     if (S !== undefined) {
         for (let i = 0; i < params.N; i++) {
-            S.simu_fixParticle(i, [
+            await S.simu_fixParticle(i, [
                 -params.L + params.r_max + Math.random() * 2 * (params.L - params.r_max),
                 -params.L + params.r_max + Math.random() * 2 * (params.L - params.r_max),
                 params.r_max + Math.random() * 2 * (params.H - params.r_max)]);
@@ -559,7 +559,7 @@ export function randomise_particles_isotropic(params, S) {
 }
 
 
-export function draw_force_network(S, params, scene) {
+export async function draw_force_network(S, params, scene) {
     if (S !== undefined) {
         if (params.particle_opacity < 1) {
             for (var i = 0; i < forces.children.length; i++) {
@@ -570,7 +570,7 @@ export function draw_force_network(S, params, scene) {
             forces = new THREE.Group();
             forces.remove_me = true;
 
-            var F = S.simu_getContactInfos(0x80 | 0x100)
+            var F = await S.simu_getContactInfos(0x80 | 0x100)
 
             let width = radii[0] / 2.;
             if ('F_mag_max' in params) {
