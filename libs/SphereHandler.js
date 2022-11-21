@@ -560,6 +560,7 @@ export async function randomise_particles_isotropic(params, S) {
 
 
 export async function draw_force_network(S, params, scene) {
+    // console.log(S)
     if (S !== undefined) {
         if (params.particle_opacity < 1) {
             for (var i = 0; i < forces.children.length; i++) {
@@ -570,7 +571,7 @@ export async function draw_force_network(S, params, scene) {
             forces = new THREE.Group();
             forces.remove_me = true;
 
-            var F = await S.simu_getContactInfos(0x80 | 0x100)
+            var F = await S.simu_getContactInfos(0x80 | 0x100);
 
             let width = radii[0] / 2.;
             if ('F_mag_max' in params) {

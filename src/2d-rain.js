@@ -16,7 +16,8 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 
 
-import { camera, scene, renderer, controls, clock, apps } from "./index";
+import { camera, scene, renderer, controls, clock, apps, wrapped_worker } from "./index";
+
 
 let gui;
 let S;
@@ -217,89 +218,68 @@ function update_cg_params(S, params) {
 }
 
 async function NDDEMCGPhysics() {
+    let NDDEMCGLib = await new wrapped_worker();
+    await NDDEMCGLib.init(params.dimension, params.N);
+    S = NDDEMCGLib.S;
+    setup_NDDEM();
+}
 
-    if ('DEMCGND' in window === false) {
-
-        console.error('NDDEMPhysics: Couldn\'t find DEMCGND.js');
-        return;
-
+function setup_NDDEM() {
+    S.simu_interpret_command("dimensions " + String(params.dimension) + " " + String(params.N));
+    S.simu_interpret_command("radius -1 0.5");
+    let m;
+    if (params.dimension === 2) {
+        m = Math.PI * 0.5 * 0.5 * params.particle_density;
+    } else {
+        m = 4. / 3. * Math.PI * 0.5 * 0.5 * 0.5 * params.particle_density;
     }
 
-    await DEMCGND().then((NDDEMCGLib) => {
-        if (params.dimension == 2) {
-            S = new NDDEMCGLib.DEMCG2D(params.N);
-        }
-        else if (params.dimension == 3) {
-            S = new NDDEMCGLib.DEMCG3D(params.N);
-        }
-        else if (params.dimension == 4) {
-            S = new NDDEMCGLib.DEMCG4D(params.N);
-        }
-        else if (params.dimension == 5) {
-            S = new NDDEMCGLib.DEMCG5D(params.N);
-        }
-        finish_setup();
-    });
+    S.simu_interpret_command("mass -1 " + String(m));
+    S.simu_interpret_command("auto rho");
+    S.simu_interpret_command("auto radius uniform " + params.r_min + " " + params.r_max);
+    S.simu_interpret_command("auto mass");
+    S.simu_interpret_command("auto inertia");
+    S.simu_interpret_command("auto skin");
 
-
-    function finish_setup() {
-        S.simu_interpret_command("dimensions " + String(params.dimension) + " " + String(params.N));
-        S.simu_interpret_command("radius -1 0.5");
-        let m;
-        if (params.dimension === 2) {
-            m = Math.PI * 0.5 * 0.5 * params.particle_density;
-        } else {
-            m = 4. / 3. * Math.PI * 0.5 * 0.5 * 0.5 * params.particle_density;
-        }
-
-        S.simu_interpret_command("mass -1 " + String(m));
-        S.simu_interpret_command("auto rho");
-        S.simu_interpret_command("auto radius uniform " + params.r_min + " " + params.r_max);
-        S.simu_interpret_command("auto mass");
-        S.simu_interpret_command("auto inertia");
-        S.simu_interpret_command("auto skin");
-
-        S.simu_interpret_command("boundary 0 WALL 0 " + String(100 * params.L));
-        S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
-        if (params.dimension > 2) {
-            S.simu_interpret_command("boundary 2 WALL -" + String(params.r_max) + " " + String(params.r_max));
-        }
-        if (params.dimension > 3) {
-            S.simu_interpret_command("boundary 3 WALL -" + String(params.L) + " " + String(params.L));
-        }
-        S.simu_interpret_command("gravity -10 " + "0 ".repeat(params.dimension - 2))
-
-        S.simu_interpret_command("auto location randomdrop");
-
-        // S.simu_interpret_command("set Kn 2e5");
-        // S.simu_interpret_command("set Kt 8e4");
-        // S.simu_interpret_command("set GammaN 75");
-        // S.simu_interpret_command("set GammaT 75");
-        // S.simu_interpret_command("set Mu 1");
-        // S.simu_interpret_command("set Mu_wall 0");
-        // S.simu_interpret_command("set T 150");
-        // S.simu_interpret_command("set dt 0.0002");
-        // S.simu_interpret_command("set tdump 10"); // how often to calculate wall forces
-        // S.simu_interpret_command("auto skin");
-        // S.simu_finalise_init () ;
-
-        let tc = 1e-2;
-        let rest = 0.5; // super low restitution coeff to dampen out quickly
-        let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, params.particle_mass)
-
-        S.simu_interpret_command("set Kn " + String(vals.stiffness));
-        S.simu_interpret_command("set Kt " + String(0.8 * vals.stiffness));
-        S.simu_interpret_command("set GammaN " + String(vals.dissipation));
-        S.simu_interpret_command("set GammaT " + String(vals.dissipation));
-        S.simu_interpret_command("set Mu 0.5");
-        S.simu_interpret_command("set damping 0.0001");
-        S.simu_interpret_command("set T 150");
-        S.simu_interpret_command("set dt " + String(tc / 20));
-        S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
-        S.simu_interpret_command("auto skin");
-        S.simu_finalise_init();
-
-        update_cg_params(S, params);
-
+    S.simu_interpret_command("boundary 0 WALL 0 " + String(100 * params.L));
+    S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
+    if (params.dimension > 2) {
+        S.simu_interpret_command("boundary 2 WALL -" + String(params.r_max) + " " + String(params.r_max));
     }
+    if (params.dimension > 3) {
+        S.simu_interpret_command("boundary 3 WALL -" + String(params.L) + " " + String(params.L));
+    }
+    S.simu_interpret_command("gravity -10 " + "0 ".repeat(params.dimension - 2))
+
+    S.simu_interpret_command("auto location randomdrop");
+
+    // S.simu_interpret_command("set Kn 2e5");
+    // S.simu_interpret_command("set Kt 8e4");
+    // S.simu_interpret_command("set GammaN 75");
+    // S.simu_interpret_command("set GammaT 75");
+    // S.simu_interpret_command("set Mu 1");
+    // S.simu_interpret_command("set Mu_wall 0");
+    // S.simu_interpret_command("set T 150");
+    // S.simu_interpret_command("set dt 0.0002");
+    // S.simu_interpret_command("set tdump 10"); // how often to calculate wall forces
+    // S.simu_interpret_command("auto skin");
+    // S.simu_finalise_init () ;
+
+    let tc = 1e-2;
+    let rest = 0.5; // super low restitution coeff to dampen out quickly
+    let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, params.particle_mass)
+
+    S.simu_interpret_command("set Kn " + String(vals.stiffness));
+    S.simu_interpret_command("set Kt " + String(0.8 * vals.stiffness));
+    S.simu_interpret_command("set GammaN " + String(vals.dissipation));
+    S.simu_interpret_command("set GammaT " + String(vals.dissipation));
+    S.simu_interpret_command("set Mu 0.5");
+    S.simu_interpret_command("set damping 0.0001");
+    S.simu_interpret_command("set T 150");
+    S.simu_interpret_command("set dt " + String(tc / 20));
+    S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
+    S.simu_interpret_command("auto skin");
+    S.simu_finalise_init();
+
+    update_cg_params(S, params);
 }

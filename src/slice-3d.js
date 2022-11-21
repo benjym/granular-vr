@@ -13,7 +13,8 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps } from "./index";
+import { camera, scene, renderer, controls, clock, apps, wrapped_worker } from "./index";
+
 
 // let scene, renderer, controls, camera
 

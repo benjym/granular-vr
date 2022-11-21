@@ -10,7 +10,8 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps } from "./index";
+import { camera, scene, renderer, controls, clock, apps, wrapped_worker } from "./index";
+
 let S;
 
 var params = {
@@ -58,7 +59,7 @@ async function main() {
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list);
 
-    renderer.setAnimationLoop(function () {
+    renderer.setAnimationLoop(async function () {
         if (controls !== undefined) {
             controls.update();
             if (controls.vrControls.controllerGrips.left !== undefined) {
@@ -89,7 +90,7 @@ async function main() {
         // console.log(SPHERES.spheres.children[params.N-1])
         S.simu_step_forward(5);
         SPHERES.move_spheres(S, params);
-        SPHERES.draw_force_network(S, params, scene);
+        await SPHERES.draw_force_network(S, params, scene);
         renderer.render(scene, camera);
         // console.log(controls.player.position)
         CONTROLLERS.moveInD4(params, controls);
@@ -172,67 +173,51 @@ function set_ball_positions() {
 }
 
 async function NDDEMCGPhysics() {
+    let NDDEMCGLib = await new wrapped_worker();
+    await NDDEMCGLib.init(params.dimension, params.N);
+    S = NDDEMCGLib.S;
+    setup_NDDEM();
+}
 
-    if ('DEMCGND' in window === false) {
+function setup_NDDEM() {
+    S.simu_interpret_command("dimensions " + String(params.dimension) + " " + String(params.N));
+    S.simu_interpret_command("radius -1 " + params.radius);
+    S.simu_interpret_command("mass -1 1");
+    S.simu_interpret_command("auto rho");
+    S.simu_interpret_command("auto inertia");
 
-        console.error('NDDEMPhysics: Couldn\'t find DEMCGND.js');
-        return;
+    S.simu_interpret_command("boundary 0 WALL -5 5");
+    S.simu_interpret_command("boundary 1 WALL -5 5");
+    S.simu_interpret_command("boundary 2 WALL 0 5");
+    S.simu_interpret_command("gravity 0 0 -10 0");
 
+    if (params.dimension == 4) {
+        S.simu_interpret_command("boundary 3 WALL " + String(params.d4.min) + " " + String(params.d4.max));
     }
 
-    await DEMCGND().then((NDDEMCGLib) => {
-        if (params.dimension == 3) {
-            S = new NDDEMCGLib.DEMCG3D(params.N);
-        }
-        else if (params.dimension == 4) {
-            S = new NDDEMCGLib.DEMCG4D(params.N);
-        }
-        else if (params.dimension == 5) {
-            S = new NDDEMCGLib.DEMCG5D(params.N);
-        }
-        finish_setup();
-    });
+    set_ball_positions();
+    // console.log(params.N)
 
-    function finish_setup() {
-        S.simu_interpret_command("dimensions " + String(params.dimension) + " " + String(params.N));
-        S.simu_interpret_command("radius -1 " + params.radius);
-        S.simu_interpret_command("mass -1 1");
-        S.simu_interpret_command("auto rho");
-        S.simu_interpret_command("auto inertia");
+    let tc = 0.02;
+    let rest = 0.5; // super low restitution coeff to dampen out quickly
+    params.particle_volume = Math.PI * Math.PI * Math.pow(params.radius, 4) / 2.;
+    params.particle_mass = params.particle_volume * params.particle_density;
 
-        S.simu_interpret_command("boundary 0 WALL -5 5");
-        S.simu_interpret_command("boundary 1 WALL -5 5");
-        S.simu_interpret_command("boundary 2 WALL 0 5");
-        S.simu_interpret_command("gravity 0 0 -10 0");
+    let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, params.particle_mass)
 
-        if (params.dimension == 4) {
-            S.simu_interpret_command("boundary 3 WALL " + String(params.d4.min) + " " + String(params.d4.max));
-        }
+    // console.log(params.particle_mass);
 
-        set_ball_positions();
-        // console.log(params.N)
+    S.simu_interpret_command("set Kn " + String(vals.stiffness));
+    S.simu_interpret_command("set Kt " + String(0.8 * vals.stiffness));
+    S.simu_interpret_command("set GammaN " + String(vals.dissipation));
+    S.simu_interpret_command("set GammaT " + String(vals.dissipation));
+    S.simu_interpret_command("set Mu 0.5");
+    S.simu_interpret_command("set Mu_wall 1");
+    S.simu_interpret_command("set damping 1e-3");
+    S.simu_interpret_command("set T 150");
+    S.simu_interpret_command("set dt " + String(tc / 20));
+    S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
+    S.simu_interpret_command("auto skin");
+    S.simu_finalise_init();
 
-        let tc = 0.02;
-        let rest = 0.5; // super low restitution coeff to dampen out quickly
-        params.particle_volume = Math.PI * Math.PI * Math.pow(params.radius, 4) / 2.;
-        params.particle_mass = params.particle_volume * params.particle_density;
-
-        let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, params.particle_mass)
-
-        // console.log(params.particle_mass);
-
-        S.simu_interpret_command("set Kn " + String(vals.stiffness));
-        S.simu_interpret_command("set Kt " + String(0.8 * vals.stiffness));
-        S.simu_interpret_command("set GammaN " + String(vals.dissipation));
-        S.simu_interpret_command("set GammaT " + String(vals.dissipation));
-        S.simu_interpret_command("set Mu 0.5");
-        S.simu_interpret_command("set Mu_wall 1");
-        S.simu_interpret_command("set damping 1e-3");
-        S.simu_interpret_command("set T 150");
-        S.simu_interpret_command("set dt " + String(tc / 20));
-        S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
-        S.simu_interpret_command("auto skin");
-        S.simu_finalise_init();
-
-    }
 }

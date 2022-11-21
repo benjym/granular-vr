@@ -14,7 +14,8 @@ import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps } from "./index";
+import { camera, scene, renderer, controls, clock, apps, wrapped_worker } from "./index";
+
 
 let S;
 let sunk_balls = [];
@@ -104,12 +105,15 @@ async function main() {
     });
     WALLS.add_shadows();
 
-    SPHERES.add_spheres(S, params, scene);
+    await SPHERES.add_spheres(S, params, scene);
     SPHERES.add_shadows();
 
     WALLS.update_isotropic_wall(params, S);
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    if (apps.list[apps.current].button_delay === 0) {
+        BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+    }
 
     let gui = new GUI();
     gui.width = 400;
@@ -119,7 +123,7 @@ async function main() {
 
     let offset = 0.2;
 
-    renderer.setAnimationLoop(function () {
+    renderer.setAnimationLoop(async function () {
         SPHERES.move_spheres(S, params);
         S.simu_step_forward(5);
 
@@ -154,7 +158,7 @@ async function main() {
             );
         }
 
-        check_side();
+        await check_side();
 
         controls.update();
         renderer.render(scene, camera);
@@ -168,27 +172,10 @@ async function main() {
 }
 
 async function NDDEMPhysics() {
-
-    if ('DEMCGND' in window === false) {
-
-        console.error('NDDEMPhysics: Couldn\'t find DEMCGND.js');
-        return;
-
-    }
-
-    await DEMCGND().then((NDDEMCGLib) => {
-        if (params.dimension == 3) {
-            S = new NDDEMCGLib.DEMCG3D(params.N);
-        }
-        else if (params.dimension == 4) {
-            S = new NDDEMCGLib.DEMCG4D(params.N);
-        }
-        else if (params.dimension == 5) {
-            S = new NDDEMCGLib.DEMCG5D(params.N);
-        }
-        setup_NDDEM();
-    });
-
+    let NDDEMCGLib = await new wrapped_worker();
+    await NDDEMCGLib.init(params.dimension, params.N);
+    S = NDDEMCGLib.S;
+    setup_NDDEM();
 }
 
 function setup_NDDEM() {
@@ -255,12 +242,12 @@ function setup_NDDEM() {
     S.simu_finalise_init();
 }
 
-function check_side() {
+async function check_side() {
     for (let i = 0; i < params.N - 2; i++) {
         // var object = SPHERES.spheres.children[i];
 
         if (!sunk_balls.includes(i)) {
-            if (SPHERES.x[i][1] < 0) {
+            if (SPHERES.spheres.children[i].position.z < 0) {
                 let balls_left = params.N - 3 - sunk_balls.length;
 
                 console.debug('SUNK BALL ' + String(i) + '. ' + String(balls_left) + ' BALLS LEFT.');
