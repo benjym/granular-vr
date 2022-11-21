@@ -1,8 +1,6 @@
 import css from "../css/main.css";
 import track from "../text-to-speech/isotropic.mp3";
 
-// import * as DEMCGND from "../resources/DEMCGND.js";
-
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import ImmersiveControls from '@depasquale/three-immersive-controls';
 
@@ -14,13 +12,8 @@ import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-// var clock = new THREE.Clock();
-
 import { camera, scene, renderer, controls, clock, apps } from "./index";
 let S;
-
-// move_to('isotropic');
-
 
 export let params = {
     dimension: 3,
@@ -108,17 +101,6 @@ async function main() {
     set_derived_properties();
 
     await NDDEMPhysics();
-    // camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1e-1, 100);
-    // camera.position.set( 3*params.L, 3*params.L, 1.5*params.L );
-    // camera.up.set(0, 0, 1);
-    // camera.lookAt( 0, 0, 0 );
-
-    // scene = new THREE.Scene();
-    // scene.background = new THREE.Color(0x111);
-
-    // let g = new THREE.GridHelper(100, 100);
-    // g.position.y = -params.H;
-    // scene.add(g);
 
     const base_geometry = new THREE.PlaneGeometry(10, 10);
     const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
@@ -140,15 +122,6 @@ async function main() {
     
 
     SPHERES.add_spheres(S, params, scene);
-
-    // renderer = new THREE.WebGLRenderer({ antialias: true });//, logarithmicDepthBuffer: true });
-    // renderer.setPixelRatio(window.devicePixelRatio);
-    // renderer.setSize(window.innerWidth, window.innerHeight);
-    // renderer.shadowMap.enabled = true;
-    // renderer.outputEncoding = THREE.sRGBEncoding;
-
-    // let container = document.getElementById('canvas');
-    // container.appendChild(renderer.domElement);
 
     let gui = new GUI();
     gui.width = 450;
@@ -189,16 +162,6 @@ async function main() {
     });
     gui.add(params, 'loading_active').name('Loading active').listen();
 
-    // const controls = new OrbitControls( camera, container );
-    // controls.update();
-    // controls = new ImmersiveControls(camera, renderer, scene, {
-    //     initialPosition: new THREE.Vector3(0, 1.6, 2),
-    //     // moveSpeed: { keyboard: 0.025, vr: 0.025 }
-    // });
-
-    // window.addEventListener('resize', onWindowResize, false);
-
-    // BUTTONS.add_url_button('index', 'Main menu', [-0.06, 0, 0], 0.02, controls, scene);
     gui.remove_me = true;
 
     let button = BUTTONS.add_action_button('loading_active', 'Loading active', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
@@ -214,8 +177,8 @@ async function main() {
 
     AUDIO.play_track('isotropic.mp3', camera, 3000);
 
-    BUTTONS.add_scene_change_button(apps.list[0].url, apps.list[0].name, controls, scene, [-1, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
-    BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1.5], 0.25, [0, -Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
+    setTimeout(() => {BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1.5], 0.25, [0, -Math.PI / 4, 0])}, 20000);
 
 }
 
@@ -231,21 +194,6 @@ function new_load_path() {
     //             }]
     // Plotly.addTraces('stats', data);
     // params.new_line = false;
-}
-
-function onWindowResize() {
-
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    // var update = {
-    //     width: window.innerWidth,
-    //     height: window.innerHeight
-    //     };
-    // Plotly.relayout('stats', update);
-
 }
 
 function animate() {
@@ -297,8 +245,6 @@ function animate() {
                 let y = params.pressure / params.target_stress; // value between 0 and 1
                 GRAPHS.update_data(x, y);//, data_point_colour);
 
-                // console.log(packing_fraction)
-                // console.log(density)
             }
         }
 
@@ -308,7 +254,6 @@ function animate() {
 
         params.old_time = params.new_time;
     });
-    // renderer.render( scene, camera );
 
 
 

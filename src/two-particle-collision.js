@@ -14,7 +14,7 @@ import { camera, scene, renderer, controls, clock, apps } from "./index";
 let S;
 
 var params = {
-    dimension: 4,
+    dimension: 3,
     radius: 0.5,
     L: 500, //system size
     d4: { cur: 0, min: -1, max: 1 },
@@ -55,8 +55,8 @@ async function main() {
         gui.remove_me = true;
     }
 
-    BUTTONS.add_scene_change_button(apps.list[0].url, apps.list[0].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    setTimeout(() => {BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0])}, 20000);
 
     renderer.setAnimationLoop(function () {
         if (controls !== undefined) {

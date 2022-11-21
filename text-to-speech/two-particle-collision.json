@@ -5,7 +5,7 @@
         "speakingRate": 0.8
     },
     "input": {
-        "text": "In front of you are two particles. The bottom one is fixed to the floor. The top one is bouncing on top of it. When the two particles are touching, there is a force between them that stops them from overlapping. We represent the force with a white cylinder. The wider the cylinder, the bigger the force."
+        "text": "In front of you are two three dimensional spheres. The bottom one is fixed to the floor. The top one is bouncing on top of it. When the two particles are touching, there is a force between them that stops them from overlapping. We represent the force with a white cylinder. The wider the cylinder, the bigger the force."
     },
     "voice": {
         "languageCode": "en-au",

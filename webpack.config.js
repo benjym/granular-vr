@@ -18,6 +18,7 @@ module.exports = [
       "rotation-4d": './src/rotation-4d.js',
       "hyperspheres": './src/hyperspheres.js',
       "two-particle-collision": './src/two-particle-collision.js',
+      "2d-rain": './src/2d-rain.js',
     },
     plugins: [
       new webpack.ProvidePlugin({
@@ -92,6 +93,13 @@ module.exports = [
         template: "index.html",
         filename: "hyperspheres.html",
         chunks: ['hyperspheres']
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Intro to 2D',
+        favicon: "./resources/favicon512.png",
+        template: "index.html",
+        filename: "2d-rain.html",
+        chunks: ['2d-rain']
       })
     ],
     output: {

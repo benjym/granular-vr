@@ -109,8 +109,7 @@ async function main() {
 
     WALLS.update_isotropic_wall(params, S);
 
-    BUTTONS.add_scene_change_button(apps.list[0].url, apps.list[0].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
 
     let gui = new GUI();
     gui.width = 400;
@@ -270,7 +269,10 @@ function check_side() {
                 S.simu_fixParticle(i, [5 * params.L, 5 * params.L, sunk_balls.length * 2 * params.r_max, 0])
                 S.simu_setFrozen(i);
 
-                if (balls_left == 0) { AUDIO.play_track('tennis-win.mp3', camera, 0) };
+                if (balls_left == 0) {
+                    AUDIO.play_track('tennis-win.mp3', camera, 0)
+                    BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+                };
             }
             // else { console.log(SPHERES.x[i]) }
         }

@@ -90,7 +90,8 @@ async function main() {
     gui.add(params.d4, 'cur', -params.L4, params.L4, 0.001).name('D4 location (e/q)').listen();
     gui.remove_me = true;
 
-    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [-1.5, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1.5, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [ 1.5, 1, 1.5], 0.25, [0, -Math.PI / 4, 0]);
 
     renderer.setAnimationLoop(function () {
         update();

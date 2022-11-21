@@ -1,4 +1,4 @@
-import css from "../css/loading_screen.css";
+import css from "../css/main.css";
 import json_file from "../apps.json";
 
 import ImmersiveControls from '@depasquale/three-immersive-controls';
@@ -11,36 +11,18 @@ import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 import * as POOLCUE from "../libs/PoolCue";
 
-// let file = 'box';
-let VR_only = false;
-
 let urlParams = new URLSearchParams(window.location.search);
-// if ( urlParams.has('VR') || urlParams.has('vr') ) { VR_only = true; }
-
-// if ( VR_only ) {
-let splash = document.createElement("div");
-splash.classList.add("overlay");
-splash.innerHTML = "Enter VR"
-// splash.onclick = (e) => {
-//     console.log(e)
-//     // splash.style.visibility = false;
-//     move_to('box');
-//     e.srcElement.remove()
-// };
-splash.id = 'splash';
-splash.style.visibility = 'hidden';
-document.body.appendChild(splash);
-// }
 
 let container = document.createElement("div");
 document.body.appendChild(container);
 
-export let camera, scene, renderer, controls, clock, apps;
+export let camera, scene, renderer, controls, clock, apps, visibility;
 
 async function add_common_properties() {
     clock = new THREE.Clock();
 
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1e-2, 100);
+    // camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1.00, 1.1);
     camera.keep_me = true;
 
     renderer = new THREE.WebGLRenderer({ antialias: true });//, logarithmicDepthBuffer: true });
@@ -69,6 +51,30 @@ async function add_common_properties() {
     controls.keep_me = true;
 
     window.addEventListener('resize', onWindowResize, false);
+
+
+    // BELOW CODE IS MEANT TO FIRE WHEN HEADSET IS TAKEN ON/OFF. SHOULD ADD params.paused VALUES AND MAKE SURE params.paused STOPS UPDATE LOOPS WHERE IT CAN?
+    renderer.xr.addEventListener( 'sessionstart', function () {
+
+        renderer.xr.addEventListener("visibilitychange", (eventData) => {
+            switch(eventData.session.visibilityState) {
+                case "visible":
+                    console.debug('XR SESSION VISIBLE')
+                    visibility = 'visible'
+                    break;
+                case "visible-blurred":
+                    console.debug('XR SESSION BLURRY')
+                    visibility = 'visible-blurred'
+                    break;
+                case "hidden":
+                    console.debug('XR SESSION HIDDEN')
+                    visibility = 'hidden'
+                    break;
+            }
+        });
+    
+    } );
+    
 }
 
 
@@ -160,29 +166,27 @@ export function move_to(v) {
 
 }
 
-// renderer.xr.addEventListener('sessionstart', function (event) {
-
-//     splash.style.visibility = 'hidden';
-
-// });
-
-// renderer.xr.addEventListener('sessionend', function (event) {
-
-//     splash.style.visibility = 'visible';
-
-// });
-
-// if (!VR_only) {
 fetch("apps.json")
     .then(response => response.json())
     .then(json => {
         apps = json;
-
-        if (urlParams.has('fname')) {
-            move_to(urlParams.get('fname'));
-        } else {
-            // console.log(apps.current)
-            // if (window.location.pathname === '/') {
-            move_to(apps.current);
+        if (urlParams.has('desktop')) {
+            if (urlParams.has('fname')) {
+                move_to(urlParams.get('fname'));
+            }
+            else { move_to(apps.current); }
+        }
+        else {
+            let buttons_container = document.getElementById('buttonsContainer');
+            buttons_container.style.position = 'absolute';
+            buttons_container.style.width = '100%';
+            buttons_container.style.height = '100%';
+            buttons_container.style.top = '0';
+            buttons_container.style.left = '0';
+            buttons_container.style.zindex = 3;
+            
+            let enter_button = document.getElementById('enterVRButton');
+            enter_button.innerText = 'Click here to enter VR';
+            enter_button.addEventListener('click', () => {move_to(apps.current);});            
         }
     });

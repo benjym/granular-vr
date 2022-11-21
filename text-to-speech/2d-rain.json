@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input": {
+        "text": "Two dimensional disks are raining down on you from the sky. Walk through them by pushing forward on the joystick in your left hand. See how they disappear when you pass through them. They have no thickness, and just exist in two dimensions. One of the dimensions is up and down, the other left and right. Lets move on to three dimensions."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}

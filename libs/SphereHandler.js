@@ -295,7 +295,7 @@ export function update_particle_material(params, lut_folder) {
     else {
         for (let i = 0; i < params.N; i++) {
             var object = spheres.children[i];
-            object.material = new MeshStandardMaterial();
+            object.material = new THREE.MeshStandardMaterial({side:THREE.DoubleSide});
             object.material.transparent = true;
             object.material.opacity = params.particle_opacity;
         }
@@ -472,7 +472,9 @@ export function move_spheres(S, params, controller1, controller2) {
                 object.visible = true;
                 object.scale.setScalar(2 * R_draw);
                 // spheres.setMatrixAt( i, matrix );
-                object.position.set(x[i][0], x[i][2], x[i][1]);
+                if ( params.dimension > 2) { object.position.set(x[i][0], x[i][2], x[i][1]); } 
+                else if ( params.dimension === 2 ) { object.position.set(x[i][1], x[i][0], 0);}
+                else { object.position.set(x[i][0], 0, 0); }
             }
             if (object.material.type === 'ShaderMaterial') { // found a custom shader material
                 for (var j = 0; j < params.dimension - 3; j++) {
