@@ -29,6 +29,7 @@ var params = {
 }
 
 export function init() {
+    params.dimension = 3;
     SPHERES.createNDParticleShader(params).then(() => {
         main();
     });
