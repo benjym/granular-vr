@@ -23,7 +23,7 @@ var params = {
     pyramid_size: 7,
     particle_density: 2700,
     particle_opacity: 0.7,
-    F_mag_max : 1e6,
+    F_mag_max: 1e6,
     N: 2,
     audio: true
 }
@@ -57,7 +57,7 @@ async function main() {
     }
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    setTimeout(() => {BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0])}, 20000);
+    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
     renderer.setAnimationLoop(function () {
         if (controls !== undefined) {

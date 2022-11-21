@@ -23,7 +23,7 @@ var params = {
     pyramid_size: 7,
     particle_density: 2700,
     particle_opacity: 0.8,
-    F_mag_max : 2e2,
+    F_mag_max: 2e2,
 }
 
 params.N = get_num_particles(params.pyramid_size);
@@ -56,32 +56,32 @@ async function main() {
     }
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    setTimeout(() => {BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0])}, 15000);
+    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list);
 
     renderer.setAnimationLoop(function () {
         if (controls !== undefined) {
             controls.update();
-            if ( controls.vrControls.controllerGrips.left !== undefined ) {
+            if (controls.vrControls.controllerGrips.left !== undefined) {
                 let loc = new THREE.Vector3();
-                controls.vrControls.controllerGrips.left.getWorldPosition( loc );
+                controls.vrControls.controllerGrips.left.getWorldPosition(loc);
                 // console.log( controls.vrControls.controllerGrips.left.position )
-                S.simu_fixParticle(params.N-1,
-                    [ loc.x,
-                      loc.z,
-                      loc.y,
-                      params.d4.cur
+                S.simu_fixParticle(params.N - 1,
+                    [loc.x,
+                    loc.z,
+                    loc.y,
+                    params.d4.cur
                     ]
                 );
             }
-            if ( controls.vrControls.controllerGrips.right !== undefined ) {
+            if (controls.vrControls.controllerGrips.right !== undefined) {
                 let loc = new THREE.Vector3();
-                controls.vrControls.controllerGrips.right.getWorldPosition( loc );
+                controls.vrControls.controllerGrips.right.getWorldPosition(loc);
                 // console.log( controls.vrControls.controllerGrips.left.position )
-                S.simu_fixParticle(params.N-2,
-                    [ loc.x,
-                      loc.z,
-                      loc.y,
-                      params.d4.cur
+                S.simu_fixParticle(params.N - 2,
+                    [loc.x,
+                    loc.z,
+                    loc.y,
+                    params.d4.cur
                     ]
                 );
             }
@@ -158,10 +158,10 @@ function set_ball_positions() {
     // add the cue stick
     // if (params.vr) {
     S.simu_interpret_command("location " + String(params.N - 1) + " 10 10 10 0");
-    S.simu_setFrozen(params.N-1);
+    S.simu_setFrozen(params.N - 1);
     // console.log(params.N)
     S.simu_interpret_command("location " + String(params.N - 2) + " 10 10 10 0");
-    S.simu_setFrozen(params.N-2);
+    S.simu_setFrozen(params.N - 2);
     // console.log(params.N)
 
     // let pool_cue_particle_volume = Math.PI*Math.PI*Math.pow(POOLCUE.small_end_radius,4)/2.;
