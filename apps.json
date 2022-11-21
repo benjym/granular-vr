@@ -1,18 +1,67 @@
 {
-    "list" : [
-        { "url":"menu", "name": "Main menu" },
-        { "url":"box", "name": "Welcome to hyperspace" },
-        { "url":"2d-rain", "name": "Intro to 2D" },
-        { "url":"two-particle-collision", "name": "Intro to 3D" },
-        { "url":"isotropic", "name": "Squeezing lots of grains" },
-        { "url":"hyperspheres", "name": "What is a hypersphere?" },
-        { "url":"slice-3d", "name": "Slicing space" },
-        { "url":"slice-4d", "name": "Intro to 4D" },
-        { "url":"rotation-3d", "name": "Rotation in 3D" },
-        { "url":"rotation-4d", "name": "Rotation in 4D" },
-        { "url":"pyramid", "name": "Pyramid" },
-        { "url":"tennis", "name": "Tennis" },
-        { "url":"4d-pool", "name": "4D pool" }
+    "list": [
+        {
+            "url": "menu",
+            "name": "Main menu"
+        },
+        {
+            "url": "box",
+            "name": "Welcome to hyperspace",
+            "button_delay": 40000
+        },
+        {
+            "url": "2d-rain",
+            "name": "Intro to 2D",
+            "button_delay": 24000
+        },
+        {
+            "url": "two-particle-collision",
+            "name": "Intro to 3D",
+            "button_delay": 20000
+        },
+        {
+            "url": "isotropic",
+            "name": "Squeezing lots of grains",
+            "button_delay": 20000
+        },
+        {
+            "url": "hyperspheres",
+            "name": "What is a hypersphere?",
+            "button_delay": 39000
+        },
+        {
+            "url": "slice-3d",
+            "name": "Slicing space",
+            "button_delay": 52000
+        },
+        {
+            "url": "slice-4d",
+            "name": "Intro to 4D",
+            "button_delay": 49000
+        },
+        {
+            "url": "rotation-3d",
+            "name": "Rotation in 3D",
+            "button_delay": 33000
+        },
+        {
+            "url": "rotation-4d",
+            "name": "Rotation in 4D",
+            "button_delay": 27000
+        },
+        {
+            "url": "pyramid",
+            "name": "Pyramid",
+            "button_delay": 8000
+        },
+        {
+            "url": "tennis",
+            "name": "Tennis"
+        },
+        {
+            "url": "4d-pool",
+            "name": "4D pool"
+        }
     ],
-    "current" : 1
+    "current": 1
 }
