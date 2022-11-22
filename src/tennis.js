@@ -14,16 +14,18 @@ import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps } from "./index";
+import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+
 
 let S;
 let sunk_balls = [];
+let button_added = false;
 
 export let params = {
     dimension: 4,
     boxratio: 1,
     // initial_packing_fraction: 0.01,
-    N: 20,
+    N: 100,
     epsilonv: 0,
     gravity: false,
     paused: false,
@@ -104,12 +106,19 @@ async function main() {
     });
     WALLS.add_shadows();
 
-    SPHERES.add_spheres(S, params, scene);
+    await SPHERES.add_spheres(S, params, scene);
     SPHERES.add_shadows();
 
     WALLS.update_isotropic_wall(params, S);
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    setTimeout(() => {
+        if (!button_added) {
+            BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+            button_added = true;
+        }
+    }, apps.list[apps.current].button_delay);
+
 
     let gui = new GUI();
     gui.width = 400;
@@ -119,7 +128,7 @@ async function main() {
 
     let offset = 0.2;
 
-    renderer.setAnimationLoop(function () {
+    renderer.setAnimationLoop(async function () {
         SPHERES.move_spheres(S, params);
         S.simu_step_forward(5);
 
@@ -140,6 +149,7 @@ async function main() {
                 params.d4.cur
                 ]
             );
+            await SPHERES.haptic_pulse(S, params, controls.vrControls.controls.left, params.N - 1);
         }
         if (controls.vrControls.controllerGrips.right !== undefined) {
             let loc = new THREE.Vector3();
@@ -152,9 +162,13 @@ async function main() {
                 params.d4.cur
                 ]
             );
+            await SPHERES.haptic_pulse(S, params, controls.vrControls.controls.right, params.N - 2);
         }
 
-        check_side();
+        await check_side();
+
+
+
 
         controls.update();
         renderer.render(scene, camera);
@@ -163,32 +177,14 @@ async function main() {
 
     });
 
-    AUDIO.play_track('tennis.mp3', camera, 3000);
+    AUDIO.play_track('tennis.mp3', scene, 3000);
 
 }
 
 async function NDDEMPhysics() {
-
-    if ('DEMCGND' in window === false) {
-
-        console.error('NDDEMPhysics: Couldn\'t find DEMCGND.js');
-        return;
-
-    }
-
-    await DEMCGND().then((NDDEMCGLib) => {
-        if (params.dimension == 3) {
-            S = new NDDEMCGLib.DEMCG3D(params.N);
-        }
-        else if (params.dimension == 4) {
-            S = new NDDEMCGLib.DEMCG4D(params.N);
-        }
-        else if (params.dimension == 5) {
-            S = new NDDEMCGLib.DEMCG5D(params.N);
-        }
-        setup_NDDEM();
-    });
-
+    await NDDEMCGLib.init(params.dimension, params.N);
+    S = NDDEMCGLib.S;
+    setup_NDDEM();
 }
 
 function setup_NDDEM() {
@@ -255,12 +251,12 @@ function setup_NDDEM() {
     S.simu_finalise_init();
 }
 
-function check_side() {
+async function check_side() {
     for (let i = 0; i < params.N - 2; i++) {
         // var object = SPHERES.spheres.children[i];
 
         if (!sunk_balls.includes(i)) {
-            if (SPHERES.x[i][1] < 0) {
+            if (SPHERES.spheres.children[i].position.z < 0) {
                 let balls_left = params.N - 3 - sunk_balls.length;
 
                 console.debug('SUNK BALL ' + String(i) + '. ' + String(balls_left) + ' BALLS LEFT.');
@@ -271,7 +267,7 @@ function check_side() {
 
                 if (balls_left == 0) {
                     AUDIO.play_track('tennis-win.mp3', camera, 0)
-                    BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+                    if (!added_button) { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]); }
                 };
             }
             // else { console.log(SPHERES.x[i]) }

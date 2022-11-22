@@ -22,7 +22,8 @@ module.exports = [
     },
     plugins: [
       new webpack.ProvidePlugin({
-        THREE: 'three'
+        THREE: 'three',
+        Comlink: 'comlink'
       }),
       new HtmlWebpackPlugin({
         title: 'NDDEM in VR',
@@ -102,6 +103,16 @@ module.exports = [
         chunks: ['2d-rain']
       })
     ],
+    resolve: {
+      fallback: {
+        "crypto": false,
+        "path": false,
+        "fs": false
+      }
+    },
+    experiments: {
+      asyncWebAssembly: true
+    },
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: '[name]-bundle.js',

@@ -41,17 +41,17 @@ const cylinder = new THREE.Mesh(cylinder_geometry, cylinder_material);
 // );
 
 export async function createNDParticleShader(params) {
-    import("./" + params.dimension + "DShader.js").then((module) => {
+    await import("./" + params.dimension + "DShader.js").then((module) => {
         NDParticleShader = module.NDDEMShader;
     });
 }
 
-export function update_radii(S) {
-    radii = S.simu_getRadii();
+export async function update_radii(S) {
+    radii = await S.simu_getRadii();
 }
 
-export function add_spheres(S, params, scene) {
-    radii = S.simu_getRadii();
+export async function add_spheres(S, params, scene) {
+    radii = await S.simu_getRadii();
     total_particle_volume = 0;
     for (let i = 0; i < radii.length; i++) {
         total_particle_volume += 4. / 3. * Math.PI * Math.pow(radii[i], 3);
@@ -82,7 +82,7 @@ export function add_spheres(S, params, scene) {
         object.position.set(0, 0, 0);
         object.rotation.z = Math.PI / 2;
         object.NDDEM_ID = i;
-
+        object.visible = false;
         spheres.add(object);
         // spheres.setMatrixAt( i, matrix );
         // spheres.setColorAt( i, color.setHex( 0xffffff * Math.random() ) );
@@ -93,8 +93,8 @@ export function add_spheres(S, params, scene) {
     update_particle_material(params, lut_folder)
 }
 
-export function add_pool_spheres(S, params, scene) {
-    radii = S.simu_getRadii();
+export async function add_pool_spheres(S, params, scene) {
+    radii = await S.simu_getRadii();
 
     spheres = new THREE.Group();
     spheres.remove_me = true;
@@ -144,10 +144,10 @@ export function add_pool_spheres(S, params, scene) {
     // add_spheres_to_torus(params,controller1,controller2);
 }
 
-export function update_fixed_sounds(S, params) {
+export async function update_fixed_sounds(S, params) {
     if (params.audio) {
-        let contact_info = S.simu_getContactInfos(0x80 | 0x20000); // FT_vis
-        // let contact_info = S.simu_getContactInfos(0x80 | 0x8000);
+        let contact_info = await S.simu_getContactInfos(0x80 | 0x20000); // FT_vis
+        // let contact_info = await S.simu_getContactInfos(0x80 | 0x8000);
         let total_dissipation = 0;
         // if (params.lut === 'None') {
         for (let i = 0; i < params.N; i++) {
@@ -287,6 +287,7 @@ export function update_particle_material(params, lut_folder) {
         for (let i = 0; i < params.N; i++) {
             var object = spheres.children[i];
             object.material = NDParticleShader.clone();
+            // console.log(NDParticleShader)
             if (params.particle_opacity < 1) { object.material.transparent = true; }
             // object.material.opacity = params.particle_opacity;
             object.material.uniforms.opacity.value = params.particle_opacity;
@@ -295,7 +296,7 @@ export function update_particle_material(params, lut_folder) {
     else {
         for (let i = 0; i < params.N; i++) {
             var object = spheres.children[i];
-            object.material = new THREE.MeshStandardMaterial({side:THREE.DoubleSide});
+            object.material = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide });
             object.material.transparent = true;
             object.material.opacity = params.particle_opacity;
         }
@@ -366,18 +367,18 @@ export function update_particle_material(params, lut_folder) {
     // }
 }
 
-export function move_spheres(S, params, controller1, controller2) {
-    x = S.simu_getX();
+export async function move_spheres(S, params, controller1, controller2) {
+    x = await S.simu_getX();
     // console.log(x.length)
     // console.log(spheres.children.length)
     if (x.length === spheres.children.length) {
 
-        let orientation = S.simu_getOrientation();
+        let orientation = await S.simu_getOrientation();
         if (params.lut === 'Velocity' || params.lut === 'Fluct Velocity') {
-            v = S.simu_getVelocity();
+            v = await S.simu_getVelocity();
         }
         else if (params.lut === 'Rotation Rate') {
-            omegaMag = S.simu_getRotationRate();
+            omegaMag = await S.simu_getRotationRate();
         }
         else if (params.lut === 'Particle Stress') {
             // forceMag = S.simu_getParticleStress(); // NOTE: NOT IMPLEMENTED YET
@@ -386,117 +387,119 @@ export function move_spheres(S, params, controller1, controller2) {
         let R_draw;
         for (let i = 0; i < params.N; i++) {
             let object = spheres.children[i];
-            if (params.dimension <= 3) {
-                R_draw = radii[i];
-            }
-            else if (params.dimension == 4) {
-                R_draw = Math.sqrt(
-                    Math.pow(radii[i], 2) - Math.pow(params.d4.cur - x[i][3], 2)
-                );
-            } else if (params.dimension == 5) {
-                R_draw = Math.sqrt(
-                    Math.pow(radii[i], 2) -
-                    Math.pow(params.d4.cur - x[i][3], 2) -
-                    Math.pow(params.d5.cur - x[i][4], 2)
-                );
-            } else if (params.dimension == 6) {
-                R_draw = Math.sqrt(
-                    Math.pow(radii[i], 2) -
-                    Math.pow(params.d4.cur - x[i][3], 2) -
-                    Math.pow(params.d5.cur - x[i][4], 2) -
-                    Math.pow(params.d6.cur - x[i][5], 2)
-                );
-            } else if (params.dimension == 7) {
-                R_draw = Math.sqrt(
-                    Math.pow(radii[i], 2) -
-                    Math.pow(params.d4.cur - x[i][3], 2) -
-                    Math.pow(params.d5.cur - x[i][4], 2) -
-                    Math.pow(params.d6.cur - x[i][5], 2) -
-                    Math.pow(params.d7.cur - x[i][6], 2)
-                );
-            } else if (params.dimension == 8) {
-                R_draw = Math.sqrt(
-                    Math.pow(radii[i], 2) -
-                    Math.pow(params.d4.cur - x[i][3], 2) -
-                    Math.pow(params.d5.cur - x[i][4], 2) -
-                    Math.pow(params.d6.cur - x[i][5], 2) -
-                    Math.pow(params.d7.cur - x[i][6], 2) -
-                    Math.pow(params.d8.cur - x[i][7], 2)
-                );
-            } else if (params.dimension == 10) {
-                R_draw = Math.sqrt(
-                    Math.pow(radii[i], 2) -
-                    Math.pow(params.d4.cur - x[i][3], 2) -
-                    Math.pow(params.d5.cur - x[i][4], 2) -
-                    Math.pow(params.d6.cur - x[i][5], 2) -
-                    Math.pow(params.d7.cur - x[i][6], 2) -
-                    Math.pow(params.d8.cur - x[i][7], 2) -
-                    Math.pow(params.d9.cur - x[i][8], 2) -
-                    Math.pow(params.d10.cur - x[i][9], 2)
-                );
-            } else if (params.dimension == 30) {
-                R_draw = Math.sqrt(
-                    Math.pow(radii[i], 2) -
-                    Math.pow(params.d4.cur - x[i][3], 2) -
-                    Math.pow(params.d5.cur - x[i][4], 2) -
-                    Math.pow(params.d6.cur - x[i][5], 2) -
-                    Math.pow(params.d7.cur - x[i][6], 2) -
-                    Math.pow(params.d8.cur - x[i][7], 2) -
-                    Math.pow(params.d9.cur - x[i][8], 2) -
-                    Math.pow(params.d10.cur - x[i][9], 2) -
-                    Math.pow(params.d11.cur - x[i][10], 2) -
-                    Math.pow(params.d12.cur - x[i][11], 2) -
-                    Math.pow(params.d13.cur - x[i][12], 2) -
-                    Math.pow(params.d14.cur - x[i][13], 2) -
-                    Math.pow(params.d15.cur - x[i][14], 2) -
-                    Math.pow(params.d16.cur - x[i][15], 2) -
-                    Math.pow(params.d17.cur - x[i][16], 2) -
-                    Math.pow(params.d18.cur - x[i][17], 2) -
-                    Math.pow(params.d19.cur - x[i][18], 2) -
-                    Math.pow(params.d20.cur - x[i][19], 2) -
-                    Math.pow(params.d21.cur - x[i][20], 2) -
-                    Math.pow(params.d22.cur - x[i][21], 2) -
-                    Math.pow(params.d23.cur - x[i][22], 2) -
-                    Math.pow(params.d24.cur - x[i][23], 2) -
-                    Math.pow(params.d25.cur - x[i][24], 2) -
-                    Math.pow(params.d26.cur - x[i][25], 2) -
-                    Math.pow(params.d27.cur - x[i][26], 2) -
-                    Math.pow(params.d28.cur - x[i][27], 2) -
-                    Math.pow(params.d29.cur - x[i][28], 2) -
-                    Math.pow(params.d30.cur - x[i][29], 2)
-                );
-            }
-            if (isNaN(R_draw)) {
-                object.visible = false;
-            } else {
-                object.visible = true;
-                object.scale.setScalar(2 * R_draw);
-                // spheres.setMatrixAt( i, matrix );
-                if ( params.dimension > 2) { object.position.set(x[i][0], x[i][2], x[i][1]); } 
-                else if ( params.dimension === 2 ) { object.position.set(x[i][1], x[i][0], 0);}
-                else { object.position.set(x[i][0], 0, 0); }
-            }
-            if (object.material.type === 'ShaderMaterial') { // found a custom shader material
-                for (var j = 0; j < params.dimension - 3; j++) {
-                    object.material.uniforms.xview.value[j] =
-                        params.d4.cur;
-                    object.material.uniforms.xpart.value[j] =
-                        x[i][j + 3];
+            if (object !== undefined) {
+                if (params.dimension <= 3) {
+                    R_draw = radii[i];
                 }
-                object.material.uniforms.A.value = orientation[i];
-            } else if (params.lut === 'Velocity') {
-                // update brightness of textured particle
-                // object.material.uniforms.ambient.value = 0.5 + 1e-3*( Math.pow(v[i][0],2) + Math.pow(v[i][1],2) + Math.pow(v[i][2],2) );
-                // use LUT to set an actual colour
-                let vel_mag = Math.sqrt(Math.pow(v[i][0], 2) + Math.pow(v[i][1], 2) + Math.pow(v[i][2], 2));
-                object.material.color = lut.getColor(vel_mag);
-            } else if (params.lut === 'Fluct Velocity') {
-                let vel_mag = Math.sqrt(Math.pow(v[i][0], 2) + Math.pow(v[i][1] - params.shear_rate * x[i][0], 2) + Math.pow(v[i][2], 2));
-                object.material.color = lut.getColor(vel_mag);
-            } else if (params.lut === 'Rotation Rate') {
-                // console.log(omegaMag[i])
-                // object.material.uniforms.ambient.value = 0.5 + 0.1*omegaMag[i];
-                object.material.color = lut.getColor(omegaMag[i]);
+                else if (params.dimension == 4) {
+                    R_draw = Math.sqrt(
+                        Math.pow(radii[i], 2) - Math.pow(params.d4.cur - x[i][3], 2)
+                    );
+                } else if (params.dimension == 5) {
+                    R_draw = Math.sqrt(
+                        Math.pow(radii[i], 2) -
+                        Math.pow(params.d4.cur - x[i][3], 2) -
+                        Math.pow(params.d5.cur - x[i][4], 2)
+                    );
+                } else if (params.dimension == 6) {
+                    R_draw = Math.sqrt(
+                        Math.pow(radii[i], 2) -
+                        Math.pow(params.d4.cur - x[i][3], 2) -
+                        Math.pow(params.d5.cur - x[i][4], 2) -
+                        Math.pow(params.d6.cur - x[i][5], 2)
+                    );
+                } else if (params.dimension == 7) {
+                    R_draw = Math.sqrt(
+                        Math.pow(radii[i], 2) -
+                        Math.pow(params.d4.cur - x[i][3], 2) -
+                        Math.pow(params.d5.cur - x[i][4], 2) -
+                        Math.pow(params.d6.cur - x[i][5], 2) -
+                        Math.pow(params.d7.cur - x[i][6], 2)
+                    );
+                } else if (params.dimension == 8) {
+                    R_draw = Math.sqrt(
+                        Math.pow(radii[i], 2) -
+                        Math.pow(params.d4.cur - x[i][3], 2) -
+                        Math.pow(params.d5.cur - x[i][4], 2) -
+                        Math.pow(params.d6.cur - x[i][5], 2) -
+                        Math.pow(params.d7.cur - x[i][6], 2) -
+                        Math.pow(params.d8.cur - x[i][7], 2)
+                    );
+                } else if (params.dimension == 10) {
+                    R_draw = Math.sqrt(
+                        Math.pow(radii[i], 2) -
+                        Math.pow(params.d4.cur - x[i][3], 2) -
+                        Math.pow(params.d5.cur - x[i][4], 2) -
+                        Math.pow(params.d6.cur - x[i][5], 2) -
+                        Math.pow(params.d7.cur - x[i][6], 2) -
+                        Math.pow(params.d8.cur - x[i][7], 2) -
+                        Math.pow(params.d9.cur - x[i][8], 2) -
+                        Math.pow(params.d10.cur - x[i][9], 2)
+                    );
+                } else if (params.dimension == 30) {
+                    R_draw = Math.sqrt(
+                        Math.pow(radii[i], 2) -
+                        Math.pow(params.d4.cur - x[i][3], 2) -
+                        Math.pow(params.d5.cur - x[i][4], 2) -
+                        Math.pow(params.d6.cur - x[i][5], 2) -
+                        Math.pow(params.d7.cur - x[i][6], 2) -
+                        Math.pow(params.d8.cur - x[i][7], 2) -
+                        Math.pow(params.d9.cur - x[i][8], 2) -
+                        Math.pow(params.d10.cur - x[i][9], 2) -
+                        Math.pow(params.d11.cur - x[i][10], 2) -
+                        Math.pow(params.d12.cur - x[i][11], 2) -
+                        Math.pow(params.d13.cur - x[i][12], 2) -
+                        Math.pow(params.d14.cur - x[i][13], 2) -
+                        Math.pow(params.d15.cur - x[i][14], 2) -
+                        Math.pow(params.d16.cur - x[i][15], 2) -
+                        Math.pow(params.d17.cur - x[i][16], 2) -
+                        Math.pow(params.d18.cur - x[i][17], 2) -
+                        Math.pow(params.d19.cur - x[i][18], 2) -
+                        Math.pow(params.d20.cur - x[i][19], 2) -
+                        Math.pow(params.d21.cur - x[i][20], 2) -
+                        Math.pow(params.d22.cur - x[i][21], 2) -
+                        Math.pow(params.d23.cur - x[i][22], 2) -
+                        Math.pow(params.d24.cur - x[i][23], 2) -
+                        Math.pow(params.d25.cur - x[i][24], 2) -
+                        Math.pow(params.d26.cur - x[i][25], 2) -
+                        Math.pow(params.d27.cur - x[i][26], 2) -
+                        Math.pow(params.d28.cur - x[i][27], 2) -
+                        Math.pow(params.d29.cur - x[i][28], 2) -
+                        Math.pow(params.d30.cur - x[i][29], 2)
+                    );
+                }
+                if (isNaN(R_draw)) {
+                    object.visible = false;
+                } else {
+                    object.visible = true;
+                    object.scale.setScalar(2 * R_draw);
+                    // spheres.setMatrixAt( i, matrix );
+                    if (params.dimension > 2) { object.position.set(x[i][0], x[i][2], x[i][1]); }
+                    else if (params.dimension === 2) { object.position.set(x[i][1], x[i][0], 0); }
+                    else { object.position.set(x[i][0], 0, 0); }
+                }
+                if (object.material.type === 'ShaderMaterial') { // found a custom shader material
+                    for (var j = 0; j < params.dimension - 3; j++) {
+                        object.material.uniforms.xview.value[j] =
+                            params.d4.cur;
+                        object.material.uniforms.xpart.value[j] =
+                            x[i][j + 3];
+                    }
+                    object.material.uniforms.A.value = orientation[i];
+                } else if (params.lut === 'Velocity') {
+                    // update brightness of textured particle
+                    // object.material.uniforms.ambient.value = 0.5 + 1e-3*( Math.pow(v[i][0],2) + Math.pow(v[i][1],2) + Math.pow(v[i][2],2) );
+                    // use LUT to set an actual colour
+                    let vel_mag = Math.sqrt(Math.pow(v[i][0], 2) + Math.pow(v[i][1], 2) + Math.pow(v[i][2], 2));
+                    object.material.color = lut.getColor(vel_mag);
+                } else if (params.lut === 'Fluct Velocity') {
+                    let vel_mag = Math.sqrt(Math.pow(v[i][0], 2) + Math.pow(v[i][1] - params.shear_rate * x[i][0], 2) + Math.pow(v[i][2], 2));
+                    object.material.color = lut.getColor(vel_mag);
+                } else if (params.lut === 'Rotation Rate') {
+                    // console.log(omegaMag[i])
+                    // object.material.uniforms.ambient.value = 0.5 + 0.1*omegaMag[i];
+                    object.material.color = lut.getColor(omegaMag[i]);
+                }
             }
             // if (params.dimension > 3) {
             //
@@ -536,10 +539,10 @@ export function getHertzCriticalTimestep(bulk_modulus, poisson_coefficient, radi
     return critical_timestep
 }
 
-export function randomise_particles(params, S) {
+export async function randomise_particles(params, S) {
     if (S !== undefined) {
         for (let i = 0; i < params.N; i++) {
-            S.simu_fixParticle(i, [
+            await simu_fixParticle(i, [
                 -params.L + Math.random() * 2 * params.L,
                 -params.L + Math.random() * 2 * params.L,
                 -params.L + Math.random() * 2 * params.L]);
@@ -547,10 +550,10 @@ export function randomise_particles(params, S) {
     }
 }
 
-export function randomise_particles_isotropic(params, S) {
+export async function randomise_particles_isotropic(params, S) {
     if (S !== undefined) {
         for (let i = 0; i < params.N; i++) {
-            S.simu_fixParticle(i, [
+            await S.simu_fixParticle(i, [
                 -params.L + params.r_max + Math.random() * 2 * (params.L - params.r_max),
                 -params.L + params.r_max + Math.random() * 2 * (params.L - params.r_max),
                 params.r_max + Math.random() * 2 * (params.H - params.r_max)]);
@@ -558,8 +561,50 @@ export function randomise_particles_isotropic(params, S) {
     }
 }
 
+export async function haptic_pulse(S, params, controller, NDDEM_index) {
 
-export function draw_force_network(S, params, scene) {
+    if ('F_mag_max' in params) {
+        F_mag_max = params.F_mag_max;
+    } else {
+        F_mag_max = 1e0;
+    }
+
+    if ("hapticActuators" in controller.gamepad && controller.gamepad.hapticActuators.length > 0) {
+
+        var F = await S.simu_getContactInfos(0x80 | 0x100);
+        for (let i = 0; i < F.length; i++) {
+            if (F[i][0] === NDDEM_index || F[i][1] || NDDEM_index) {
+                let F_mag;
+                if (params.dimension === 2) {
+                    F_mag = Math.sqrt(
+                        Math.pow(F[i][2], 2) +
+                        Math.pow(F[i][3], 2)
+                    )
+                }
+                else if (params.dimension === 3) {
+                    F_mag = Math.sqrt(
+                        Math.pow(F[i][2], 2) +
+                        Math.pow(F[i][3], 2) +
+                        Math.pow(F[i][4], 2)
+                    )
+                }
+                else if (params.dimension === 4) {
+                    F_mag = Math.sqrt(
+                        Math.pow(F[i][2], 2) +
+                        Math.pow(F[i][3], 2) +
+                        Math.pow(F[i][4], 2) +
+                        Math.pow(F[i][5], 2)
+                    )
+                }
+                controller.gamepad.hapticActuators[0].pulse(F_mag / F_mag_max, 100);
+            }
+        }
+    }
+}
+
+
+export async function draw_force_network(S, params, scene) {
+    // console.log(S)
     if (S !== undefined) {
         if (params.particle_opacity < 1) {
             for (var i = 0; i < forces.children.length; i++) {
@@ -570,7 +615,7 @@ export function draw_force_network(S, params, scene) {
             forces = new THREE.Group();
             forces.remove_me = true;
 
-            var F = S.simu_getContactInfos(0x80 | 0x100)
+            var F = await S.simu_getContactInfos(0x80 | 0x100);
 
             let width = radii[0] / 2.;
             if ('F_mag_max' in params) {

@@ -15,7 +15,7 @@ import * as AUDIO from '../libs/audio.js';
 import * as LIGHTS from "../libs/lights";
 
 
-import { camera, scene, renderer, controls, clock, apps } from "./index";
+import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
 
 let gui;
 let S;
@@ -70,7 +70,7 @@ async function main() {
 
     LIGHTS.add_default_lights(scene);
 
-    SPHERES.add_pool_spheres(S, params, scene);
+    await SPHERES.add_pool_spheres(S, params, scene);
 
     STLFilename = './4d-pool.stl'; // this one has crap pockets
     material = new THREE.MeshStandardMaterial({
@@ -91,17 +91,17 @@ async function main() {
     gui.remove_me = true;
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1.5, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
-    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [ 1.5, 1, 1.5], 0.25, [0, -Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [1.5, 1, 1.5], 0.25, [0, -Math.PI / 4, 0]);
 
     renderer.setAnimationLoop(function () {
         update();
         renderer.render(scene, camera);
     });
 
-    AUDIO.play_track('4d-pool.mp3', camera, 3000);
+    AUDIO.play_track('4d-pool.mp3', scene, 3000);
 
     POOLCUE.add_pool_cue(controls.vrControls.controllers.right).then(() => {
-        console.log('UPDATED RADIUS')
+        // console.log('UPDATED RADIUS')
         S.simu_setRadius(params.N - 1, POOLCUE.small_end_radius);
         S.simu_setMass(params.N - 1, params.particle_mass / 2.);
         SPHERES.update_radii(S);
@@ -170,7 +170,7 @@ function in_pocket(loc) {
     let retval = false;
 
     pocket_locs.forEach(pocket => {
-        if (Math.pow(loc[0] - pocket[0], 2) + Math.pow(loc[1] - pocket[1], 2) < params.pocket_size * params.pocket_size) {
+        if (Math.pow(loc.x - pocket[0], 2) + Math.pow(loc.z - pocket[1], 2) < params.pocket_size * params.pocket_size) {
             console.log('fallen off table (hopefully out of a hole)')
             retval = true;
         }
@@ -178,11 +178,11 @@ function in_pocket(loc) {
     return retval;
 }
 
-function check_pockets() {
+async function check_pockets() {
     for (let i = 0; i < params.N - 1; i++) {
-        var object = SPHERES.spheres.children[i];
+        // var object = SPHERES.spheres.children[i];
         if (!sunk_balls.includes(i)) {
-            if (in_pocket(SPHERES.x[i])) {
+            if (in_pocket(SPHERES.spheres.children[i].position)) {
                 if (i == 0) {
                     console.log('sunk white ball')
                     S.simu_fixParticle(0, params.white_ball_initial_loc)
@@ -210,58 +210,49 @@ function check_pockets() {
 }
 
 async function NDDEMPhysics() {
-
-    await DEMCGND().then((NDDEMCGLib) => {
-        if (params.dimension == 3) {
-            S = new NDDEMCGLib.DEMCG3D(params.N);
-        } else if (params.dimension == 4) {
-            S = new NDDEMCGLib.DEMCG4D(params.N);
-        } else if (params.dimension == 5) {
-            S = new NDDEMCGLib.DEMCG5D(params.N);
-
-        }
-        finish_setup();
-    });
+    await NDDEMCGLib.init(params.dimension, params.N);
+    S = NDDEMCGLib.S;
+    setup_NDDEM();
+}
 
 
-    function finish_setup() {
-        S.simu_interpret_command("dimensions " + String(params.dimension) + " " + String(params.N));
+function setup_NDDEM() {
+    S.simu_interpret_command("dimensions " + String(params.dimension) + " " + String(params.N));
 
-        S.simu_interpret_command("radius -1 " + String(params.radius));
-        // now need to find the mass of a particle with diameter 1
+    S.simu_interpret_command("radius -1 " + String(params.radius));
+    // now need to find the mass of a particle with diameter 1
 
-        S.simu_interpret_command("mass -1 " + String(params.particle_mass));
-        S.simu_interpret_command("auto rho");
-        S.simu_interpret_command("auto mass");
-        S.simu_interpret_command("auto inertia");
-        S.simu_interpret_command("auto skin");
+    S.simu_interpret_command("mass -1 " + String(params.particle_mass));
+    S.simu_interpret_command("auto rho");
+    S.simu_interpret_command("auto mass");
+    S.simu_interpret_command("auto inertia");
+    S.simu_interpret_command("auto skin");
 
-        S.simu_interpret_command("boundary 0 WALL -" + String(params.L1) + " " + String(params.L1));
-        S.simu_interpret_command("boundary 1 WALL -" + String(params.L3) + " " + String(params.L3));
-        S.simu_interpret_command("boundary 2 WALL " + String(-params.L2 + params.table_height) + " " + String(params.L2 + params.table_height));
-        S.simu_interpret_command("boundary 3 WALL -" + String(params.L4) + " " + String(params.L4));
-        // S.interpret_command("body " + STLFilename);
-        S.simu_interpret_command("gravity 0 0 -9.81 0");
-        // S.interpret_command("auto location randomdrop");
+    S.simu_interpret_command("boundary 0 WALL -" + String(params.L1) + " " + String(params.L1));
+    S.simu_interpret_command("boundary 1 WALL -" + String(params.L3) + " " + String(params.L3));
+    S.simu_interpret_command("boundary 2 WALL " + String(-params.L2 + params.table_height) + " " + String(params.L2 + params.table_height));
+    S.simu_interpret_command("boundary 3 WALL -" + String(params.L4) + " " + String(params.L4));
+    // S.interpret_command("body " + STLFilename);
+    S.simu_interpret_command("gravity 0 0 -9.81 0");
+    // S.interpret_command("auto location randomdrop");
 
-        set_ball_positions();
+    set_ball_positions();
 
-        let tc = 20 * params.dt;
-        let rest = 0.5; // super low restitution coeff to dampen out quickly
-        let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, params.particle_mass)
+    let tc = 20 * params.dt;
+    let rest = 0.5; // super low restitution coeff to dampen out quickly
+    let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, params.particle_mass)
 
-        S.simu_interpret_command("set Kn " + String(vals.stiffness));
-        S.simu_interpret_command("set Kt " + String(0.8 * vals.stiffness));
-        S.simu_interpret_command("set GammaN " + String(vals.dissipation));
-        S.simu_interpret_command("set GammaT " + String(vals.dissipation));
-        S.simu_interpret_command("set Mu 0.1");
-        S.simu_interpret_command("set Mu_wall 0.5");
-        S.simu_interpret_command("set damping 6e-4");
-        S.simu_interpret_command("set T 150");
-        S.simu_interpret_command("set dt " + String(params.dt));
-        S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
-        S.simu_finalise_init();
-    }
+    S.simu_interpret_command("set Kn " + String(vals.stiffness));
+    S.simu_interpret_command("set Kt " + String(0.8 * vals.stiffness));
+    S.simu_interpret_command("set GammaN " + String(vals.dissipation));
+    S.simu_interpret_command("set GammaT " + String(vals.dissipation));
+    S.simu_interpret_command("set Mu 0.1");
+    S.simu_interpret_command("set Mu_wall 0.5");
+    S.simu_interpret_command("set damping 6e-4");
+    S.simu_interpret_command("set T 150");
+    S.simu_interpret_command("set dt " + String(params.dt));
+    S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
+    S.simu_finalise_init();
 }
 
 function set_ball_positions() {
