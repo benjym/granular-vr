@@ -1,6 +1,6 @@
 {
     "name": "granular-vr",
-    "display": "standalone",
+    "display": "minimal-ui",
     "short_name": "granular-vr",
     "background_color": "#fff",
     "theme_color": "#2d0",
