@@ -118,7 +118,7 @@ async function update() {
     await SPHERES.move_spheres(S, params);
     // RAYCAST.animate_locked_particle(S, camera, SPHERES.spheres, params);
     // if (!params.paused) {
-    await S.simu_step_forward(2);
+    await S.simu_step_forward(10);
     // update_cg_field();
     // }
     // SPHERES.draw_force_network(S, params, scene);
