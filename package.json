@@ -1,13 +1,13 @@
 {
   "name": "granular-vr",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Granular mechanics in VR",
   "main": "index.js",
   "scripts": {
     "watch": "webpack --watch",
     "start": "webpack serve --open",
     "build": "webpack",
-    "build_apk": "../structures-vr/oculus-packaging/ovr-platform-util create-pwa -o granular-vr.apk --android-sdk /Users/bmar5496/Library/Android/sdk --package-name com.scigem.granularvr --manifest-content-file manifest.webmanifest --apk-template ../structures-vr/oculus-packaging/pwa-template.apk --apk-tool ../structures-vr/oculus-packaging/apktool --keystore ../structures-vr/oculus-packaging/debug.keystore",
+    "build_apk": "../structures-vr/oculus-packaging/ovr-platform-util create-pwa -o granular-vr.apk --android-sdk /Users/bmar5496/Library/Android/sdk --package-name com.scigem.granularvr --manifest-content-file manifest.json --apk-template ../structures-vr/oculus-packaging/pwa-template.apk --apk-tool ../structures-vr/oculus-packaging/apktool --keystore ../structures-vr/oculus-packaging/debug.keystore",
     "deploy": "adb install granular-vr.apk"
   },
   "repository": {
@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@depasquale/three-immersive-controls": "^0.0.12",
+    "comlink": "^4.3.1",
     "css-loader": "^6.7.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",

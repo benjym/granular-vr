@@ -1,9 +1,7 @@
 import css from "../css/main.css";
 import track from "../text-to-speech/index.mp3";
-// import * as DEMCGND from "../resources/DEMCGND.js";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
-// import ImmersiveControls from '@depasquale/three-immersive-controls';
 
 import * as CONTROLLERS from '../libs/controllers.js';
 import * as SPHERES from "../libs/SphereHandler.js"
@@ -13,7 +11,7 @@ import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps } from "./index";
+import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
 
 let S;
 
@@ -74,8 +72,13 @@ export function init() {
 
 async function main() {
     set_derived_properties();
-    await NDDEMPhysics();
+    await NDDEMPhysics().then(() => {
+        build_world();
+        renderer.setAnimationLoop(update);
+    });
+}
 
+async function build_world() {
     const base_geometry = new THREE.PlaneGeometry(params.L, params.L);
     const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
     const plane = new THREE.Mesh(base_geometry, base_material);
@@ -83,16 +86,6 @@ async function main() {
     plane.position.y = -0.5 * params.r_min;
     scene.add(plane);
 
-    // const hemiLight = new THREE.AmbientLight();
-    // hemiLight.intensity = 0.35;
-    // // hemiLight.castShadow = true;
-    // // scene.add(hemiLight);
-
-    // const dirLight = new THREE.PointLight();
-    // dirLight.position.set(0, 1, 2);
-    // dirLight.castShadow = true;
-    // // dirLight.shadow.camera.zoom = 2;
-    // scene.add(dirLight);
     LIGHTS.add_default_lights(scene);
 
     WALLS.add_cuboid_walls(params);
@@ -119,51 +112,30 @@ async function main() {
     // BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
-    let offset = 0.2;
+    AUDIO.play_track('index.mp3', scene, 3000);
+}
 
-    renderer.setAnimationLoop(function () {
-        SPHERES.move_spheres(S, params);
-        S.simu_step_forward(5);
+async function update() {
+    // if (S !== undefined) {
+    SPHERES.move_spheres(S, params);
+    S.simu_step_forward(2);
+    // }
+    let offset = 0.5;
+    if (controls.player.position.x < -params.L + offset) { controls.player.position.x = -params.L + offset; }
+    else if (controls.player.position.x > params.L - offset) { controls.player.position.x = params.L - offset; }
 
-        if (controls.player.position.x < -params.L + offset) { controls.player.position.x = -params.L + offset; }
-        else if (controls.player.position.x > params.L - offset) { controls.player.position.x = params.L - offset; }
+    if (controls.player.position.z < -params.L + offset) { controls.player.position.z = -params.L + offset; }
+    else if (controls.player.position.z > params.L - offset) { controls.player.position.z = params.L - offset; }
 
-        if (controls.player.position.z < -params.L + offset) { controls.player.position.z = -params.L + offset; }
-        else if (controls.player.position.z > params.L - offset) { controls.player.position.z = params.L - offset; }
-
-        controls.update();
-        renderer.render(scene, camera);
-        params = CONTROLLERS.moveInD4(params, controls);
-
-
-    });
-
-    AUDIO.play_track('index.mp3', camera, 3000);
-
+    controls.update();
+    renderer.render(scene, camera);
+    params = CONTROLLERS.moveInD4(params, controls);
 }
 
 async function NDDEMPhysics() {
-
-    if ('DEMCGND' in window === false) {
-
-        console.error('NDDEMPhysics: Couldn\'t find DEMCGND.js');
-        return;
-
-    }
-
-    await DEMCGND().then((NDDEMCGLib) => {
-        if (params.dimension == 3) {
-            S = new NDDEMCGLib.DEMCG3D(params.N);
-        }
-        else if (params.dimension == 4) {
-            S = new NDDEMCGLib.DEMCG4D(params.N);
-        }
-        else if (params.dimension == 5) {
-            S = new NDDEMCGLib.DEMCG5D(params.N);
-        }
-        setup_NDDEM();
-    });
-
+    await NDDEMCGLib.init(params.dimension, params.N);
+    S = NDDEMCGLib.S;
+    setup_NDDEM();
 }
 
 function setup_NDDEM() {
@@ -228,7 +200,8 @@ function setup_NDDEM() {
 }
 
 // init();
+// setTimeout(dispose, 5000);
 
 export function dispose() {
-
+    worker.terminate();
 }

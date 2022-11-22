@@ -13,7 +13,8 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps } from "./index";
+import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+
 
 // let scene, renderer, controls, camera
 
@@ -92,7 +93,7 @@ export function init() {
     gui.add(params.d4, 'cur').min(params.d4.min).max(params.d4.max).step(0.01).listen().name('Slice').onChange(function (val) { update_spheres(val, circle, wall); });
     gui.remove_me = true;
 
-    AUDIO.play_track('slice-3d.mp3', camera, 3000);
+    AUDIO.play_track('slice-3d.mp3', scene, 3000);
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);

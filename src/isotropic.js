@@ -12,7 +12,8 @@ import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps } from "./index";
+import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+
 let S;
 
 export let params = {
@@ -170,12 +171,12 @@ async function main() {
     WALLS.update_isotropic_wall(params, S);
     animate();
 
-    let graph = GRAPHS.add_axes("Solid Fraction", "Pressure", 0.35, 0.7, 0, params.target_stress, scene);
-    graph.position.y = 1.6;
-    graph.position.z = 1.5 * params.L;
-    graph.rotateY(-Math.PI / 2.);
+    // let graph = GRAPHS.add_axes("Solid Fraction", "Pressure", 0.35, 0.7, 0, params.target_stress, scene);
+    // graph.position.y = 1.6;
+    // graph.position.z = 1.5 * params.L;
+    // graph.rotateY(-Math.PI / 2.);
 
-    AUDIO.play_track('isotropic.mp3', camera, 3000);
+    AUDIO.play_track('isotropic.mp3', scene, 3000);
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1.5], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
@@ -197,7 +198,7 @@ function new_load_path() {
 }
 
 function animate() {
-    renderer.setAnimationLoop(function () {
+    renderer.setAnimationLoop(async function () {
         if (clock.getElapsedTime() - params.startTime > 3) { params.started = true; }
         // requestAnimationFrame( animate );
         S.simu_step_forward(5);
@@ -228,22 +229,23 @@ function animate() {
                     SPHERES.update_fixed_sounds(S, params);
                 }
 
-                SPHERES.draw_force_network(S, params, scene);
+                await SPHERES.draw_force_network(S, params, scene);
 
-                S.cg_param_read_timestep(0);
-                S.cg_process_timestep(0, false);
-                // var grid = S.cg_get_gridinfo();
-                let sigma_xx = S.cg_get_result(0, "TC", 0)[0];
-                let sigma_yy = S.cg_get_result(0, "TC", 4)[0];
-                let sigma_zz = S.cg_get_result(0, "TC", 8)[0];
-                params.pressure = (sigma_xx + sigma_yy + sigma_zz) / 3
-                let density = S.cg_get_result(0, "RHO", 0)[0];
+                // await S.cg_param_read_timestep(0);
+                // await S.cg_process_timestep(0, false);
+                // // var grid = S.cg_get_gridinfo();
+                // let sigma_xx = await S.cg_get_result(0, "TC", 0)[0];
+                // let sigma_yy = await S.cg_get_result(0, "TC", 4)[0];
+                // let sigma_zz = await S.cg_get_result(0, "TC", 8)[0];
+                // params.pressure = (sigma_xx + sigma_yy + sigma_zz) / 3
+                // let density = await S.cg_get_result(0, "RHO", 0)[0];
 
-                let packing_fraction = density / params.particle_density; // NOTE: THIS IS JUST A HACK --- REPLACE WITH REAL LOGIC
-                let x = ((packing_fraction - 0.35) / (0.7 - 0.35));
-                // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
-                let y = params.pressure / params.target_stress; // value between 0 and 1
-                GRAPHS.update_data(x, y);//, data_point_colour);
+                // let packing_fraction = density / params.particle_density; // NOTE: THIS IS JUST A HACK --- REPLACE WITH REAL LOGIC
+                // let x = ((packing_fraction - 0.35) / (0.7 - 0.35));
+                // // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
+                // let y = params.pressure / params.target_stress; // value between 0 and 1
+                // console.log(density)
+                // GRAPHS.update_data(x, y);//, data_point_colour);
 
             }
         }
@@ -260,31 +262,13 @@ function animate() {
 }
 
 async function NDDEMPhysics() {
-
-    if ('DEMCGND' in window === false) {
-
-        console.error('NDDEMPhysics: Couldn\'t find DEMCGND.js');
-        return;
-
-    }
-
-    await DEMCGND().then((NDDEMCGLib) => {
-        if (params.dimension == 3) {
-            S = new NDDEMCGLib.DEMCG3D(params.N);
-        }
-        else if (params.dimension == 4) {
-            S = new NDDEMCGLib.DEMCG4D(params.N);
-        }
-        else if (params.dimension == 5) {
-            S = new NDDEMCGLib.DEMCG5D(params.N);
-        }
-        setup_NDDEM();
-        setup_CG();
-    });
-
+    await NDDEMCGLib.init(params.dimension, params.N);
+    S = NDDEMCGLib.S;
+    await setup_NDDEM();
+    await setup_CG();
 }
 
-function setup_NDDEM() {
+async function setup_NDDEM() {
     S.simu_interpret_command("dimensions " + String(params.dimension) + " " + String(params.N));
     S.simu_interpret_command("radius -1 0.5");
     // now need to find the mass of a particle with diameter 1
@@ -334,10 +318,10 @@ function setup_NDDEM() {
     S.simu_interpret_command("set dt " + String(tc / 20));
     S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
 
-    S.simu_finalise_init();
+    await S.simu_finalise_init();
 }
 
-function setup_CG() {
+async function setup_CG() {
     var cgparam = {};
     cgparam["file"] = [{ "filename": "none", "content": "particles", "format": "interactive", "number": 1 }];
     cgparam["boxes"] = [1, 1, 1];
@@ -359,8 +343,8 @@ function setup_CG() {
 
 
     // console.log(JSON.stringify(cgparam)) ;
-    S.cg_param_from_json_string(JSON.stringify(cgparam));
-    S.cg_setup_CG();
+    await S.cg_param_from_json_string(JSON.stringify(cgparam));
+    await S.cg_setup_CG();
 }
 
 // main();

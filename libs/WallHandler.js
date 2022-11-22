@@ -69,7 +69,7 @@ export function add_roof(params) {
     roof = new THREE.Mesh(wall_geometry, wall_material);
     roof.scale.y = params.thickness;
     roof.rotation.x = Math.PI / 2.;
-    roof.position.z = 2*params.L * params.aspect_ratio + params.thickness / 2.;
+    roof.position.z = 2 * params.L * params.aspect_ratio + params.thickness / 2.;
     // right.receiveShadow = true;
     walls.add(roof);
 }
@@ -232,7 +232,7 @@ export function add_scale(params) {
     // axesLabels.rotation.z = -Math.PI/2;
 }
 
-export function update_walls(params, S, dt = 0.001) {
+export async function update_walls(params, S, dt = 0.001) {
     params.packing_fraction = (params.N * params.particle_volume) / Math.pow(params.L_cur - params.W_cur, params.dimension - 1) / (params.L_cur - params.H_cur) / Math.pow(2, params.dimension);
     // console.log(params.packing_fraction) // NOTE: STILL A BIT BUGGY!!!!
 
@@ -267,11 +267,11 @@ export function update_walls(params, S, dt = 0.001) {
     params.floor = -params.L_cur + params.H_cur;
     params.roof = params.L_cur - params.H_cur;
 
-    S.simu_setBoundary(0, [params.back, params.front]); // Set location of the walls in x
-    S.simu_setBoundary(1, [params.left, params.right]); // Set location of the walls in y
-    S.simu_setBoundary(2, [params.floor, params.roof]); // Set location of the walls in z
+    await S.simu_setBoundary(0, [params.back, params.front]); // Set location of the walls in x
+    await S.simu_setBoundary(1, [params.left, params.right]); // Set location of the walls in y
+    await S.simu_setBoundary(2, [params.floor, params.roof]); // Set location of the walls in z
     for (var j = 0; j < params.dimension - 3; j++) {
-        S.simu_setBoundary(j + 3, [-params.L_cur, params.L_cur]); // Set location of the walls in z
+        await S.simu_setBoundary(j + 3, [-params.L_cur, params.L_cur]); // Set location of the walls in z
     }
     back.position.x = params.back - params.thickness / 2.;
     front.position.x = params.front + params.thickness / 2.;
@@ -295,7 +295,7 @@ export function update_walls(params, S, dt = 0.001) {
 
 }
 
-export function update_triaxial_walls(params, S, dt = 1) {
+export async function update_triaxial_walls(params, S, dt = 1) {
     params.packing_fraction = (params.N * params.particle_volume) / Math.pow(params.L_cur - params.W_cur, params.dimension - 1) / (params.L_cur * params.aspect_ratio - params.H_cur) / Math.pow(2, params.dimension);
     // console.log(params.packing_fraction) // NOTE: STILL A BIT BUGGY!!!!
 
@@ -328,11 +328,11 @@ export function update_triaxial_walls(params, S, dt = 1) {
     params.floor = -params.L_cur * params.aspect_ratio + params.H_cur * params.aspect_ratio;
     params.roof = params.L_cur * params.aspect_ratio - params.H_cur * params.aspect_ratio;
 
-    S.simu_setBoundary(0, [params.back, params.front]); // Set location of the walls in x
-    S.simu_setBoundary(1, [params.left, params.right]); // Set location of the walls in y
-    S.simu_setBoundary(2, [params.floor, params.roof]); // Set location of the walls in z
+    await S.simu_setBoundary(0, [params.back, params.front]); // Set location of the walls in x
+    await S.simu_setBoundary(1, [params.left, params.right]); // Set location of the walls in y
+    await S.simu_setBoundary(2, [params.floor, params.roof]); // Set location of the walls in z
     for (var j = 0; j < params.dimension - 3; j++) {
-        S.simu_setBoundary(j + 3, [-params.L_cur, params.L_cur]); // Set location of the walls in z
+        await S.simu_setBoundary(j + 3, [-params.L_cur, params.L_cur]); // Set location of the walls in z
     }
 
     // and now tidy things up on the threejs side
@@ -359,7 +359,7 @@ export function update_triaxial_walls(params, S, dt = 1) {
 
 }
 
-export function update_top_wall(params, S, dt = 0.001) {
+export async function update_top_wall(params, S, dt = 0.001) {
     params.packing_fraction = (params.N * params.particle_volume) / Math.pow(params.L, params.dimension - 1) / (params.L_cur) / Math.pow(2, params.dimension) * 2;
     // console.log(params.packing_fraction) // NOTE: STILL A BIT BUGGY!!!!
 
@@ -368,9 +368,9 @@ export function update_top_wall(params, S, dt = 0.001) {
     params.roof = params.L_cur;// - params.H_cur;
     params.floor = -params.L;
 
-    S.simu_setBoundary(0, [-params.L, params.L]); // Set location of the walls in x
-    S.simu_setBoundary(1, [-params.L, params.L]); // Set location of the walls in y
-    S.simu_setBoundary(2, [-params.L, params.roof]); // Set location of the walls in z
+    await S.simu_setBoundary(0, [-params.L, params.L]); // Set location of the walls in x
+    await S.simu_setBoundary(1, [-params.L, params.L]); // Set location of the walls in y
+    await S.simu_setBoundary(2, [-params.L, params.roof]); // Set location of the walls in z
     roof.position.z = params.roof + params.thickness / 2.;
     floor.position.z = params.floor - params.thickness / 2.;
 
@@ -391,7 +391,7 @@ export function update_top_wall(params, S, dt = 0.001) {
 
 }
 
-export function update_damped_wall(params, S, dt) {
+export async function update_damped_wall(params, S, dt) {
     vertical_wall_acceleration = (params.target_pressure - params.current_pressure - params.viscosity * vertical_wall_velocity) / params.wall_mass;
 
     vertical_wall_velocity += vertical_wall_acceleration * dt;
@@ -399,12 +399,12 @@ export function update_damped_wall(params, S, dt) {
 
     let L_cur = params.L - vertical_wall_displacement
 
-    S.simu_setBoundary(1, [-L_cur, L_cur]); // Set location of the walls in y
+    await S.simu_setBoundary(1, [-L_cur, L_cur]); // Set location of the walls in y
 
     console.log(L_cur, params.target_pressure, params.current_pressure);
 }
 
-export function update_isotropic_wall(params, S, dt = 0.001) {
+export async function update_isotropic_wall(params, S, dt = 0.001) {
     //params.packing_fraction = (params.N*params.particle_volume)/Math.pow(params.L,params.dimension-1)/(params.L_cur)/Math.pow(2,params.dimension)*2;
     // console.log(params.packing_fraction) // NOTE: STILL A BIT BUGGY!!!!
 
@@ -412,10 +412,10 @@ export function update_isotropic_wall(params, S, dt = 0.001) {
     params.H_cur = (1 - params.epsilonv / 3.) * params.H;
     params.L_cur = (1 - params.epsilonv / 3.) * params.L;
 
-    S.simu_setBoundary(0, [-params.L_cur, params.L_cur]); // Set location of the walls in x
-    S.simu_setBoundary(1, [-params.L_cur, params.L_cur]); // Set location of the walls in y
-    S.simu_setBoundary(2, [0, 2*params.H_cur]); // Set location of the walls in z
-    
+    await S.simu_setBoundary(0, [-params.L_cur, params.L_cur]); // Set location of the walls in x
+    await S.simu_setBoundary(1, [-params.L_cur, params.L_cur]); // Set location of the walls in y
+    await S.simu_setBoundary(2, [0, 2 * params.H_cur]); // Set location of the walls in z
+
     roof.position.z = params.H_cur + params.thickness / 2.;
     floor.position.z = -params.H_cur - params.thickness / 2.;
     left.position.y = -params.L_cur;
