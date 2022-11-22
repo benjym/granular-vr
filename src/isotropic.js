@@ -12,7 +12,7 @@ import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, wrapped_worker } from "./index";
+import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
 
 let S;
 
@@ -176,7 +176,7 @@ async function main() {
     // graph.position.z = 1.5 * params.L;
     // graph.rotateY(-Math.PI / 2.);
 
-    AUDIO.play_track('isotropic.mp3', camera, 3000);
+    AUDIO.play_track('isotropic.mp3', scene, 3000);
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1.5], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
@@ -262,7 +262,6 @@ function animate() {
 }
 
 async function NDDEMPhysics() {
-    let NDDEMCGLib = await new wrapped_worker();
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
     await setup_NDDEM();

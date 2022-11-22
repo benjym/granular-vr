@@ -10,7 +10,7 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, wrapped_worker } from "./index";
+import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
 
 let S;
 
@@ -96,7 +96,7 @@ async function main() {
         CONTROLLERS.moveInD4(params, controls);
     });
 
-    AUDIO.play_track('pyramid.mp3', camera, 3000);
+    AUDIO.play_track('pyramid.mp3', scene, 3000);
 }
 
 function get_num_particles(L) {
@@ -173,7 +173,6 @@ function set_ball_positions() {
 }
 
 async function NDDEMCGPhysics() {
-    let NDDEMCGLib = await new wrapped_worker();
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
     setup_NDDEM();

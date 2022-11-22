@@ -14,17 +14,18 @@ import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, wrapped_worker } from "./index";
+import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
 
 
 let S;
 let sunk_balls = [];
+let button_added = false;
 
 export let params = {
     dimension: 4,
     boxratio: 1,
     // initial_packing_fraction: 0.01,
-    N: 20,
+    N: 100,
     epsilonv: 0,
     gravity: false,
     paused: false,
@@ -111,9 +112,13 @@ async function main() {
     WALLS.update_isotropic_wall(params, S);
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    if (apps.list[apps.current].button_delay === 0) {
-        BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
-    }
+    setTimeout(() => {
+        if (!button_added) {
+            BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+            button_added = true;
+        }
+    }, apps.list[apps.current].button_delay);
+
 
     let gui = new GUI();
     gui.width = 400;
@@ -144,6 +149,7 @@ async function main() {
                 params.d4.cur
                 ]
             );
+            await SPHERES.haptic_pulse(S, params, controls.vrControls.controls.left, params.N - 1);
         }
         if (controls.vrControls.controllerGrips.right !== undefined) {
             let loc = new THREE.Vector3();
@@ -156,9 +162,13 @@ async function main() {
                 params.d4.cur
                 ]
             );
+            await SPHERES.haptic_pulse(S, params, controls.vrControls.controls.right, params.N - 2);
         }
 
         await check_side();
+
+
+
 
         controls.update();
         renderer.render(scene, camera);
@@ -167,12 +177,11 @@ async function main() {
 
     });
 
-    AUDIO.play_track('tennis.mp3', camera, 3000);
+    AUDIO.play_track('tennis.mp3', scene, 3000);
 
 }
 
 async function NDDEMPhysics() {
-    let NDDEMCGLib = await new wrapped_worker();
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
     setup_NDDEM();
@@ -258,7 +267,7 @@ async function check_side() {
 
                 if (balls_left == 0) {
                     AUDIO.play_track('tennis-win.mp3', camera, 0)
-                    BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+                    if (!added_button) { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]); }
                 };
             }
             // else { console.log(SPHERES.x[i]) }

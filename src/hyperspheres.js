@@ -9,7 +9,7 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, wrapped_worker } from "./index";
+import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
 
 
 export function init() {
@@ -88,7 +88,7 @@ export function init() {
         renderer.render(scene, camera);
     });
 
-    AUDIO.play_track('hyperspheres.mp3', camera, 5000);
+    AUDIO.play_track('hyperspheres.mp3', scene, 5000);
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);

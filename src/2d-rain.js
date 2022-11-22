@@ -16,7 +16,7 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 
 
-import { camera, scene, renderer, controls, clock, apps, wrapped_worker } from "./index";
+import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
 
 
 let gui;
@@ -109,18 +109,18 @@ async function main() {
         renderer.render(scene, camera);
     });
 
-    AUDIO.play_track('2d-rain.mp3', camera, 3000);
+    AUDIO.play_track('2d-rain.mp3', scene, 3000);
 }
 
 
-function update() {
+async function update() {
     // requestAnimationFrame( animate );
-    SPHERES.move_spheres(S, params);
+    await SPHERES.move_spheres(S, params);
     // RAYCAST.animate_locked_particle(S, camera, SPHERES.spheres, params);
-    if (!params.paused) {
-        S.simu_step_forward(15);
-        // update_cg_field();
-    }
+    // if (!params.paused) {
+    await S.simu_step_forward(2);
+    // update_cg_field();
+    // }
     // SPHERES.draw_force_network(S, params, scene);
     controls.update();
     renderer.render(scene, camera);
@@ -218,7 +218,6 @@ function update_cg_params(S, params) {
 }
 
 async function NDDEMCGPhysics() {
-    let NDDEMCGLib = await new wrapped_worker();
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
     setup_NDDEM();

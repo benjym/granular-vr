@@ -15,7 +15,7 @@ import * as AUDIO from '../libs/audio.js';
 import * as LIGHTS from "../libs/lights";
 
 
-import { camera, scene, renderer, controls, clock, apps, wrapped_worker } from "./index";
+import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
 
 let gui;
 let S;
@@ -98,7 +98,7 @@ async function main() {
         renderer.render(scene, camera);
     });
 
-    AUDIO.play_track('4d-pool.mp3', camera, 3000);
+    AUDIO.play_track('4d-pool.mp3', scene, 3000);
 
     POOLCUE.add_pool_cue(controls.vrControls.controllers.right).then(() => {
         // console.log('UPDATED RADIUS')
@@ -210,7 +210,6 @@ async function check_pockets() {
 }
 
 async function NDDEMPhysics() {
-    let NDDEMCGLib = await new wrapped_worker();
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
     setup_NDDEM();

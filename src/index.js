@@ -16,12 +16,15 @@ let urlParams = new URLSearchParams(window.location.search);
 let container = document.createElement("div");
 document.body.appendChild(container);
 
-export let camera, scene, renderer, controls, clock, apps, visibility, wrapped_worker;
+export let camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib;
 
 let worker = new Worker(new URL('../libs/worker.js', import.meta.url));
-wrapped_worker = Comlink.wrap(worker);
+let wrapped_worker = Comlink.wrap(worker);
 
 async function add_common_properties() {
+    NDDEMCGLib = await new wrapped_worker()
+    console.log(NDDEMCGLib)
+
     clock = new THREE.Clock();
 
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1e-2, 100);
@@ -52,6 +55,9 @@ async function add_common_properties() {
         // moveSpeed: { keyboard: 0.025, vr: 0.025 }
     });
     controls.keep_me = true;
+    // controls.vrControls.controllers.right.addEventListener('disconnected', () => {
+    //     controls.currentVrSession?.end()
+    // });
 
     window.addEventListener('resize', onWindowResize, false);
 
@@ -79,8 +85,6 @@ async function add_common_properties() {
     });
 
 }
-
-
 
 async function wipe_scene() {
     if (scene !== undefined) {
@@ -134,7 +138,7 @@ async function wipe_scene() {
     AUDIO.end_current_track();
 }
 
-add_common_properties();
+add_common_properties().then(load_json_apps);
 
 function onWindowResize() {
 
@@ -169,34 +173,36 @@ export function move_to(v) {
 
 }
 
-fetch("apps.json")
-    .then(response => response.json())
-    .then(json => {
-        apps = json;
-        if (urlParams.has('quick')) {
-            apps.list.forEach((v, i) => {
-                apps.list[i].button_delay = 0;
-            });
-        }
-
-
-        if (urlParams.has('desktop')) {
-            if (urlParams.has('fname')) {
-                move_to(urlParams.get('fname'));
+function load_json_apps() {
+    fetch("apps.json")
+        .then(response => response.json())
+        .then(json => {
+            apps = json;
+            if (urlParams.has('quick')) {
+                apps.list.forEach((v, i) => {
+                    apps.list[i].button_delay = 0;
+                });
             }
-            else { move_to(apps.current); }
-        }
-        else {
-            let buttons_container = document.getElementById('buttonsContainer');
-            buttons_container.style.position = 'absolute';
-            buttons_container.style.width = '100%';
-            buttons_container.style.height = '100%';
-            buttons_container.style.top = '0';
-            buttons_container.style.left = '0';
-            buttons_container.style.zindex = 3;
 
-            let enter_button = document.getElementById('enterVRButton');
-            enter_button.innerText = 'Click here to enter VR';
-            enter_button.addEventListener('click', () => { move_to(apps.current); });
-        }
-    });
+
+            if (urlParams.has('desktop')) {
+                if (urlParams.has('fname')) {
+                    move_to(urlParams.get('fname'));
+                }
+                else { move_to(apps.current); }
+            }
+            else {
+                let buttons_container = document.getElementById('buttonsContainer');
+                buttons_container.style.position = 'absolute';
+                buttons_container.style.width = '100%';
+                buttons_container.style.height = '100%';
+                buttons_container.style.top = '0';
+                buttons_container.style.left = '0';
+                buttons_container.style.zindex = 3;
+
+                let enter_button = document.getElementById('enterVRButton');
+                enter_button.innerText = 'Click here to enter VR';
+                enter_button.addEventListener('click', () => { move_to(apps.current); });
+            }
+        });
+}

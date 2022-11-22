@@ -5,7 +5,7 @@
     "speakingRate": 0.8
   },
   "input": {
-    "text": "In front of you are three hyperspheres. On the right is a three dimensional hypersphere. This is just a regular sphere. Every point on the surface of the sphere is a distance r from its centre. To the left of this is a circle. Again, every point on the edge of this circle is a distance r from its centre. On the left is a one dimensional hypersphere, which is just a line of length two r. Can you imagine what a four dimensional hypersphere might be like? Let's continue and start to learn about higher dimensional spheres. Click on the Slicing space button when you're ready."
+    "text": "In front of you are three hyperspheres. On the right is a three dimensional hypersphere. This is just a regular sphere. Every point on the surface of the sphere is a distance r from its centre. To the left of this is a circle. Again, every point on the edge of this circle is a distance r from its centre. On the left is a one dimensional hypersphere, which is just a line of length two r. Can you imagine what a four dimensional hypersphere might be like? Its surface will also all be a distance r from its centre, but now there will be more directions in which the surface extends. Let's continue and start to learn about higher dimensional spheres. Click on the Slicing space button when you're ready."
   },
   "voice": {
     "languageCode": "en-au",
