@@ -170,6 +170,11 @@ fetch("apps.json")
     .then(response => response.json())
     .then(json => {
         apps = json;
+        if (urlParams.has('quick')) {
+            apps.list.forEach((v, i) => {
+                apps.list[i].button_delay = 0;
+            });
+        }
         if (urlParams.has('desktop')) {
             if (urlParams.has('fname')) {
                 move_to(urlParams.get('fname'));
