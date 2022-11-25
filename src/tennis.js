@@ -244,6 +244,7 @@ function setup_NDDEM() {
 
     S.simu_interpret_command("set Mu " + String(params.friction_coefficient));
     S.simu_interpret_command("set Mu_wall 0");
+    S.simu_interpret_command("set damping 0.0001");
     S.simu_interpret_command("set T 150");
     S.simu_interpret_command("set dt " + String(tc / 20));
     S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
