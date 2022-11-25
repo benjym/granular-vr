@@ -18,6 +18,7 @@ import { camera, scene, renderer, controls, clock, apps } from "./index";
 
 let S;
 let sunk_balls = [];
+let button_added = false;
 
 export let params = {
     dimension: 4,
@@ -110,7 +111,13 @@ async function main() {
     WALLS.update_isotropic_wall(params, S);
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-
+    setTimeout(() => {
+        if (!button_added) {
+            BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+            button_added = true;
+        }
+    }, apps.list[apps.current].button_delay);
+    
     let gui = new GUI();
     gui.width = 400;
 
@@ -248,6 +255,7 @@ function setup_NDDEM() {
 
     S.simu_interpret_command("set Mu " + String(params.friction_coefficient));
     S.simu_interpret_command("set Mu_wall 0");
+    S.simu_interpret_command("set damping 0.0001");
     S.simu_interpret_command("set T 150");
     S.simu_interpret_command("set dt " + String(tc / 20));
     S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
@@ -271,7 +279,7 @@ function check_side() {
 
                 if (balls_left == 0) {
                     AUDIO.play_track('tennis-win.mp3', camera, 0)
-                    BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+                    if (!added_button) { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]); }
                 };
             }
             // else { console.log(SPHERES.x[i]) }
