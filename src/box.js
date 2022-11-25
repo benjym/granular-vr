@@ -120,7 +120,7 @@ async function update() {
     SPHERES.move_spheres(S, params);
     S.simu_step_forward(2);
     // }
-    let offset = 0.5;
+    let offset = 1.0;
     if (controls.player.position.x < -params.L + offset) { controls.player.position.x = -params.L + offset; }
     else if (controls.player.position.x > params.L - offset) { controls.player.position.x = params.L - offset; }
 
