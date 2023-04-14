@@ -56,7 +56,8 @@
         },
         {
             "url": "tennis",
-            "name": "Tennis"
+            "name": "Tennis",
+            "button_delay": 30000
         },
         {
             "url": "4d-pool",
