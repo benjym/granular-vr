@@ -8,6 +8,7 @@ import * as SPHERES from "../libs/SphereHandler.js"
 import * as BUTTONS from "../libs/buttons";
 import * as LIGHTS from "../libs/lights";
 import * as AUDIO from "../libs/audio";
+import * as WALLS from "../libs/WallHandler";
 
 import { camera, scene, renderer, controls, clock, apps } from "./index";
 
@@ -28,12 +29,7 @@ async function main() {
 
     SPHERES.add_spheres(S, params, scene)
 
-    const base_geometry = new THREE.PlaneGeometry(10, 10);
-    const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
-    const plane = new THREE.Mesh(base_geometry, base_material);
-    plane.rotateX(Math.PI / 2.);
-    plane.remove_me = true;
-    scene.add(plane);
+    WALLS.add_base_plane(scene);
 
     var gui = new GUI();
     gui.add(params.d4, 'cur').min(params.d4.min).max(params.d4.max).step(0.01).listen().name('Slice');
@@ -51,6 +47,7 @@ function update() {
     if (controls !== undefined) { controls.update(); }
     params = CONTROLLERS.moveInD4(params, controls);
     SPHERES.move_spheres(S, params);
+    WALLS.update_d4(params);
     renderer.render(scene, camera);
 }
 

@@ -2,9 +2,11 @@ import css from "../css/main.css";
 import pool_css from "../css/pool.css";
 import track from "../text-to-speech/4d-pool.mp3";
 import table from "../resources/4d-pool.stl";
+import nice_table from "../resources/pool.glb";
 
 import * as THREE from "three";
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 import * as SPHERES from "../libs/SphereHandler.js"
 import { NDSTLLoader, renderSTL } from '../libs/NDSTLLoader.js';
@@ -13,6 +15,7 @@ import * as BUTTONS from "../libs/buttons";
 import * as POOLCUE from '../libs/PoolCue.js';
 import * as AUDIO from '../libs/audio.js';
 import * as LIGHTS from "../libs/lights";
+import * as WALLS from "../libs/WallHandler";
 
 
 import { camera, scene, renderer, controls, clock, apps } from "./index";
@@ -62,11 +65,12 @@ async function main() {
 
     await NDDEMPhysics();
 
-    const base_geometry = new THREE.PlaneGeometry(4 * params.L1, 2 * params.L3 + 2 * params.L1);
-    const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
-    const plane = new THREE.Mesh(base_geometry, base_material);
-    plane.rotateX(Math.PI / 2.);
-    scene.add(plane);
+    // const base_geometry = new THREE.PlaneGeometry(4 * params.L1, 2 * params.L3 + 2 * params.L1);
+    // const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
+    // const plane = new THREE.Mesh(base_geometry, base_material);
+    // plane.rotateX(Math.PI / 2.);
+    // scene.add(plane);
+    WALLS.add_base_plane(scene);
 
     LIGHTS.add_default_lights(scene);
 
@@ -82,6 +86,7 @@ async function main() {
     loadSTL();
 
     add_table_legs();
+    // load_nice_pool_table()
 
     // gui
     gui = new GUI();
@@ -150,6 +155,7 @@ function update() {
     }
 
     S.simu_step_forward(20);
+    WALLS.update_d4(params);
 
     check_pockets();
 
@@ -301,6 +307,16 @@ function loadSTL() {
         NDsolids = solids;
         replace_meshes();
     })
+}
+
+function load_nice_pool_table() {
+    var gltfloader = new GLTFLoader();
+    gltfloader.load("./pool.glb", function( object ) { 
+        table = object.scene.children[0];
+        table.scale.set(0.012,0.012,0.012);
+        scene.add( table );
+        
+    });
 }
 
 function replace_meshes() {

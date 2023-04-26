@@ -10,12 +10,15 @@ let vertical_wall_displacement = 0;
 // import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { font } from "./buttons";
+import { Lut } from './Lut.js';
 
+var lut = new Lut("bwr", 512); // options are rainbow, cooltowarm and blackbody
 // var loader = new FontLoader();
 // loader.load("../resources/helvetiker_bold.typeface.json", function (f) { font = f });
 
 const wall_geometry = new THREE.BoxGeometry(1, 1, 1);
-const wall_material = new THREE.MeshLambertMaterial();
+const wall_material = new THREE.MeshStandardMaterial({side: THREE.DoubleSide});
+let base_plane;
 
 function add_wall_group() {
     walls = new THREE.Group();
@@ -25,8 +28,21 @@ function add_wall_group() {
 
 add_wall_group();
 
+
 const arrow_colour = 0xDDDDDD;
-const arrow_material = new THREE.MeshLambertMaterial({ color: arrow_colour });
+const arrow_material = new THREE.MeshLambertMaterial({ color: arrow_colour, side: THREE.DoubleSide });
+
+export function add_base_plane(scene) {
+    const base_geometry = new THREE.PlaneGeometry(10, 10);
+    // const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
+    const base_plane = new THREE.Mesh(base_geometry, wall_material);
+    console.log(base_plane)
+    base_plane.material.wireframe = false;
+    base_plane.rotateX(Math.PI / 2.);
+    base_plane.remove_me = true;
+    
+    scene.add(base_plane);
+}
 
 export function add_shadows() {
     for (let i = 0; i < walls.children.length; i++) {
@@ -106,6 +122,14 @@ export function add_cuboid_walls(params) {
     add_front(params, walls);
     add_back(params, walls);
 
+}
+
+export function update_d4(params) {
+    if (params.d4 !== undefined ) {
+        lut.setMin( params.d4.min );
+        lut.setMax( params.d4.max );
+        wall_material.color = lut.getColor(params.d4.cur);
+    }
 }
 
 export function add_scale(params) {

@@ -79,12 +79,13 @@ async function main() {
     set_derived_properties();
     await NDDEMPhysics();
 
-    const base_geometry = new THREE.PlaneGeometry(params.L, params.L);
-    const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
-    const plane = new THREE.Mesh(base_geometry, base_material);
-    plane.rotateX(Math.PI / 2.);
-    plane.position.y = -0.5 * params.r_min;
-    scene.add(plane);
+    // const base_geometry = new THREE.PlaneGeometry(params.L, params.L);
+    // const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
+    // const plane = new THREE.Mesh(base_geometry, base_material);
+    // plane.rotateX(Math.PI / 2.);
+    // plane.position.y = -0.5 * params.r_min;
+    // scene.add(plane);
+    // WALLS.add_base_plane(scene);
 
     LIGHTS.add_default_lights(scene);
 
@@ -166,6 +167,7 @@ async function main() {
         controls.update();
         renderer.render(scene, camera);
         params = CONTROLLERS.moveInD4(params, controls);
+        WALLS.update_d4(params);
 
 
     });
