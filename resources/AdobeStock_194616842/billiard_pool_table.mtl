@@ -1,0 +1,50 @@
+newmtl pt_corners_Mat
+Ni 1.500
+Ka 0 0 0
+Pm 0
+d 1.0
+Ke 0.0
+Kd 0.011 0.011 0.011
+adobe_map_normal billiard_pool_table/pt_corners_normal.png
+Tr 0
+illum 7
+Ks 1 1 1
+adobe_map_roughness billiard_pool_table/pt_corners_roughness.png
+adobe_interior_color 1.0 1.0 1.0
+adobe_density 0
+Ns 16
+adobe_translucence 0
+newmtl pt_legs_Mat
+Ni 1.500
+Ka 0 0 0
+Pm 1
+d 1.0
+Ke 0.0
+Kd 0 0 0
+adobe_map_normal billiard_pool_table/pt_legs_normal.png
+map_Kd billiard_pool_table/pt_legs_baseColor.png
+Tr 0
+illum 7
+Ks 1 1 1
+adobe_map_roughness billiard_pool_table/pt_legs_roughness.png
+adobe_interior_color 1.0 1.0 1.0
+adobe_density 0
+Ns 16
+adobe_translucence 0
+newmtl pt_table_Mat
+Ni 1.500
+Ka 0 0 0
+Pm 0
+d 1.0
+Ke 0.0
+Kd 0 0 0
+adobe_map_normal billiard_pool_table/pt_table_normal.png
+map_Kd billiard_pool_table/pt_table_baseColor.png
+Tr 0
+illum 7
+Ks 1 1 1
+adobe_map_roughness billiard_pool_table/pt_table_roughness.png
+adobe_interior_color 1.0 1.0 1.0
+adobe_density 0
+Ns 16
+adobe_translucence 0

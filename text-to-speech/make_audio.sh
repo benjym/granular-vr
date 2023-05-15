@@ -2,7 +2,10 @@
 
 # run with ./make_audio.sh INPUT_FILE.json OUTPUT_FILE.mp3
 
-export GOOGLE_APPLICATION_CREDENTIALS=~/Dropbox/Research/Codes/mapping-toolbox-e208680474e5.json
+# on laptop
+# export GOOGLE_APPLICATION_CREDENTIALS=~/Dropbox/Research/Codes/mapping-toolbox-e208680474e5.json
+# on work imac
+export GOOGLE_APPLICATION_CREDENTIALS=mapping-toolbox-da997278d719.json
 
 curl -X POST \
     -H "Authorization: Bearer $(gcloud auth application-default print-access-token)" \
