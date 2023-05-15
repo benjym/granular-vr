@@ -112,8 +112,7 @@ async function build_world() {
     // BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
-    AUDIO.play_track('index.mp3', scene, 3000);
-}
+    let offset = 0.5;
 
 async function update() {
     // if (S !== undefined) {
@@ -127,9 +126,16 @@ async function update() {
     if (controls.player.position.z < -params.L + offset) { controls.player.position.z = -params.L + offset; }
     else if (controls.player.position.z > params.L - offset) { controls.player.position.z = params.L - offset; }
 
-    controls.update();
-    renderer.render(scene, camera);
-    params = CONTROLLERS.moveInD4(params, controls);
+        controls.update();
+        renderer.render(scene, camera);
+        params = CONTROLLERS.moveInD4(params, controls);
+        WALLS.update_d4(params);
+
+
+    });
+
+    AUDIO.play_track('index.mp3', camera, 3000);
+
 }
 
 async function NDDEMPhysics() {

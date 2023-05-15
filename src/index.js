@@ -173,36 +173,32 @@ export function move_to(v) {
 
 }
 
-function load_json_apps() {
-    fetch("apps.json")
-        .then(response => response.json())
-        .then(json => {
-            apps = json;
-            if (urlParams.has('quick')) {
-                apps.list.forEach((v, i) => {
-                    apps.list[i].button_delay = 0;
-                });
+fetch("apps.json")
+    .then(response => response.json())
+    .then(json => {
+        apps = json;
+        if (urlParams.has('quick')) {
+            apps.list.forEach((v, i) => {
+                apps.list[i].button_delay = 0;
+            });
+        }
+        if (urlParams.has('desktop')) {
+            if (urlParams.has('fname')) {
+                move_to(urlParams.get('fname'));
             }
-
-
-            if (urlParams.has('desktop')) {
-                if (urlParams.has('fname')) {
-                    move_to(urlParams.get('fname'));
-                }
-                else { move_to(apps.current); }
-            }
-            else {
-                let buttons_container = document.getElementById('buttonsContainer');
-                buttons_container.style.position = 'absolute';
-                buttons_container.style.width = '100%';
-                buttons_container.style.height = '100%';
-                buttons_container.style.top = '0';
-                buttons_container.style.left = '0';
-                buttons_container.style.zindex = 3;
-
-                let enter_button = document.getElementById('enterVRButton');
-                enter_button.innerText = 'Click here to enter VR';
-                enter_button.addEventListener('click', () => { move_to(apps.current); });
-            }
-        });
-}
+            else { move_to(apps.current); }
+        }
+        else {
+            let buttons_container = document.getElementById('buttonsContainer');
+            buttons_container.style.position = 'absolute';
+            buttons_container.style.width = '100%';
+            buttons_container.style.height = '100%';
+            buttons_container.style.top = '0';
+            buttons_container.style.left = '0';
+            buttons_container.style.zindex = 3;
+            
+            let enter_button = document.getElementById('enterVRButton');
+            enter_button.innerText = 'Click here to enter VR';
+            enter_button.addEventListener('click', () => {move_to(apps.current);});            
+        }
+    });

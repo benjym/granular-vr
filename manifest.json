@@ -3,8 +3,17 @@
     "display": "standalone",
     "short_name": "granular-vr",
     "background_color": "#fff",
-    "theme_color": "#2d0",
+    "theme_color": "#dd00d2",
     "start_url": "https://benjym.github.io/granular-vr/",
     "scope": "https://benjym.github.io/granular-vr/",
-    "ovr_package_name": "com.scigem.granularvr"
+    "ovr_package_name": "com.scigem.granularvr",
+    "icons": [
+        {
+            "src": "https://benjym.github.io/granular-vr/favicon512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "ovr_multi_tab_enabled": false
 }

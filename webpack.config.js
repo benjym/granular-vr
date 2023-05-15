@@ -130,7 +130,7 @@ module.exports = [
           use: ["style-loader", "css-loader"],
         },
         {
-          test: /\.(json|png|svg|jpg|jpeg|gif|mp3|stl)$/i,
+          test: /\.(json|png|svg|jpg|jpeg|gif|mp3|stl|glb)$/i,
           type: 'asset/resource',
           use: ["file-loader?name=[name].[ext]"]
         },

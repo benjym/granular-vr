@@ -80,12 +80,13 @@ async function main() {
     set_derived_properties();
     await NDDEMPhysics();
 
-    const base_geometry = new THREE.PlaneGeometry(params.L, params.L);
-    const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
-    const plane = new THREE.Mesh(base_geometry, base_material);
-    plane.rotateX(Math.PI / 2.);
-    plane.position.y = -0.5 * params.r_min;
-    scene.add(plane);
+    // const base_geometry = new THREE.PlaneGeometry(params.L, params.L);
+    // const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
+    // const plane = new THREE.Mesh(base_geometry, base_material);
+    // plane.rotateX(Math.PI / 2.);
+    // plane.position.y = -0.5 * params.r_min;
+    // scene.add(plane);
+    // WALLS.add_base_plane(scene);
 
     LIGHTS.add_default_lights(scene);
 
@@ -118,8 +119,7 @@ async function main() {
             button_added = true;
         }
     }, apps.list[apps.current].button_delay);
-
-
+    
     let gui = new GUI();
     gui.width = 400;
 
@@ -173,6 +173,7 @@ async function main() {
         controls.update();
         renderer.render(scene, camera);
         params = CONTROLLERS.moveInD4(params, controls);
+        WALLS.update_d4(params);
 
 
     });
@@ -244,6 +245,7 @@ function setup_NDDEM() {
 
     S.simu_interpret_command("set Mu " + String(params.friction_coefficient));
     S.simu_interpret_command("set Mu_wall 0");
+    S.simu_interpret_command("set damping 0.0001");
     S.simu_interpret_command("set T 150");
     S.simu_interpret_command("set dt " + String(tc / 20));
     S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
