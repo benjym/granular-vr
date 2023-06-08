@@ -7,7 +7,7 @@ import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import * as CONTROLLERS from '../libs/controllers.js';
 import * as SPHERES from "../libs/SphereHandler.js"
 import * as BUTTONS from "../libs/buttons";
-import * as AUDIO from "../libs/audio";
+// import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 import * as WALLS from "../libs/WallHandler";
 
@@ -53,8 +53,8 @@ async function main() {
     gui.add(params.d4, 'cur', -params.radius, params.radius, 0.001).name('D4 location').listen();
     gui.remove_me = true;
 
-    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
     renderer.setAnimationLoop(function () {
         if (controls !== undefined) { controls.update(); }
@@ -65,7 +65,7 @@ async function main() {
         WALLS.update_d4(params);
     });
 
-    AUDIO.play_track('rotation-4d.mp3', scene, 3000);
+    // AUDIO.play_track('rotation-4d.mp3', scene, 3000);
 }
 
 

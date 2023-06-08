@@ -35,10 +35,11 @@
   },
   "dependencies": {
     "@depasquale/three-immersive-controls": "^0.0.12",
-    "comlink": "^4.3.1",
+    "comlink": "^4.4.1",
     "css-loader": "^6.7.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
+    "json5": "^2.2.3",
     "three": "^0.143.0"
   }
 }

@@ -103,8 +103,6 @@ async function main() {
         renderer.render(scene, camera);
     });
 
-    AUDIO.play_track('4d-pool.mp3', scene, 3000);
-
     POOLCUE.add_pool_cue(controls.vrControls.controllers.right).then(() => {
         // console.log('UPDATED RADIUS')
         S.simu_setRadius(params.N - 1, POOLCUE.small_end_radius);

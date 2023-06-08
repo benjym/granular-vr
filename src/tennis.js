@@ -11,12 +11,13 @@ import * as SPHERES from "../libs/SphereHandler.js"
 import * as WALLS from "../libs/WallHandler.js"
 import * as BUTTONS from "../libs/buttons";
 import * as GRAPHS from "../libs/graphs";
-import * as AUDIO from "../libs/audio";
+// import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
 import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
 
-
+let left_locked = true;
+let right_locked = true;
 let S;
 let sunk_balls = [];
 let button_added = false;
@@ -112,10 +113,10 @@ async function main() {
 
     WALLS.update_isotropic_wall(params, S);
 
-    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => {
         if (!button_added) {
-            BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
+            BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]);
             button_added = true;
         }
     }, apps.list[apps.current].button_delay);
@@ -131,6 +132,7 @@ async function main() {
     renderer.setAnimationLoop(async function () {
         SPHERES.move_spheres(S, params);
         S.simu_step_forward(5);
+        console.log(controls)
 
         if (controls.player.position.x < -params.L + offset) { controls.player.position.x = -params.L + offset; }
         else if (controls.player.position.x > params.L - offset) { controls.player.position.x = params.L - offset; }
@@ -142,33 +144,37 @@ async function main() {
             let loc = new THREE.Vector3();
             controls.vrControls.controllerGrips.left.getWorldPosition(loc);
             // console.log( controls.vrControls.controllerGrips.left.position )
-            S.simu_fixParticle(params.N - 1,
-                [loc.x,
-                loc.z,
-                loc.y,
-                params.d4.cur
-                ]
-            );
-            await SPHERES.haptic_pulse(S, params, controls.vrControls.controls.left, params.N - 1);
+            if ( left_locked ) {
+                S.simu_fixParticle(params.N - 1,
+                    [loc.x,
+                    loc.z,
+                    loc.y,
+                    params.d4.cur
+                    ]
+                );
+                await SPHERES.haptic_pulse(S, params, controls.vrControls.controls.left, params.N - 1);
+            }
         }
         if (controls.vrControls.controllerGrips.right !== undefined) {
             let loc = new THREE.Vector3();
             controls.vrControls.controllerGrips.right.getWorldPosition(loc);
-            // console.log( controls.vrControls.controllerGrips.left.position )
-            S.simu_fixParticle(params.N - 2,
-                [loc.x,
-                loc.z,
-                loc.y,
-                params.d4.cur
-                ]
-            );
-            await SPHERES.haptic_pulse(S, params, controls.vrControls.controls.right, params.N - 2);
+            if ( right_locked ) {
+                S.simu_fixParticle(params.N - 2,
+                    [loc.x,
+                    loc.z,
+                    loc.y,
+                    params.d4.cur
+                    ]
+                );
+                await SPHERES.haptic_pulse(S, params, controls.vrControls.controls.right, params.N - 2);
+            }
         }
+
+
 
         await check_side();
 
-
-
+        onFireLeftSphere();
 
         controls.update();
         renderer.render(scene, camera);
@@ -178,8 +184,15 @@ async function main() {
 
     });
 
-    AUDIO.play_track('tennis.mp3', scene, 3000);
+}
 
+function onFireLeftSphere() {
+    // console.log('AASFAKJSGHFKDALJH')
+    if ( left_locked ) {
+        console.log(controls.vrControls.controllerGrips.left)
+        // S.simu_setVelocity(params.N - 2, 
+        // left_locked = false;
+    }
 }
 
 async function NDDEMPhysics() {
@@ -257,7 +270,7 @@ async function check_side() {
     for (let i = 0; i < params.N - 2; i++) {
         // var object = SPHERES.spheres.children[i];
 
-        if (!sunk_balls.includes(i)) {
+        if (!sunk_balls.includes(i) && SPHERES.spheres.length > 0) {
             if (SPHERES.spheres.children[i].position.z < 0) {
                 let balls_left = params.N - 3 - sunk_balls.length;
 

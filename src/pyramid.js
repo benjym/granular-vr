@@ -58,8 +58,8 @@ async function main() {
         gui.remove_me = true;
     }
 
-    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list);
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list);
 
     renderer.setAnimationLoop(async function () {
         if (controls !== undefined) {
@@ -100,7 +100,7 @@ async function main() {
 
     });
 
-    AUDIO.play_track('pyramid.mp3', scene, 3000);
+    // AUDIO.play_track('pyramid.mp3', scene, 3000);
 }
 
 function get_num_particles(L) {

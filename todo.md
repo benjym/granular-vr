@@ -36,7 +36,7 @@
 - [ ] Lots of lag sometimes
 - [ ] General crashing and hanging
 - [x] make Enter vr button into a splash screen or at least embiggen and centre
-- [ ] explain what 2D/3D/4D space is
+- [x] explain what 2D/3D/4D space is
 - [ ] pause on headset removal
 - [ ] dont crash on headset removal (see [here](https://forum.babylonjs.com/t/webxr-headset-sleep-and-wake-up-events/14073/6))
 - [ ] controllers getting stuck?
@@ -44,11 +44,11 @@
 - [ ] haptics for balls on hands and pool cue
 - [ ] to deal with lag, pull NDDEM off main thread onto web worker https://pspdfkit.com/blog/2020/webassembly-in-a-web-worker/
 - [x] Remove menu links to encourage people to do everything
-- [ ] Only show progress button after some time
+- [x] Only show progress button after some time
 - [ ] showstopping crashes on:
 - [ ] controller disconnection (when put down)
 - [ ] headset removal 
-- [ ] add "Next: " and "Back: to buttons"
+- [x] add "Next: " and "Back: to buttons"
 - [ ] remove main menu, make button gracefully quit vr and say congrats ?
-- [ ] hunt for any redirects that might be causing the issues with the new tabs
+- [x] hunt for any redirects that might be causing the issues with the new tabs
 - [ ] tennis: button to fire balls. Also add damping

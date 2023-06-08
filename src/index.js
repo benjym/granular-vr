@@ -1,5 +1,7 @@
 import css from "../css/main.css";
+import JSON5 from "json5";
 import json_file from "../apps.json";
+
 
 import ImmersiveControls from '@depasquale/three-immersive-controls';
 import * as CONTROLLERS from '../libs/controllers.js';
@@ -10,24 +12,30 @@ import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 import * as POOLCUE from "../libs/PoolCue";
+import * as RAYCAST from "../libs/RaycastHandler";
+
 
 let urlParams = new URLSearchParams(window.location.search);
+export let extra_params;
+export let human_height = 1.6;
 
 let container = document.createElement("div");
 document.body.appendChild(container);
 
-export let camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib;
+export let camera, scene, renderer, controls, clock, apps, NDDEMCGLib;
 
 let worker = new Worker(new URL('../libs/worker.js', import.meta.url));
 let wrapped_worker = Comlink.wrap(worker);
 
+export let visibility = 'visible'; // by default visible so desktop mode works
+
 async function add_common_properties() {
     NDDEMCGLib = await new wrapped_worker()
-    console.log(NDDEMCGLib)
+    // console.log(NDDEMCGLib)
 
     clock = new THREE.Clock();
 
-    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1e-2, 100);
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1e-2, 20);
     // camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1.00, 1.1);
     camera.keep_me = true;
 
@@ -49,7 +57,7 @@ async function add_common_properties() {
 
 
     controls = new ImmersiveControls(camera, renderer, scene, {
-        initialPosition: new THREE.Vector3(0, 1.6, 2),
+        initialPosition: new THREE.Vector3(0, human_height, 2),
         showEnterVRButton: true,
         showExitVRButton: false,
         // moveSpeed: { keyboard: 0.025, vr: 0.025 }
@@ -87,6 +95,7 @@ async function add_common_properties() {
 }
 
 async function wipe_scene() {
+    if ( renderer !== undefined ) { renderer.setAnimationLoop(null); }
     if (scene !== undefined) {
         // scene.traverse( (o) => {
         //     console.log(o)
@@ -133,6 +142,7 @@ async function wipe_scene() {
         controls.interaction.selectableObjects = [];
 
         SPHERES.reset_spheres();
+        RAYCAST.reset_ghosts();
     }
 
     AUDIO.end_current_track();
@@ -152,18 +162,26 @@ export function move_to(v) {
     if (typeof v === 'number') {
         apps.current = v;
         console.log('CHANGING TO ' + apps.list[v].url)
+        extra_params = apps.list[v].params;
         import("./" + apps.list[v].url).then((module) => {
             wipe_scene().then(module.init());
         });
 
     } else if (typeof v === 'string') {
+        let url;
         apps.list.forEach((e, index) => {
             if (e.url === v) {
+                const arr = v.split("?");
+                url = arr[0]
                 apps.current = index;
+                if (arr.length === 2) {
+                    extra_params = new URLSearchParams(arr[1]);
+                    console.log(extra_params)
+                }
             }
         });
         console.log('CHANGING TO ' + v)
-        import("./" + v).then((module) => {
+        import("./" + url).then((module) => {
             wipe_scene().then(module.init());
         });
     }
@@ -171,34 +189,42 @@ export function move_to(v) {
         console.error('Unsupported type for moving between scenes')
     }
 
+    // now find the app you just moved to and add the relevant audio track if available
+    if ( apps.list[apps.current].audio_track !== undefined)  {
+        if ( apps.list[apps.current].audio_delay === undefined ) { apps.list[apps.current].audio_delay = 3000;}
+        AUDIO.play_track(apps.list[apps.current].audio_track, scene, apps.list[apps.current].audio_delay);
+    }
+
 }
 
-fetch("apps.json")
-    .then(response => response.json())
-    .then(json => {
-        apps = json;
-        if (urlParams.has('quick')) {
-            apps.list.forEach((v, i) => {
-                apps.list[i].button_delay = 0;
-            });
-        }
-        if (urlParams.has('desktop')) {
-            if (urlParams.has('fname')) {
-                move_to(urlParams.get('fname'));
+function load_json_apps() {
+    fetch("apps.json")
+        .then( response => response.text() )
+        .then(text => {            
+            apps = JSON5.parse(text);
+            if (urlParams.has('quick')) {
+                apps.list.forEach((v, i) => {
+                    apps.list[i].button_delay = 0;
+                });
             }
-            else { move_to(apps.current); }
-        }
-        else {
-            let buttons_container = document.getElementById('buttonsContainer');
-            buttons_container.style.position = 'absolute';
-            buttons_container.style.width = '100%';
-            buttons_container.style.height = '100%';
-            buttons_container.style.top = '0';
-            buttons_container.style.left = '0';
-            buttons_container.style.zindex = 3;
-            
-            let enter_button = document.getElementById('enterVRButton');
-            enter_button.innerText = 'Click here to enter VR';
-            enter_button.addEventListener('click', () => {move_to(apps.current);});            
-        }
-    });
+            if (urlParams.has('desktop')) {
+                if (urlParams.has('fname')) {
+                    move_to(urlParams.get('fname'));
+                }
+                else { move_to(apps.current); }
+            }
+            else {
+                let buttons_container = document.getElementById('buttonsContainer');
+                buttons_container.style.position = 'absolute';
+                buttons_container.style.width = '100%';
+                buttons_container.style.height = '100%';
+                buttons_container.style.top = '0';
+                buttons_container.style.left = '0';
+                buttons_container.style.zindex = 3;
+                
+                let enter_button = document.getElementById('enterVRButton');
+                enter_button.innerText = 'Click here to enter VR';
+                enter_button.addEventListener('click', () => {move_to(apps.current);});            
+            }
+        });
+    }

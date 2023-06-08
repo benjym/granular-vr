@@ -56,8 +56,8 @@ async function main() {
         gui.remove_me = true;
     }
 
-    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
     renderer.setAnimationLoop(async () => {
         if (controls !== undefined) {
@@ -75,7 +75,7 @@ async function main() {
         CONTROLLERS.moveInD4(params, controls);
     });
 
-    AUDIO.play_track('two-particle-collision.mp3', scene, 3000);
+    // AUDIO.play_track('two-particle-collision.mp3', scene, 3000);
 
 }
 

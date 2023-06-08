@@ -562,7 +562,7 @@ export async function randomise_particles_isotropic(params, S) {
 }
 
 export async function haptic_pulse(S, params, controller, NDDEM_index) {
-
+    
     if ('F_mag_max' in params) {
         F_mag_max = params.F_mag_max;
     } else {

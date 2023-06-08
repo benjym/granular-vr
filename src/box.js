@@ -11,7 +11,7 @@ import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
 
 let S;
 
@@ -112,29 +112,30 @@ async function build_world() {
     // BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
-    let offset = 0.5;
+    // let offset = 0.5;
+    
+}
 
 async function update() {
-    // if (S !== undefined) {
-    SPHERES.move_spheres(S, params);
-    S.simu_step_forward(2);
-    // }
-    let offset = 1.0;
-    if (controls.player.position.x < -params.L + offset) { controls.player.position.x = -params.L + offset; }
-    else if (controls.player.position.x > params.L - offset) { controls.player.position.x = params.L - offset; }
+    if ( visibility === 'visible' ) {
+        // if (S !== undefined) {
+        SPHERES.move_spheres(S, params);
+        S.simu_step_forward(2);
+        // }
+        let offset = 1.0;
+        if (controls.player.position.x < -params.L + offset) { controls.player.position.x = -params.L + offset; }
+        else if (controls.player.position.x > params.L - offset) { controls.player.position.x = params.L - offset; }
 
-    if (controls.player.position.z < -params.L + offset) { controls.player.position.z = -params.L + offset; }
-    else if (controls.player.position.z > params.L - offset) { controls.player.position.z = params.L - offset; }
+        if (controls.player.position.z < -params.L + offset) { controls.player.position.z = -params.L + offset; }
+        else if (controls.player.position.z > params.L - offset) { controls.player.position.z = params.L - offset; }
 
-        controls.update();
-        renderer.render(scene, camera);
-        params = CONTROLLERS.moveInD4(params, controls);
-        WALLS.update_d4(params);
+            controls.update();
+            renderer.render(scene, camera);
+            params = CONTROLLERS.moveInD4(params, controls);
+            WALLS.update_d4(params);
+    }
 
-
-    });
-
-    AUDIO.play_track('index.mp3', camera, 3000);
+    // });
 
 }
 
@@ -208,6 +209,6 @@ function setup_NDDEM() {
 // init();
 // setTimeout(dispose, 5000);
 
-export function dispose() {
-    worker.terminate();
-}
+// export function dispose() {
+    // worker.terminate();
+// }

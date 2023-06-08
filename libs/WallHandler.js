@@ -32,7 +32,7 @@ add_wall_group();
 const arrow_colour = 0xDDDDDD;
 const arrow_material = new THREE.MeshLambertMaterial({ color: arrow_colour, side: THREE.DoubleSide });
 
-export function add_base_plane(scene) {
+export function add_base_plane(target) {
     const base_geometry = new THREE.PlaneGeometry(10, 10);
     // const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
     const base_plane = new THREE.Mesh(base_geometry, wall_material);
@@ -41,7 +41,7 @@ export function add_base_plane(scene) {
     base_plane.rotateX(Math.PI / 2.);
     base_plane.remove_me = true;
     
-    scene.add(base_plane);
+    target.add(base_plane);
 }
 
 export function add_shadows() {
@@ -122,6 +122,55 @@ export function add_cuboid_walls(params) {
     add_front(params, walls);
     add_back(params, walls);
 
+}
+
+export function add_2d_box(params) {
+    add_wall_group();
+    
+    const material = new THREE.LineBasicMaterial( { color: 0xffffff } );
+    const points = [];
+    points.push( new THREE.Vector3( -params.L, 0, 0 ) );
+    points.push( new THREE.Vector3(  params.L, 0, 0 ) );
+    points.push( new THREE.Vector3(  params.L, 2*params.L, 0 ) );
+    points.push( new THREE.Vector3( -params.L, 2*params.L, 0 ) );
+    points.push( new THREE.Vector3( -params.L, 0, 0 ) );
+
+    const geometry = new THREE.BufferGeometry().setFromPoints( points );
+    const line = new THREE.Line( geometry, material );
+    walls.add(line);
+
+}
+
+export function add_2d_circle(params) {
+    add_wall_group();
+    
+    const circle_geometry = new THREE.RingGeometry( params.L, params.L+params.thickness, 100, 1 );
+    let circle = new THREE.Mesh( circle_geometry, wall_material );
+    circle.rotation.x = Math.PI;
+    circle.position.y = params.L;
+    walls.add( circle );   
+}
+
+export function add_sphere(params){
+    add_wall_group();
+
+    const sphere_geometry = new THREE.SphereGeometry( params.L, 128, 64 ); 
+    wall_material.side = THREE.DoubleSide
+    let sphere = new THREE.Mesh( sphere_geometry, wall_material );
+    sphere.position.y = params.L;
+    walls.add( sphere );
+}
+
+export function add_2d_ellipse(params) {
+    add_wall_group();
+    
+    const circle_geometry = new THREE.RingGeometry( params.L, params.L+params.thickness, 100, 1 );
+    let circle = new THREE.Mesh( circle_geometry, wall_material );
+    circle.rotation.x = Math.PI;
+    circle.position.y = params.L;
+    circle.scale.x = params.ellipse_ratio;
+    walls.add( circle );
+    
 }
 
 export function update_d4(params) {

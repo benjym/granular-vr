@@ -13,7 +13,7 @@ import * as WALLS from "../libs/WallHandler.js"
 // import * as RAYCAST from '../libs/RaycastHandler.js';
 import * as LIGHTS from "../libs/lights";
 import * as BUTTONS from "../libs/buttons";
-import * as AUDIO from "../libs/audio";
+// import * as AUDIO from "../libs/audio";
 
 
 import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
@@ -100,15 +100,10 @@ async function main() {
     cg_mesh.position.z = -1;
     // scene.add( cg_mesh );
 
-    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
-    renderer.setAnimationLoop(function () {
-        update();
-        renderer.render(scene, camera);
-    });
-
-    AUDIO.play_track('2d-rain.mp3', scene, 3000);
+    renderer.setAnimationLoop( update );
 }
 
 
@@ -117,7 +112,7 @@ async function update() {
     await SPHERES.move_spheres(S, params);
     // RAYCAST.animate_locked_particle(S, camera, SPHERES.spheres, params);
     // if (!params.paused) {
-    await S.simu_step_forward(2);
+    await S.simu_step_forward(5);
     // update_cg_field();
     // }
     // SPHERES.draw_force_network(S, params, scene);
@@ -148,7 +143,7 @@ function setup_NDDEM() {
     S.simu_interpret_command("auto inertia");
     S.simu_interpret_command("auto skin");
 
-        S.simu_interpret_command("boundary 0 WALL 0 " + String(20 * params.L));
+        S.simu_interpret_command("boundary 0 WALL 0 " + String(10 * params.L));
         S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
         if (params.dimension > 2) {
             S.simu_interpret_command("boundary 2 WALL -" + String(params.r_max) + " " + String(params.r_max));

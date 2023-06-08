@@ -58,8 +58,8 @@ async function main() {
     circle.position.y = 2.2;
     scene.add(circle);
 
-    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
     renderer.setAnimationLoop(function () {
         if (controls !== undefined) { controls.update(); }
@@ -69,7 +69,7 @@ async function main() {
         if (circle !== undefined) { circle.rotateZ(clock.getDelta() * Math.PI / 2.) }
     });
 
-    AUDIO.play_track('rotation-3d.mp3', scene, 3000);
+    // AUDIO.play_track('rotation-3d.mp3', scene, 3000);
 }
 
 

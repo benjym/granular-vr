@@ -39,7 +39,7 @@ export let params = {
     new_line: false,
     loading_rate: 0.01,
     // max_vertical_strain: 0.3,
-    target_stress: 1e7,
+    target_stress: 1e6,
     unloading_stress: 100,
     lut: 'None',
     quality: 5,
@@ -165,7 +165,7 @@ async function main() {
 
     gui.remove_me = true;
 
-    let button = BUTTONS.add_action_button('loading_active', 'Loading active', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
+    let button = BUTTONS.add_action_button('loading_active', 'Start loading', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
     button.rotateY(Math.PI / 2.);
     // make_graph();
     WALLS.update_isotropic_wall(params, S);
@@ -176,10 +176,10 @@ async function main() {
     // graph.position.z = 1.5 * params.L;
     // graph.rotateY(-Math.PI / 2.);
 
-    AUDIO.play_track('isotropic.mp3', scene, 3000);
+    // AUDIO.play_track('isotropic.mp3', scene, 3000);
 
-    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
-    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1.5], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
+    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1.5], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
 }
 
