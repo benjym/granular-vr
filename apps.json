@@ -47,17 +47,17 @@
         //     "audio_delay" : 3000
         // },
         {
-            "url": "2d-billiards?boundary=circle",
-            "name": "2D billiards in a circle",
-            "button_delay": 30000,
-            // "audio_track" : "2d-billiards-circle.mp3",
-            "audio_delay" : 3000
-        },
-        {
             "url": "2d-billiards?boundary=square",
             "name": "2D billiards in a square",
             "button_delay": 30000,
             // "audio_track" : "2d-billiards-square.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "2d-billiards?boundary=circle",
+            "name": "2D billiards in a circle",
+            "button_delay": 30000,
+            // "audio_track" : "2d-billiards-circle.mp3",
             "audio_delay" : 3000
         },
         {
@@ -68,17 +68,17 @@
             "audio_delay" : 3000
         },
         {
-            "url": "3d-billiards?boundary=sphere",
-            "name": "3D billiards in a sphere",
-            "button_delay": 30000,
-            // "audio_track" : "3d-billiards-sphere.mp3",
-            "audio_delay" : 3000
-        },
-        {
             "url": "3d-billiards?boundary=cube",
             "name": "3D billiards in a cube",
             "button_delay": 30000,
             // "audio_track" : "3d-billiards-cube.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "3d-billiards?boundary=sphere",
+            "name": "3D billiards in a sphere",
+            "button_delay": 30000,
+            // "audio_track" : "3d-billiards-sphere.mp3",
             "audio_delay" : 3000
         },
         {

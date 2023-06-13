@@ -18,15 +18,15 @@ let S;
 
 export let params = {
     dimension: 3,
-    L : human_height,
+    L : 2,
     boxratio: 1,
     // initial_packing_fraction: 0.01,
-    N: 3,
+    N: 1,
     gravity: false,
     paused: false,
     r_max: 0.1,
     r_min: 0.1,
-    // lut: 'None',
+    lut: 'None',
     quality: 6,
     vmax: 1, // max velocity to colour by
     omegamax: 20, // max rotation rate to colour by
@@ -42,15 +42,16 @@ function set_derived_properties() {
     params.average_radius = (params.r_min + params.r_max) / 2.;
     params.thickness = 0.0001;//params.average_radius;
 
-    params.particle_volume = Math.PI * Math.PI * Math.pow(params.average_radius, 4) / 2.;
-    console.log('estimate of particle volume: ' + params.particle_volume * params.N)
-    params.particle_mass = params.particle_volume * params.particle_density;
+    // params.particle_volume = Math.PI * Math.PI * Math.pow(params.average_radius, 4) / 2.;
+    // console.log('estimate of particle volume: ' + params.particle_volume * params.N)
+    // params.particle_mass = params.particle_volume * params.particle_density;
     // params.L = Math.pow(params.particle_volume * params.N / params.initial_packing_fraction / params.boxratio, 1. / 3.) / 2.;
-    params.L = 2.5;
+    // params.L = 2.5;
     params.H = params.L * params.boxratio;
 
     params.L_cur = params.L;
     params.H_cur = params.H;
+    params.epsilonv = 0;
 }
 
 
@@ -66,44 +67,21 @@ async function main() {
     });
 }
 
-async function build_world() {
-    RAYCAST.add_ghosts(scene, 2000, params.average_radius/4., 0x333333);
-    
-    const base_geometry = new THREE.PlaneGeometry(params.L, params.L);
-    const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
-    const plane = new THREE.Mesh(base_geometry, base_material);
-    plane.rotateX(Math.PI / 2.);
-    plane.position.y = -0.5 * params.r_min;
-    scene.add(plane);
+async function build_world() {    
+    // const base_geometry = new THREE.PlaneGeometry(params.L, params.L);
+    // const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
+    // const plane = new THREE.Mesh(base_geometry, base_material);
+    // plane.rotateX(Math.PI / 2.);
+    // plane.position.y = -0.5 * params.r_min;
+    // scene.add(plane);
 
-    LIGHTS.add_default_lights(scene);
-
-    WALLS.add_cuboid_walls(params);
-    WALLS.walls.rotateX(-Math.PI / 2.); // fix y/z up compared to NDDEM
-    WALLS.walls.rotateZ(Math.PI); // fix y/z up compared to NDDEM
-    WALLS.walls.position.y = params.H;
-    scene.add(WALLS.walls);
-    WALLS.update_isotropic_wall(params, S);
-    // WALLS.add_scale(params);
-    WALLS.walls.children.forEach((w) => {
-        if (w.type === 'Mesh') {
-            w.material.wireframe = false;
-            w.material.side = THREE.DoubleSide;
-            // w.material.color
-        }
-    });
-    WALLS.add_shadows();
+    LIGHTS.add_smaller_lights(scene);
 
     SPHERES.add_spheres(S, params, scene);
     SPHERES.add_shadows();
 
-    
-
-
-    WALLS.update_isotropic_wall(params, S);
-
     // BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
+    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [0.5, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
     // let offset = 0.5;
     
@@ -113,7 +91,7 @@ async function update() {
     if ( visibility === 'visible' ) {
         // if (S !== undefined) {
         SPHERES.move_spheres(S, params);
-        S.simu_step_forward(2);
+        S.simu_step_forward(20);
         // }
         let offset = 1.0;
         if (controls.player.position.x < -params.L + offset) { controls.player.position.x = -params.L + offset; }
@@ -125,7 +103,7 @@ async function update() {
         controls.update();
         renderer.render(scene, camera);
         params = CONTROLLERS.moveInD4(params, controls);
-        WALLS.update_d4(params);
+        // WALLS.update_d4(params);
 
         RAYCAST.update_ghosts();
     }
@@ -152,34 +130,48 @@ function setup_NDDEM() {
     S.simu_interpret_command("auto mass");
     S.simu_interpret_command("auto inertia");
     S.simu_interpret_command("auto skin");
-    // console.log(params.L, params.H)
-    S.simu_interpret_command("boundary 0 WALL -" + String(0) + " " + String(2 * params.L));
+    
+    S.simu_interpret_command("boundary 0 WALL -" + String(params.L) + " " + String(params.L));
     S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
-    S.simu_interpret_command("boundary 2 WALL -" + String(params.L) + " " + String(params.L));
+    S.simu_interpret_command("boundary 2 WALL 0 " + String(2 * params.L));
     S.simu_interpret_command("gravity 0 0 0");
 
+
+    // S.simu_interpret_command("location 0 " + String(params.L) + " 0 0");
+    // S.simu_interpret_command("location 0 0 0 " + String(params.L));
+    
     if ( extra_params.has('boundary') ) {
         if ( extra_params.get('boundary') === 'cube' ) {
+            S.simu_interpret_command("auto location randomdrop");
+            RAYCAST.add_ghosts(scene, 2000, params.average_radius/4., 0x333333);
+
             WALLS.add_cuboid_walls(params);
+
             WALLS.walls.rotateX(-Math.PI / 2.); // fix y/z up compared to NDDEM
             WALLS.walls.rotateZ(Math.PI); // fix y/z up compared to NDDEM
             WALLS.walls.position.y = params.L;
-            scene.add(WALLS.walls);
+
             WALLS.update_isotropic_wall(params, S);
             // WALLS.add_scale(params);
             WALLS.walls.children.forEach((w) => {
                 if (w.type === 'Mesh') {
                     w.material.wireframe = false;
                     w.material.side = THREE.DoubleSide;
-                    // w.material.color
                 }
             });
             WALLS.add_shadows();
+
         } else if ( extra_params.get('boundary') === 'sphere' ) {
             console.log('SPHERE')
-            S.simu_interpret_command("boundary "+String(params.dimension)+" SPHERE "+String(params.L)+ " " + String(params.L) + " 0 0"); // add a sphere!
+            RAYCAST.add_ghosts(scene, 2000, params.average_radius/4., 0xFFFFFF);
+
+            S.simu_interpret_command("boundary "+String(params.dimension)+" SPHERE "+String(params.L)+ " 0 0 " + String(params.L)); // add a sphere!
+            S.simu_interpret_command("auto location insphere");
             WALLS.add_sphere(params);
         }
+
+        
+        S.simu_interpret_command("velocity 0 5 4 3");
 
     }
     scene.add(WALLS.walls);

@@ -151,8 +151,8 @@ function setup_NDDEM() {
             WALLS.add_2d_circle(params);
         } else if ( extra_params.get('boundary') === 'ellipse' ) {
             S.simu_interpret_command("boundary "+String(params.dimension)+" ELLIPSE "+String(params.L)+ " " + String(params.L*params.ellipse_ratio) + " " + String(params.L) + " 0"); // radius x, radius y, centre x, centre y
-            // S.simu_interpret_command("set gradientdescent_gamma 1e-3");
-            // S.simu_interpret_command("set gradientdescent_tol 1e-9");
+            S.simu_interpret_command("set gradientdescent_gamma 2e-3");
+            // S.simu_interpret_command("set gradientdescent_tol 1e-4");
             WALLS.add_2d_ellipse(params);
             // console.log('ELLIPSE')
         }

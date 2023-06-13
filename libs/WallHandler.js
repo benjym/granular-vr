@@ -155,8 +155,9 @@ export function add_sphere(params){
     add_wall_group();
 
     const sphere_geometry = new THREE.SphereGeometry( params.L, 128, 64 ); 
-    wall_material.side = THREE.DoubleSide
-    let sphere = new THREE.Mesh( sphere_geometry, wall_material );
+    let sphere_material = new THREE.MeshStandardMaterial( {color: 0x333333, side: THREE.DoubleSide} );
+    let sphere = new THREE.Mesh( sphere_geometry, sphere_material );
+    sphere.receiveShadow = true;
     sphere.position.y = params.L;
     walls.add( sphere );
 }
