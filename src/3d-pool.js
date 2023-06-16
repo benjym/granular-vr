@@ -29,14 +29,12 @@ let meshes;
 
 var params = {
     radius: 0.05,
-    dimension: 4,
+    dimension: 3,
     L1: 2,
     L2: 0.1,  // this is the direction of gravity
     L3: 1,
-    L4: 0.5,
     pocket_size: 0.15,
     pyramid_size: 5,
-    d4: { cur: 0 },
     particle_density: 2700,
     quality: 7,
     dt: 1e-3,
@@ -45,12 +43,10 @@ var params = {
     audio: true,
 }
 
-params.N = get_num_particles(params.pyramid_size);
+params.N = 17; // 15 regular balls, white ball, cue stick
 
-params.d4.min = -params.L4;
-params.d4.max = params.L4;
-
-params.particle_volume = Math.PI * Math.PI * Math.pow(params.radius, 4) / 2.;
+// params.particle_volume = Math.PI * Math.PI * Math.pow(params.radius, 4) / 2.;
+params.particle_volume = 4 * Math.PI * Math.pow(params.radius, 3) / 3.;
 params.particle_mass = params.particle_volume * params.particle_density;
 
 let sunk_balls = [];
@@ -89,14 +85,14 @@ async function main() {
     // load_nice_pool_table()
 
     // gui
-    gui = new GUI();
-    gui.width = 400;
+    // gui = new GUI();
+    // gui.width = 400;
 
-    gui.add(params.d4, 'cur', -params.L4, params.L4, 0.001).name('D4 location (e/q)').listen();
-    gui.remove_me = true;
+    // gui.add(params.d4, 'cur', -params.L4, params.L4, 0.001).name('D4 location (e/q)').listen();
+    // gui.remove_me = true;
 
-    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Go back to: ' + apps.list[apps.current - 1].name, controls, scene, [-1.5, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
-    BUTTONS.add_scene_change_button('menu', 'Main menu', controls, scene, [1.5, 1, 1.5], 0.25, [0, -Math.PI / 4, 0]);
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1.5, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
+    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1.5, 1, 1.5], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
     renderer.setAnimationLoop(function () {
         update();
@@ -131,7 +127,7 @@ function add_table_legs() {
 }
 
 function update() {
-    params = CONTROLLERS.moveInD4(params, controls);
+    // params = CONTROLLERS.moveInD4(params, controls);
     POOLCUE.snap(controls);
     SPHERES.move_spheres(S, params);
     if (params.audio) {
@@ -148,12 +144,12 @@ function update() {
             [end_of_pool_cue.x,
             end_of_pool_cue.z,
             end_of_pool_cue.y,
-            params.d4.cur
+            // params.d4.cur
             ]);
     }
 
     S.simu_step_forward(20);
-    WALLS.update_d4(params);
+    // WALLS.update_d4(params);
 
     check_pockets();
 
@@ -235,9 +231,9 @@ function setup_NDDEM() {
     S.simu_interpret_command("boundary 0 WALL -" + String(params.L1) + " " + String(params.L1));
     S.simu_interpret_command("boundary 1 WALL -" + String(params.L3) + " " + String(params.L3));
     S.simu_interpret_command("boundary 2 WALL " + String(-params.L2 + params.table_height) + " " + String(params.L2 + params.table_height));
-    S.simu_interpret_command("boundary 3 WALL -" + String(params.L4) + " " + String(params.L4));
+    // S.simu_interpret_command("boundary 3 WALL -" + String(params.L4) + " " + String(params.L4));
     // S.interpret_command("body " + STLFilename);
-    S.simu_interpret_command("gravity 0 0 -9.81 0");
+    S.simu_interpret_command("gravity 0 0 -9.81");
     // S.interpret_command("auto location randomdrop");
 
     set_ball_positions();
@@ -315,7 +311,7 @@ function replace_meshes() {
             dispose_children(meshes);
             meshes = new THREE.Group();
         }
-        meshes = renderSTL(meshes, NDsolids, scene, material, params.d4.cur);
+        meshes = renderSTL(meshes, NDsolids, scene, material, 0);
         meshes.position.y = params.table_height;
         scene.add(meshes);
     }

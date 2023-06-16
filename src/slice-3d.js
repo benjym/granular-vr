@@ -70,8 +70,8 @@ export function init() {
     let sphere = new THREE.Mesh(sphere_geometry, material);
     let circle = new THREE.Mesh(circle_geometry, material);
     let wall = new THREE.Mesh(wall_geometry, wall_material);
-    sphere.position.x = 0
-    circle.position.x = 3
+    sphere.position.x = 0;
+    circle.position.x = 3;
     circle.visible = true;
     wall.rotation.y = Math.PI / 2.;
     wall.position.x = params.d4.cur;

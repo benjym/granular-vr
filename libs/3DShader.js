@@ -10,6 +10,7 @@ var uniforms = {
   // x4p: { value: 0 },
   R: { value: 0.5 },
   ambient: { value: 1.0 },
+  banding: { value: 3.0 },
   opacity: { value: 1.0 },
 };
 
@@ -34,7 +35,7 @@ var NDDEMShader = new THREE.ShaderMaterial({
     "uniform float N_lines;", // number of lines to render across particle
     "uniform float A[3*3];", // orientation matrix for this particle
     "uniform float R;", // particle radius
-
+    "uniform float banding ;", // numbers of bands across particle
     "varying vec3 vColor;", // colour at vertex (output)
     "varying vec3 vNormal;", // normal at vertex (output)
 
@@ -47,8 +48,8 @@ var NDDEMShader = new THREE.ShaderMaterial({
     // "float R_draw_squared = pow(R,2.0) ;",
     // "if ( R_draw_squared > 0.0 ) {", // only if visible
     // "R_draw = sqrt(R_draw_squared);",
-    "vec4 x;",
-    "vec4 x_rotated;",
+    "vec3 x;",
+    "vec3 x_rotated;",
     // "float phi2;",
     // get 3d locations in x,y,z,w in coord system where center of sphere is at 0,0,0,0
     "x.y = R*cos((uv.y-0.5)*pi)*cos((uv.x-0.5)*2.0*pi);",
@@ -60,7 +61,7 @@ var NDDEMShader = new THREE.ShaderMaterial({
     "x_rotated.x = A[0]*x.x + A[3]*x.y + A[6]*x.z ;",
     "x_rotated.y = A[1]*x.x + A[4]*x.y + A[7]*x.z ;",
     "x_rotated.z = A[2]*x.x + A[5]*x.y + A[8]*x.z ;",
-    "x_rotated.w=0. ;",
+    // "x_rotated.w=0. ;",
 
     // convert that new vector in hyperspherical coordinates (you can have a look at the hyperspherical_xtophi function in Tools.h)
     // "float rsqr = pow(length(x_rotated),2.0);",
@@ -93,9 +94,9 @@ var NDDEMShader = new THREE.ShaderMaterial({
 
     // "vColor.r = abs(sin(phi0*3.0));",
     // "vColor.b = abs(sin(phi1*2.0));",
-    "vColor.r = abs(sin(phi0*3.0));",
-    "vColor.b = abs(sin(phi1*2.0));",
-    "vColor.g = abs(sin(phi1*2.0));",
+    "vColor.r = abs(sin(phi0*banding));",
+    "vColor.b = abs(sin(phi1*(banding-1.0)));",
+    "vColor.g = abs(sin(phi1*(banding-1.0)));",
     "vColor = vColor * abs(sin(phi0));",
     // "}",
     // "else { vColor.r = 0.0; }",
