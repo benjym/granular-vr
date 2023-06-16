@@ -37,7 +37,7 @@ var params = {
     r_min: 0.1,
     particle_density: 1,
     shear_rate: 10,
-    lut: 'White',
+    lut: 'None',
     cg_field: 'Density',
     quality: 5,
     cg_width: 50,
@@ -93,7 +93,7 @@ async function main() {
 async function update() {
     // requestAnimationFrame( animate );
     await SPHERES.move_spheres(S, params);
-    RAYCAST.update_ghosts();
+    RAYCAST.update_ghosts(params);
     // RAYCAST.animate_locked_particle(S, camera, SPHERES.spheres, params);
     // if (!params.paused) {
     await S.simu_step_forward(5);
@@ -137,9 +137,9 @@ function setup_NDDEM() {
     }
     S.simu_interpret_command("gravity 0 " + "0 ".repeat(params.dimension - 2))
 
-    S.simu_interpret_command("auto location randomdrop");
-    // S.simu_interpret_command("location 0 " + String(1.6) + " 0");
-    S.simu_interpret_command("velocity 0 20 20");
+    // S.simu_interpret_command("auto location randomdrop");
+    S.simu_interpret_command("location 0 " + String(params.L-0.2) + " 0.5");
+    S.simu_interpret_command("velocity 0 18 22");
 
     if ( extra_params.has('boundary') ) {
         if ( extra_params.get('boundary') === 'square' ) {

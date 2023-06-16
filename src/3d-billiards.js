@@ -105,7 +105,7 @@ async function update() {
         params = CONTROLLERS.moveInD4(params, controls);
         // WALLS.update_d4(params);
 
-        RAYCAST.update_ghosts();
+        RAYCAST.update_ghosts(params);
     }
 
     // });

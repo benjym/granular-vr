@@ -1,4 +1,4 @@
-let radii;
+export let radii;
 let NDParticleShader;
 let v, omegaMag;
 export let ray;
@@ -287,10 +287,12 @@ export function update_particle_material(params, lut_folder) {
         for (let i = 0; i < params.N; i++) {
             var object = spheres.children[i];
             object.material = NDParticleShader.clone();
+            if ( params.dimension == 2 ) { object.material.side = THREE.DoubleSide }
             // console.log(NDParticleShader)
             if (params.particle_opacity < 1) { object.material.transparent = true; }
             // object.material.opacity = params.particle_opacity;
             object.material.uniforms.opacity.value = params.particle_opacity;
+            // console.log(object.material);
         }
     }
     else {

@@ -85,7 +85,12 @@ async function build_world() {
     // BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [0.5, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
-    // let offset = 0.5;
+    // gui
+    let gui = new GUI();
+    gui.width = 400;
+
+    gui.add(params.d4, 'cur', params.d4.min, params.d4.max).name('D4 location (e/q)').listen();
+    gui.remove_me = true;
     
 }
 
@@ -107,7 +112,7 @@ async function update() {
         params = CONTROLLERS.moveInD4(params, controls);
         WALLS.update_d4(params);
 
-        RAYCAST.update_ghosts();
+        RAYCAST.update_ghosts(params);
     }
 
     // });
@@ -175,6 +180,9 @@ function setup_NDDEM() {
 
         
         S.simu_interpret_command("velocity 0 5 4 3 5");
+        // for testing:
+        // S.simu_interpret_command("location 0 0 0 " + String(params.L) + " 0");
+        // S.simu_interpret_command("velocity 0 0.1 0 0 0.01");
 
     }
     scene.add(WALLS.walls);

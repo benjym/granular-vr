@@ -14,6 +14,12 @@ import * as LIGHTS from "../libs/lights";
 import * as POOLCUE from "../libs/PoolCue";
 import * as RAYCAST from "../libs/RaycastHandler";
 
+function replaceQueryParam(param, newval, search) {
+    var regex = new RegExp("([?;&])" + param + "[^&;]*[;&]?");
+    var query = search.replace(regex, "$1").replace(/&$/, '');
+
+    return (query.length > 2 ? query + "&" : "?") + (newval ? param + "=" + newval : '');
+}
 
 let urlParams = new URLSearchParams(window.location.search);
 export let extra_params;
@@ -176,11 +182,19 @@ export function move_to(v) {
                 apps.current = index;
                 if (arr.length === 2) {
                     extra_params = new URLSearchParams(arr[1]);
-                    console.log(extra_params)
+                    // console.log(extra_params)
+                } else {
+                    extra_params = undefined;
                 }
             }
         });
         console.log('CHANGING TO ' + v)
+
+        // This updates the URL without reloading the page... hasn't been tested on headset yet to see if at allows you to reload and still work. especially needs to work with extra_params
+        // var str = window.location.search
+        // str = replaceQueryParam('fname', url, str)
+        // window.history.pushState({}, '', window.location.pathname + str);
+
         import("./" + url).then((module) => {
             wipe_scene().then(module.init());
         });
