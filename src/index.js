@@ -29,7 +29,7 @@ let container = document.createElement("div");
 document.body.appendChild(container);
 
 export let camera, scene, renderer, controls, clock, apps, NDDEMCGLib;
-
+let master;
 let worker = new Worker(new URL('../libs/worker.js', import.meta.url));
 let wrapped_worker = Comlink.wrap(worker);
 
@@ -60,7 +60,8 @@ async function add_common_properties() {
     scene.keep_me = true;
     scene.background = new THREE.Color(0x111);
 
-
+    if (urlParams.has('master') { master = urlParams.get('master') }
+    else { master = "apps.json"; }
 
     controls = new ImmersiveControls(camera, renderer, scene, {
         initialPosition: new THREE.Vector3(0, human_height, 2),
@@ -212,7 +213,7 @@ export function move_to(v) {
 }
 
 function load_json_apps() {
-    fetch("apps.json")
+    fetch(master)
         .then( response => response.text() )
         .then(text => {            
             apps = JSON5.parse(text);

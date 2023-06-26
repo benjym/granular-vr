@@ -162,3 +162,8 @@ export function add_action_button(type, name, selectStartFunction, selectEndFunc
     //     setTimeout(add_action_button.bind(null, type, name, selectStartFunction, selectEndFunction, intersectionFunction, location, scale, controls, scene), 200);
     // }
 }
+
+export function add_prev_next_with_timeout(apps, controls, scene) {
+    add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    setTimeout(() => { add_scene_change_button(apps.list[apps.current + 1].url, apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
+}
