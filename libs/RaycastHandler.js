@@ -36,7 +36,7 @@ export function reset_ghosts(){
         // onDeselectParticle();
     }
     ref_location = undefined;
-    old_ref_location = new THREE.Vector3(null,null,null);
+    old_ref_location = new THREE.Vector3(NaN,NaN,NaN);
     // INTERSECTED = 0;
 }
 
