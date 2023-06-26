@@ -60,7 +60,7 @@ async function add_common_properties() {
     scene.keep_me = true;
     scene.background = new THREE.Color(0x111);
 
-    if (urlParams.has('master') { master = urlParams.get('master') }
+    if ( urlParams.has('master') ) { master = urlParams.get('master') }
     else { master = "apps.json"; }
 
     controls = new ImmersiveControls(camera, renderer, scene, {
