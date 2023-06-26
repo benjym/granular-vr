@@ -143,7 +143,6 @@ function setup_NDDEM() {
     if ( extra_params.has('boundary') ) {
         if ( extra_params.get('boundary') === 'cube' ) {
             S.simu_interpret_command("auto location randomdrop");
-            RAYCAST.add_ghosts(scene, 2000, params.average_radius/4., 0x333333);
 
             WALLS.add_cuboid_walls(params);
 
@@ -163,12 +162,13 @@ function setup_NDDEM() {
 
         } else if ( extra_params.get('boundary') === 'sphere' ) {
             console.log('SPHERE')
-            RAYCAST.add_ghosts(scene, 2000, params.average_radius/4., 0xFFFFFF);
 
             S.simu_interpret_command("boundary "+String(params.dimension)+" SPHERE "+String(params.L)+ " 0 0 " + String(params.L)); // add a sphere!
             S.simu_interpret_command("auto location insphere");
             WALLS.add_sphere(params);
         }
+        RAYCAST.add_ghosts(scene, 2000, params.average_radius/4., 0xFFFFFF);
+
 
         
         S.simu_interpret_command("velocity 0 5 4 3");
