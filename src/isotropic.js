@@ -12,7 +12,7 @@ import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
 
 let S;
 
@@ -94,7 +94,7 @@ function reset_particles() {
     params.startTime = clock.getElapsedTime()
 }
 export function init() {
-    SPHERES.createNDParticleShader(params).then(main());
+    SPHERES.createNDParticleShader(params).then(main);
 }
 
 

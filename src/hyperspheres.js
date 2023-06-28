@@ -9,8 +9,9 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
 
+let label2, label3;
 
 export function init() {
     LIGHTS.add_default_lights(scene);
@@ -59,8 +60,8 @@ export function init() {
     label1.add(arrow_body);
     label1.add(radius_text);
 
-    let label2 = label1.clone()
-    let label3 = label1.clone()
+    label2 = label1.clone()
+    label3 = label1.clone()
     label1.position.x = -1.5;
     label1.position.y -= 0.03 + 0.01;
     label3.position.x = 1.5;
@@ -79,17 +80,19 @@ export function init() {
     objects.remove_me = true;
     scene.add(objects);
 
-    renderer.setAnimationLoop(function () {
+    renderer.setAnimationLoop(update);
+
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
+    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
+}
+
+async function update() {
+    if ( visibility === 'visible' ) {
         var t = clock.getDelta();
         label2.rotateZ(0.2 * t);
         label3.rotateZ(0.2 * t);
         label3.rotateY(0.2 * t);
         if (controls !== undefined) { controls.update(); }
         renderer.render(scene, camera);
-    });
-
-    // AUDIO.play_track('hyperspheres.mp3', scene, 5000);
-
-    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
+    }
 }

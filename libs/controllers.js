@@ -27,6 +27,7 @@ export function onSceneChangeButtonSelectStart(object, controller) {
 }
 
 export function onSceneChangeButtonSelectEnd(object, controller) {
+    console.log('scene change end')
     // do nothing, you're already gone
 };
 

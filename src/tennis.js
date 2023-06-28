@@ -14,7 +14,7 @@ import * as GRAPHS from "../libs/graphs";
 // import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
 
 let left_locked = true;
 let right_locked = true;
@@ -74,7 +74,7 @@ function set_derived_properties() {
 
 
 export function init() {
-    SPHERES.createNDParticleShader(params).then(main());
+    SPHERES.createNDParticleShader(params).then(main);
 }
 
 async function main() {
@@ -129,7 +129,11 @@ async function main() {
 
     let offset = 0.2;
 
-    renderer.setAnimationLoop(async function () {
+    renderer.setAnimationLoop(update)
+}
+        
+async function update() {
+    if ( visibility === 'visible' && started ) {
         SPHERES.move_spheres(S, params);
         S.simu_step_forward(5);
         console.log(controls)
@@ -180,10 +184,7 @@ async function main() {
         renderer.render(scene, camera);
         params = CONTROLLERS.moveInD4(params, controls);
         WALLS.update_d4(params);
-
-
-    });
-
+    }
 }
 
 function onFireLeftSphere() {

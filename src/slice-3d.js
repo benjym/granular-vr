@@ -13,9 +13,10 @@ import * as BUTTONS from "../libs/buttons";
 // import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
 
-
+let started = false;
+let circle, wall;
 // let scene, renderer, controls, camera
 
 let params = {
@@ -68,8 +69,8 @@ export function init() {
     scene.add(plane);
 
     let sphere = new THREE.Mesh(sphere_geometry, material);
-    let circle = new THREE.Mesh(circle_geometry, material);
-    let wall = new THREE.Mesh(wall_geometry, wall_material);
+    circle = new THREE.Mesh(circle_geometry, material);
+    wall = new THREE.Mesh(wall_geometry, wall_material);
     sphere.position.x = 0;
     circle.position.x = 3;
     circle.visible = true;
@@ -98,16 +99,19 @@ export function init() {
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
+    renderer.setAnimationLoop(update);
+}
 
-    renderer.setAnimationLoop(function () {
+async function update() {
+    if ( visibility === 'visible' ) {
         if (controls !== undefined) {
             controls.update();
             params = CONTROLLERS.moveInD4(params, controls); // acctually moving in D3...
             update_spheres(params.d4.cur, circle, wall);
         }
         renderer.render(scene, camera);
-    });
-};
+    }
+}
 
 // if ( BUTTONS.font === undefined ) {
 //     setTimeout(init, 200);

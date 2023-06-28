@@ -18,12 +18,13 @@ import * as LIGHTS from "../libs/lights";
 import * as WALLS from "../libs/WallHandler";
 
 
-import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
 
 let gui;
 let S;
 let NDsolids, material, STLFilename;
 let meshes;
+let started = false;
 // var direction = new THREE.Vector3();
 // const mouse = new THREE.Vector2();
 
@@ -56,7 +57,7 @@ params.particle_mass = params.particle_volume * params.particle_density;
 let sunk_balls = [];
 
 export async function init() {
-    SPHERES.createNDParticleShader(params).then(main());
+    SPHERES.createNDParticleShader(params).then(main);
 }
 
 async function main() {
@@ -131,34 +132,35 @@ function add_table_legs() {
 }
 
 function update() {
-    params = CONTROLLERS.moveInD4(params, controls);
-    POOLCUE.snap(controls);
-    SPHERES.move_spheres(S, params);
-    if (params.audio) {
-        SPHERES.update_fixed_sounds(S, params);
+    if ( visibility === 'visible' && started ) {
+        params = CONTROLLERS.moveInD4(params, controls);
+        POOLCUE.snap(controls);
+        SPHERES.move_spheres(S, params);
+        if (params.audio) {
+            SPHERES.update_fixed_sounds(S, params);
+        }
+
+        if (POOLCUE.pool_cue !== undefined) {
+
+            let end_of_pool_cue = new THREE.Vector3();
+
+            POOLCUE.small_sphere.getWorldPosition(end_of_pool_cue);
+
+            S.simu_fixParticle(params.N - 1,
+                [end_of_pool_cue.x,
+                end_of_pool_cue.z,
+                end_of_pool_cue.y,
+                params.d4.cur
+                ]);
+        }
+
+        S.simu_step_forward(20);
+        WALLS.update_d4(params);
+
+        check_pockets();
+
+        controls.update();
     }
-
-    if (POOLCUE.pool_cue !== undefined) {
-
-        let end_of_pool_cue = new THREE.Vector3();
-
-        POOLCUE.small_sphere.getWorldPosition(end_of_pool_cue);
-
-        S.simu_fixParticle(params.N - 1,
-            [end_of_pool_cue.x,
-            end_of_pool_cue.z,
-            end_of_pool_cue.y,
-            params.d4.cur
-            ]);
-    }
-
-    S.simu_step_forward(20);
-    WALLS.update_d4(params);
-
-    check_pockets();
-
-    controls.update();
-
 }
 
 let pocket_locs = [
@@ -217,6 +219,7 @@ async function NDDEMPhysics() {
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
     setup_NDDEM();
+    started = true;
 }
 
 

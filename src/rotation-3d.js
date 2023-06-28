@@ -1,6 +1,7 @@
 import css from "../css/main.css";
 import track from "../text-to-speech/rotation-3d.mp3";
-import logo from "../resources/usyd.png";
+// import logo from "../resources/usyd.png";
+import logo from "../resources/spiral.jpg"
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
@@ -52,7 +53,9 @@ async function main() {
 
     const circle_material = new THREE.MeshBasicMaterial({
         color: 0xFFFFFF,
-        map: loader.load('./usyd.png'),
+        // map: loader.load('./usyd.png'),
+        map : loader.load('./spiral.jpg'),
+        side: THREE.DoubleSide
     });
     circle = new THREE.Mesh(circle_geometry, circle_material);
     circle.position.y = 2.2;

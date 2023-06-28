@@ -11,7 +11,7 @@ import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 import * as WALLS from "../libs/WallHandler";
 
-import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
 
 let S;
 
@@ -61,7 +61,10 @@ async function main() {
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list);
 
-    renderer.setAnimationLoop(async function () {
+    renderer.setAnimationLoop(update);
+}
+async function update() {
+    if ( visibility === 'visible' && started ) {
         if (controls !== undefined) {
             controls.update();
             if (controls.vrControls.controllerGrips.left !== undefined) {
@@ -97,10 +100,7 @@ async function main() {
         // console.log(controls.player.position)
         CONTROLLERS.moveInD4(params, controls);
         WALLS.update_d4(params);
-
-    });
-
-    // AUDIO.play_track('pyramid.mp3', scene, 3000);
+    };
 }
 
 function get_num_particles(L) {

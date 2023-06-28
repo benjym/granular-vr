@@ -15,6 +15,7 @@ import * as RAYCAST from "../libs/RaycastHandler";
 import { camera, scene, renderer, controls, extra_params, apps, visibility, NDDEMCGLib, human_height } from "./index";
 
 let S;
+let started = false;
 
 export let params = {
     dimension: 3,
@@ -56,13 +57,14 @@ function set_derived_properties() {
 
 
 export function init() {
-    SPHERES.createNDParticleShader(params).then(main());
+    SPHERES.createNDParticleShader(params).then(main);
 }
 
 async function main() {
     set_derived_properties();
     await NDDEMPhysics().then(() => {
         build_world();
+        started = true;
         renderer.setAnimationLoop(update);
     });
 }
@@ -88,10 +90,10 @@ async function build_world() {
 }
 
 async function update() {
-    if ( visibility === 'visible' ) {
+    if ( visibility === 'visible' && started ) {
         // if (S !== undefined) {
         SPHERES.move_spheres(S, params);
-        S.simu_step_forward(20);
+        S.simu_step_forward(50);
         // }
         let offset = 1.0;
         if (controls.player.position.x < -params.L + offset) { controls.player.position.x = -params.L + offset; }
@@ -170,13 +172,13 @@ function setup_NDDEM() {
         RAYCAST.add_ghosts(scene, 2000, params.average_radius/4., 0xFFFFFF);
 
 
-        
-        S.simu_interpret_command("velocity 0 5 4 3");
+        S.simu_interpret_command("location 0 1 0.5 " + String(params.L+0.5));
+        S.simu_interpret_command("velocity 0 50 40 30");
 
     }
     scene.add(WALLS.walls);
 
-    let tc = 1e-2;
+    let tc = 1e-3;
     let rest = 1.0; // super low restitution coeff to dampen out quickly
     let min_particle_mass = params.particle_density * 4. / 3. * Math.PI * Math.pow(params.r_min, 3);
     let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, min_particle_mass);

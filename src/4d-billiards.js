@@ -58,7 +58,7 @@ function set_derived_properties() {
 
 
 export function init() {
-    SPHERES.createNDParticleShader(params).then(main());
+    SPHERES.createNDParticleShader(params).then(main);
 }
 
 async function main() {

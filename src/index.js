@@ -102,6 +102,7 @@ async function add_common_properties() {
 }
 
 async function wipe_scene() {
+    visibility = 'hidden';
     if ( renderer !== undefined ) { renderer.setAnimationLoop(null); }
     if (scene !== undefined) {
         // scene.traverse( (o) => {
@@ -171,7 +172,10 @@ export function move_to(v) {
         console.log('CHANGING TO ' + apps.list[v].url)
         extra_params = apps.list[v].params;
         import("./" + apps.list[v].url).then((module) => {
-            wipe_scene().then(module.init());
+            wipe_scene().then(() => {
+                visibility = 'visible';
+                module.init();
+            });
         });
 
     } else if (typeof v === 'string') {
@@ -197,7 +201,10 @@ export function move_to(v) {
         // window.history.pushState({}, '', window.location.pathname + str);
 
         import("./" + url).then((module) => {
-            wipe_scene().then(module.init());
+            wipe_scene().then(() => {
+                visibility = 'visible';
+                module.init()
+            });
         });
     }
     else {
@@ -229,6 +236,9 @@ function load_json_apps() {
                 else { move_to(apps.current); }
             }
             else {
+                let next;
+                if (urlParams.has('fname')) { next = urlParams.get('fname') }
+                else { next = apps.current }
                 let buttons_container = document.getElementById('buttonsContainer');
                 buttons_container.style.position = 'absolute';
                 buttons_container.style.width = '100%';
@@ -239,7 +249,7 @@ function load_json_apps() {
                 
                 let enter_button = document.getElementById('enterVRButton');
                 enter_button.innerText = 'Click here to enter VR';
-                enter_button.addEventListener('click', () => {move_to(apps.current);});            
+                enter_button.addEventListener('click', () => {move_to(next);});            
             }
         });
     }

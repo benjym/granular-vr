@@ -18,12 +18,13 @@ import * as LIGHTS from "../libs/lights";
 import * as WALLS from "../libs/WallHandler";
 
 
-import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
 
 let gui;
 let S;
 let NDsolids, material, STLFilename;
 let meshes;
+let started = false;
 // var direction = new THREE.Vector3();
 // const mouse = new THREE.Vector2();
 
@@ -52,7 +53,7 @@ params.particle_mass = params.particle_volume * params.particle_density;
 let sunk_balls = [];
 
 export async function init() {
-    SPHERES.createNDParticleShader(params).then(main());
+    SPHERES.createNDParticleShader(params).then(main);
 }
 
 async function main() {
@@ -126,34 +127,36 @@ function add_table_legs() {
 
 }
 
-function update() {
-    // params = CONTROLLERS.moveInD4(params, controls);
-    POOLCUE.snap(controls);
-    SPHERES.move_spheres(S, params);
-    if (params.audio) {
-        SPHERES.update_fixed_sounds(S, params);
+async function update() {
+    if ( visibility === 'visible' && started ) {
+        // params = CONTROLLERS.moveInD4(params, controls);
+        POOLCUE.snap(controls);
+        SPHERES.move_spheres(S, params);
+        if (params.audio) {
+            SPHERES.update_fixed_sounds(S, params);
+        }
+
+        if (POOLCUE.pool_cue !== undefined) {
+
+            let end_of_pool_cue = new THREE.Vector3();
+
+            POOLCUE.small_sphere.getWorldPosition(end_of_pool_cue);
+
+            S.simu_fixParticle(params.N - 1,
+                [end_of_pool_cue.x,
+                end_of_pool_cue.z,
+                end_of_pool_cue.y,
+                // params.d4.cur
+                ]);
+        }
+
+        S.simu_step_forward(20);
+        // WALLS.update_d4(params);
+
+        check_pockets();
+
+        controls.update();
     }
-
-    if (POOLCUE.pool_cue !== undefined) {
-
-        let end_of_pool_cue = new THREE.Vector3();
-
-        POOLCUE.small_sphere.getWorldPosition(end_of_pool_cue);
-
-        S.simu_fixParticle(params.N - 1,
-            [end_of_pool_cue.x,
-            end_of_pool_cue.z,
-            end_of_pool_cue.y,
-            // params.d4.cur
-            ]);
-    }
-
-    S.simu_step_forward(20);
-    // WALLS.update_d4(params);
-
-    check_pockets();
-
-    controls.update();
 
 }
 
@@ -213,6 +216,7 @@ async function NDDEMPhysics() {
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
     setup_NDDEM();
+    started = true;
 }
 
 
@@ -263,22 +267,21 @@ function set_ball_positions() {
     S.simu_interpret_command("location " + String(0) + " "
         + String(params.white_ball_initial_loc[0]) + " "
         + String(params.white_ball_initial_loc[1]) + " "
-        + String(params.white_ball_initial_loc[2]) + " "
-        + String(params.white_ball_initial_loc[3])); // first ball is the white ball
+        + String(params.white_ball_initial_loc[2])); // first ball is the white ball
 
-    for (var k = 0; k < params.pyramid_size; k++) {
+    // for (var k = 0; k < params.pyramid_size; k++) {
+        var k = 0;
         let cur_pyramid_length = params.pyramid_size - k;
-        let w = k * 1.825 * params.radius;
+        // let w = k * 1.825 * params.radius;
         for (var i = 0; i < cur_pyramid_length; i++) {
             for (var j = 0; j < cur_pyramid_length - i; j++) {
                 let x = i * 1.82 * params.radius - cur_pyramid_length * params.radius + params.radius - offset;
                 let y = j * 2.01 * params.radius - (cur_pyramid_length - i) * params.radius + params.radius;// - i%2*radius;
-                S.simu_interpret_command("location " + String(n) + " " + String(x) + " " + String(y) + " " + String(params.table_height - params.L2 + params.radius) + " " + String(w));
+                S.simu_interpret_command("location " + String(n) + " " + String(x) + " " + String(y) + " " + String(params.table_height - params.L2 + params.radius));
                 n++;
-                if (k > 0) { S.simu_interpret_command("location " + String(n) + " " + String(x) + " " + String(y) + " " + String(params.table_height - params.L2 + params.radius) + " " + String(-w)); n++; }
+                // if (k > 0) { S.simu_interpret_command("location " + String(n) + " " + String(x) + " " + String(y) + " " + String(params.table_height - params.L2 + params.radius)); n++; }
             }
         }
-    }
 
     // add the cue stick
     // S.simu_interpret_command("location " + String(params.N) + " 0 0 0 0");

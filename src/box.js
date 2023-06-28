@@ -14,6 +14,7 @@ import * as LIGHTS from "../libs/lights";
 import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
 
 let S;
+let started = false;
 
 export let params = {
     dimension: 4,
@@ -67,13 +68,14 @@ function set_derived_properties() {
 
 
 export function init() {
-    SPHERES.createNDParticleShader(params).then(main());
+    SPHERES.createNDParticleShader(params).then(main);
 }
 
 async function main() {
     set_derived_properties();
     await NDDEMPhysics().then(() => {
         build_world();
+        started = true;
         renderer.setAnimationLoop(update);
     });
 }
@@ -117,7 +119,7 @@ async function build_world() {
 }
 
 async function update() {
-    if ( visibility === 'visible' ) {
+    if ( visibility === 'visible' && started ) {
         // if (S !== undefined) {
         SPHERES.move_spheres(S, params);
         S.simu_step_forward(2);
@@ -129,10 +131,10 @@ async function update() {
         if (controls.player.position.z < -params.L + offset) { controls.player.position.z = -params.L + offset; }
         else if (controls.player.position.z > params.L - offset) { controls.player.position.z = params.L - offset; }
 
-            controls.update();
-            renderer.render(scene, camera);
-            params = CONTROLLERS.moveInD4(params, controls);
-            WALLS.update_d4(params);
+        controls.update();
+        renderer.render(scene, camera);
+        params = CONTROLLERS.moveInD4(params, controls);
+        WALLS.update_d4(params);
     }
 
     // });

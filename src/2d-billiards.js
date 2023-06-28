@@ -15,12 +15,13 @@ import * as BUTTONS from "../libs/buttons";
 // import * as AUDIO from "../libs/audio";
 
 
-import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib, extra_params, human_height } from "./index";
+import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib, extra_params, human_height, visibility } from "./index";
 
 
 let gui;
 let S;
 let cg_mesh;
+let started = false;
 
 var params = {
     dimension: 2,
@@ -63,12 +64,18 @@ params.particle_volume = Math.PI * Math.pow(params.average_radius, 2);
 params.particle_mass = params.particle_volume * params.particle_density;
 
 export function init() {
-    SPHERES.createNDParticleShader(params).then(main());
+    SPHERES.createNDParticleShader(params).then(main);
 }
 
 async function main() {
+    await NDDEMCGPhysics().then(() => {
+        build_world();
+        started = true;
+        renderer.setAnimationLoop(update);
+    });
+}
 
-    await NDDEMCGPhysics();
+async function build_world() {
 
     LIGHTS.add_default_lights(scene);
 
@@ -85,22 +92,23 @@ async function main() {
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
     RAYCAST.add_ghosts(scene, 2000, params.average_radius/4., 0xeeeeee);
-    renderer.setAnimationLoop( update );
 }
 
 
 async function update() {
-    // requestAnimationFrame( animate );
-    await SPHERES.move_spheres(S, params);
-    RAYCAST.update_ghosts(params);
-    // RAYCAST.animate_locked_particle(S, camera, SPHERES.spheres, params);
-    // if (!params.paused) {
-    await S.simu_step_forward(50);
-    // update_cg_field();
-    // }
-    // SPHERES.draw_force_network(S, params, scene);
-    controls.update();
-    renderer.render(scene, camera);
+    if ( visibility === 'visible' && started ) {
+        // requestAnimationFrame( animate );
+        await SPHERES.move_spheres(S, params);
+        RAYCAST.update_ghosts(params);
+        // RAYCAST.animate_locked_particle(S, camera, SPHERES.spheres, params);
+        // if (!params.paused) {
+        await S.simu_step_forward(50);
+        // update_cg_field();
+        // }
+        // SPHERES.draw_force_network(S, params, scene);
+        controls.update();
+        renderer.render(scene, camera);
+    }
 }
 
 async function NDDEMCGPhysics() {

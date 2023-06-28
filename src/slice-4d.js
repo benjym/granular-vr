@@ -10,10 +10,11 @@ import * as LIGHTS from "../libs/lights";
 // import * as AUDIO from "../libs/audio";
 import * as WALLS from "../libs/WallHandler";
 
-import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
 
 
 let S;
+let started = false;
 
 let params = {
     N: 1,
@@ -45,15 +46,17 @@ async function main() {
 }
 
 function update() {
-    if (controls !== undefined) { controls.update(); }
-    params = CONTROLLERS.moveInD4(params, controls);
-    SPHERES.move_spheres(S, params);
-    WALLS.update_d4(params);
-    renderer.render(scene, camera);
+    if ( visibility === 'visible' && started ) {
+        if (controls !== undefined) { controls.update(); }
+        params = CONTROLLERS.moveInD4(params, controls);
+        SPHERES.move_spheres(S, params);
+        WALLS.update_d4(params);
+        renderer.render(scene, camera);
+    }
 }
 
 export function init() {
-    SPHERES.createNDParticleShader(params).then(main());
+    SPHERES.createNDParticleShader(params).then(main);
 }
 
 window.addEventListener('resize', onWindowResize, false);
@@ -68,6 +71,7 @@ async function NDDEMPhysics() {
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
     setup_NDDEM();
+    started = true;
 }
 
 function setup_NDDEM() {

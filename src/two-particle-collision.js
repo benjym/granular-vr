@@ -10,9 +10,10 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
 
 let S;
+let started = false;
 
 var params = {
     dimension: 3,
@@ -30,14 +31,18 @@ var params = {
 }
 
 export function init() {
-    SPHERES.createNDParticleShader(params).then(() => {
-        main();
-    });
+    SPHERES.createNDParticleShader(params).then(main);
 }
 
 async function main() {
+    await NDDEMCGPhysics().then(() => {
+        build_world();
+        started = true;
+        renderer.setAnimationLoop(update);
+    });
+}
 
-    await NDDEMCGPhysics();
+async function build_world() {
 
     LIGHTS.add_default_lights(scene);
 
@@ -58,8 +63,10 @@ async function main() {
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
+}
 
-    renderer.setAnimationLoop(async () => {
+async function update() {
+    if ( visibility === 'visible' && started ) {
         if (controls !== undefined) {
             controls.update();
         }
@@ -73,10 +80,9 @@ async function main() {
 
         renderer.render(scene, camera);
         CONTROLLERS.moveInD4(params, controls);
-    });
 
-    // AUDIO.play_track('two-particle-collision.mp3', scene, 3000);
-
+        // AUDIO.play_track('two-particle-collision.mp3', scene, 3000);
+    }
 }
 
 async function NDDEMCGPhysics() {

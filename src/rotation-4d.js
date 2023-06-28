@@ -11,9 +11,10 @@ import * as BUTTONS from "../libs/buttons";
 import * as LIGHTS from "../libs/lights";
 import * as WALLS from "../libs/WallHandler";
 
-import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
 
 let S;
+let started = false;
 
 var params = {
     dimension: 4,
@@ -56,16 +57,17 @@ async function main() {
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
-    renderer.setAnimationLoop(function () {
+    renderer.setAnimationLoop(update);
+}
+async function update() {
+    if ( visibility === 'visible' && started ) {
         if (controls !== undefined) { controls.update(); }
         S.simu_step_forward(5);
         SPHERES.move_spheres(S, params);
         renderer.render(scene, camera);
         CONTROLLERS.moveInD4(params, controls);
         WALLS.update_d4(params);
-    });
-
-    // AUDIO.play_track('rotation-4d.mp3', scene, 3000);
+    };
 }
 
 
@@ -73,6 +75,7 @@ async function NDDEMCGPhysics() {
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
     setup_NDDEM();
+    started = true;
 }
 
 
