@@ -3,3 +3,4 @@ dist/
 .DS_Store
 *.apk
 *.idsig
+mapping-toolbox-*.json

@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input" : {
+        "text" : "Now the particle is inside a circle. Think about what happens now that we have a different shape. What would happen if the particle started in the centre of the circle? Move on to the ellipse when you are ready."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}

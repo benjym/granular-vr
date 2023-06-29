@@ -4,8 +4,11 @@
         "pitch": 0,
         "speakingRate": 0.8
     },
-    "input": {
+    "old_input": {
         "text": "In front of you are two three dimensional spheres. The bottom one is fixed to the floor. The top one is bouncing on top of it. When the two particles are touching, there is a force between them that stops them from overlapping. We represent the force with a white cylinder. The wider the cylinder, the bigger the force."
+    },
+    "input" : {
+        "text" : "In front of you are two three dimensional spheres. Try walking around the spheres to see that they have volume and fill a three D space. When you are ready, click the sign to move on to some mathematical billiards."
     },
     "voice": {
         "languageCode": "en-au",

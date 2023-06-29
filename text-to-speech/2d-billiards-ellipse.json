@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input" : {
+        "text" : "How would you describe the motion of this particle inside the ellipse? How is it similar or different to the motion you saw in the circle and square? When you have thought of an answer, click the button to move to three dimensions."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}

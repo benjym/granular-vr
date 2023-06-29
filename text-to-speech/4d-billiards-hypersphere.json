@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input" : {
+        "text" : "Now the particle is moving in a four dimensional sphere. How does the path differ to the four D box you saw in the previous room? Can you find any similarities between the paths on the 2D circle, the 3D sphere and the 4D sphere? In the next room you will study the four dimensional hypersphere as you work towards playing a game of pool."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}

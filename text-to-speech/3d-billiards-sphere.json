@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input" : {
+        "text" : "Watch how this particle moves inside a sphere. Think about how it moves differently in three dimensions compared to the two dimensional circle. What would happen if you threw the particle from the centre of the sphere? When you are ready click the sign to start learning about the fourth dimension."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}

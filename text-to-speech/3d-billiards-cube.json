@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input" : {
+        "text" : "When we study mathematical billiards in three dimensions, the particle has another dimension it can move in. This leads to more complicated behaviour. Observe the particle that is bouncing around you. How is this particle’s path different to the two dimensional ones? Is it harder to tell if this path is periodic? Move on to the sphere when you are ready."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}

@@ -29,35 +29,35 @@
             "url": "2d-billiards?boundary=square",
             "name": "2D billiards in a square",
             "button_delay": 30000,
-            // "audio_track" : "2d-billiards-square.mp3",
+            "audio_track" : "2d-billiards-square.mp3",
             "audio_delay" : 3000
         },
         {
             "url": "2d-billiards?boundary=circle",
             "name": "2D billiards in a circle",
             "button_delay": 30000,
-            // "audio_track" : "2d-billiards-circle.mp3",
+            "audio_track" : "2d-billiards-circle.mp3",
             "audio_delay" : 3000
         },
         {
             "url": "2d-billiards?boundary=ellipse",
             "name": "2D billiards in an ellipse",
             "button_delay": 30000,
-            // "audio_track" : "2d-billiards-ellipse.mp3",
+            "audio_track" : "2d-billiards-ellipse.mp3",
             "audio_delay" : 3000
         },
         {
             "url": "3d-billiards?boundary=cube",
             "name": "3D billiards in a cube",
             "button_delay": 30000,
-            // "audio_track" : "3d-billiards-cube.mp3",
+            "audio_track" : "3d-billiards-cube.mp3",
             "audio_delay" : 3000
         },
         {
             "url": "3d-billiards?boundary=sphere",
             "name": "3D billiards in a sphere",
             "button_delay": 30000,
-            // "audio_track" : "3d-billiards-sphere.mp3",
+            "audio_track" : "3d-billiards-sphere.mp3",
             "audio_delay" : 3000
         },
         {
@@ -100,14 +100,14 @@
             "params" : {"boundary" : "hypercube"},
             "name": "4D billiards in a hypbercube",
             "button_delay": 30000,
-            // "audio_track" : "4d-billiards-hypercube.mp3",
+            "audio_track" : "4d-billiards-hypercube.mp3",
             "audio_delay" : 3000
         },
         {
             "url": "4d-billiards?boundary=hypersphere",
             "name": "4D billiards in a hypersphere",
             "button_delay": 30000,
-            // "audio_track" : "4d-billiards-hypersphere.mp3",
+            "audio_track" : "4d-billiards-hypersphere.mp3",
             "audio_delay" : 3000
         },
         {

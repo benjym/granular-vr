@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input" : {
+        "text" : "This particle is moving in a four dimensional box. Use the toggle on your controller to move through the fourth dimension and see the full path of the particle. Remember that the colour spectrum from red to blue lets you know where you are in the fourth dimension."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}
