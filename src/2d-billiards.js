@@ -1,10 +1,6 @@
 import css from "../css/main.css";
 import track from "../text-to-speech/2d-rain.mp3";
 
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
-import { Lut } from 'three/examples/jsm/math/Lut.js';
-
 import * as SPHERES from "../libs/SphereHandler.js"
 import * as WALLS from "../libs/WallHandler.js"
 // import * as LAYOUT from '../libs/Layout.js'
@@ -18,10 +14,7 @@ import * as BUTTONS from "../libs/buttons";
 import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib, extra_params, human_height, visibility } from "./index";
 
 
-let gui;
 let S;
-let cg_mesh;
-let started = false;
 
 var params = {
     dimension: 2,
@@ -70,7 +63,6 @@ export function init() {
 async function main() {
     await NDDEMCGPhysics().then(() => {
         build_world();
-        started = true;
         renderer.setAnimationLoop(update);
     });
 }
@@ -91,18 +83,18 @@ async function build_world() {
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
-    RAYCAST.add_ghosts(scene, 2000, params.average_radius/4., 0xeeeeee);
+    RAYCAST.add_ghosts(scene, 1000, params.average_radius/4., 0xeeeeee);
 }
 
 
 async function update() {
-    if ( visibility === 'visible' && started ) {
+    if ( visibility === 'visible' ) {
         // requestAnimationFrame( animate );
-        await SPHERES.move_spheres(S, params);
+        SPHERES.move_spheres(S, params);
         RAYCAST.update_ghosts(params);
         // RAYCAST.animate_locked_particle(S, camera, SPHERES.spheres, params);
         // if (!params.paused) {
-        await S.simu_step_forward(50);
+        S.simu_step_forward(50);
         // update_cg_field();
         // }
         // SPHERES.draw_force_network(S, params, scene);

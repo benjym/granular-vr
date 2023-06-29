@@ -104,7 +104,7 @@ async function add_common_properties() {
 async function wipe_scene() {
     visibility = 'hidden';
     if ( renderer !== undefined ) { renderer.setAnimationLoop(null); }
-    if (scene !== undefined) {
+    if ( scene !== undefined ) {
         // scene.traverse( (o) => {
         //     console.log(o)
         //     if (o.keep_me !== undefined ) {

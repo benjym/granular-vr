@@ -23,9 +23,15 @@ let params = {
     d4: { cur: 0, min: -1, max: 1 },
     lut: 'None',
 }
-
 async function main() {
-    await NDDEMPhysics();
+    await NDDEMCGPhysics().then(() => {
+        build_world();
+        started = true;
+        renderer.setAnimationLoop(update);
+    });
+}
+
+async function build_world() {
 
     LIGHTS.add_default_lights(scene);
 
@@ -41,8 +47,6 @@ async function main() {
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
-
-    renderer.setAnimationLoop(update);
 }
 
 function update() {
@@ -51,8 +55,8 @@ function update() {
         params = CONTROLLERS.moveInD4(params, controls);
         SPHERES.move_spheres(S, params);
         WALLS.update_d4(params);
-        renderer.render(scene, camera);
     }
+    renderer.render(scene, camera);
 }
 
 export function init() {
@@ -67,7 +71,7 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 };
 
-async function NDDEMPhysics() {
+async function NDDEMCGPhysics() {
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
     setup_NDDEM();

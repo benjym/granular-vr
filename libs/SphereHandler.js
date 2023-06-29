@@ -619,6 +619,7 @@ export async function draw_force_network(S, params, scene) {
 
             var F = await S.simu_getContactInfos(0x80 | 0x100);
 
+
             let width = radii[0] / 2.;
             if ('F_mag_max' in params) {
                 F_mag_max = params.F_mag_max;

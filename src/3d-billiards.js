@@ -104,7 +104,7 @@ async function update() {
 
         controls.update();
         renderer.render(scene, camera);
-        params = CONTROLLERS.moveInD4(params, controls);
+        // params = CONTROLLERS.moveInD4(params, controls);
         // WALLS.update_d4(params);
 
         RAYCAST.update_ghosts(params);
@@ -168,6 +168,7 @@ function setup_NDDEM() {
             S.simu_interpret_command("boundary "+String(params.dimension)+" SPHERE "+String(params.L)+ " 0 0 " + String(params.L)); // add a sphere!
             S.simu_interpret_command("auto location insphere");
             WALLS.add_sphere(params);
+            // WALLS.wall_material.wireframe = true;
         }
         RAYCAST.add_ghosts(scene, 2000, params.average_radius/4., 0xFFFFFF);
 

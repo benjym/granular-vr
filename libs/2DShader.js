@@ -1,5 +1,3 @@
-import { ShaderMaterial } from "three";
-
 var N = 2;
 var uniforms = {
   N: { value: N },
@@ -14,7 +12,7 @@ for (var ij = 0; ij < N * N; ij++) {
   else uniforms.A.value[ij] = 0;
 }
 
-var NDDEMShader = new ShaderMaterial({
+var NDDEMShader = new THREE.ShaderMaterial({
   uniforms: uniforms,
   // lights: true,
 

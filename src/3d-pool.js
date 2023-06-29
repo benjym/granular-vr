@@ -4,7 +4,6 @@ import track from "../text-to-speech/4d-pool.mp3";
 import table from "../resources/4d-pool.stl";
 import nice_table from "../resources/pool.glb";
 
-import * as THREE from "three";
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 

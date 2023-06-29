@@ -5,6 +5,7 @@ let old_ref_location = new THREE.Vector3(NaN,NaN,NaN);
 let data_points;
 
 export function add_ghosts(scene, N=1000, radius=0.005, color=0xeeeeee) {
+    if ( data_points !== undefined ) { scene.remove(data_points) } 
     data_points = new THREE.Group();
     data_points.nchildren = N;
     data_points.last_updated = 0;

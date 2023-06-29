@@ -1,9 +1,6 @@
 import css from "../css/main.css";
 import track from "../text-to-speech/two-particle-collision.mp3";
 
-import ImmersiveControls from '@depasquale/three-immersive-controls';
-import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
-
 import * as CONTROLLERS from '../libs/controllers.js';
 import * as SPHERES from "../libs/SphereHandler.js"
 import * as BUTTONS from "../libs/buttons";
@@ -19,10 +16,8 @@ var params = {
     dimension: 3,
     radius: 0.5,
     L: 500, //system size
-    d4: { cur: 0, min: -1, max: 1 },
     lut: 'None',
     quality: 7,
-    pyramid_size: 7,
     particle_density: 2700,
     particle_opacity: 0.7,
     F_mag_max: 1e6,
@@ -54,35 +49,29 @@ async function build_world() {
 
     SPHERES.add_spheres(S, params, scene);
 
-    if (params.dimension == 4) {
-        let gui = new GUI();
-        gui.width = 320;
-        gui.add(params.d4, 'cur', -1, 1, 0.001).name('D4 location').listen()
-        gui.remove_me = true;
-    }
-
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 }
 
 async function update() {
+
     if ( visibility === 'visible' && started ) {
         if (controls !== undefined) {
             controls.update();
         }
         S.simu_step_forward(5);
         SPHERES.move_spheres(S, params);
-        await SPHERES.draw_force_network(S, params, scene);
+        SPHERES.draw_force_network(S, params, scene);
 
-        if (AUDIO.listener !== undefined) {
-            SPHERES.update_fixed_sounds(S, params);
-        }
+        // if (AUDIO.listener !== undefined) {
+        //     SPHERES.update_fixed_sounds(S, params);
+        // }
 
-        renderer.render(scene, camera);
-        CONTROLLERS.moveInD4(params, controls);
+        // CONTROLLERS.moveInD4(params, controls);
 
         // AUDIO.play_track('two-particle-collision.mp3', scene, 3000);
     }
+    renderer.render(scene, camera);
 }
 
 async function NDDEMCGPhysics() {

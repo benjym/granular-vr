@@ -16,7 +16,7 @@ import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib 
 let S;
 let started = false;
 
-export let params = {
+let params = {
     dimension: 4,
     boxratio: 1,
     // initial_packing_fraction: 0.01,
@@ -73,7 +73,7 @@ export function init() {
 
 async function main() {
     set_derived_properties();
-    await NDDEMPhysics().then(() => {
+    await NDDEMCGPhysics().then(() => {
         build_world();
         started = true;
         renderer.setAnimationLoop(update);
@@ -141,7 +141,7 @@ async function update() {
 
 }
 
-async function NDDEMPhysics() {
+async function NDDEMCGPhysics() {
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
     setup_NDDEM();

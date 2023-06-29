@@ -1,8 +1,3 @@
-import {
-	Color,
-	MathUtils
-} from 'three';
-
 class Lut {
 
  	constructor( colormap, count = 32 ) {
@@ -52,14 +47,14 @@ class Lut {
 		this.n = count;
 
 		const step = 1.0 / this.n;
-		const minColor = new Color();
-		const maxColor = new Color();
+		const minColor = new THREE.Color();
+		const maxColor = new THREE.Color();
 
 		this.lut.length = 0;
 
 		// sample at 0
 
-		this.lut.push( new Color( this.map[ 0 ][ 1 ] ) );
+		this.lut.push( new THREE.Color( this.map[ 0 ][ 1 ] ) );
 
 		// sample at 1/n, ..., (n-1)/n
 
@@ -77,7 +72,7 @@ class Lut {
 					minColor.set( this.map[ j ][ 1 ] );
 					maxColor.set( this.map[ j + 1 ][ 1 ] );
 
-					const color = new Color().lerpColors( minColor, maxColor, ( alpha - min ) / ( max - min ) );
+					const color = new THREE.Color().lerpColors( minColor, maxColor, ( alpha - min ) / ( max - min ) );
 
 					this.lut.push( color );
 
@@ -89,7 +84,7 @@ class Lut {
 
 		// sample at 1
 
-		this.lut.push( new Color( this.map[ this.map.length - 1 ][ 1 ] ) );
+		this.lut.push( new THREE.Color( this.map[ this.map.length - 1 ][ 1 ] ) );
 
 		return this;
 
@@ -109,7 +104,7 @@ class Lut {
 
 	getColor( alpha ) {
 
-		alpha = MathUtils.clamp( alpha, this.minV, this.maxV );
+		alpha = THREE.MathUtils.clamp( alpha, this.minV, this.maxV );
 
 		alpha = ( alpha - this.minV ) / ( this.maxV - this.minV );
 
@@ -151,9 +146,9 @@ class Lut {
 
 		const step = 1.0 / this.n;
 
-		const minColor = new Color();
-		const maxColor = new Color();
-		const finalColor = new Color();
+		const minColor = new THREE.Color();
+		const maxColor = new THREE.Color();
+		const finalColor = new THREE.Color();
 
 		for ( let i = 1; i >= 0; i -= step ) {
 

@@ -17,7 +17,7 @@ var lut = new Lut("bwr", 512); // options are rainbow, cooltowarm and blackbody
 // loader.load("../resources/helvetiker_bold.typeface.json", function (f) { font = f });
 
 const wall_geometry = new THREE.BoxGeometry(1, 1, 1);
-const wall_material = new THREE.MeshStandardMaterial({side: THREE.DoubleSide});
+export const wall_material = new THREE.MeshStandardMaterial({side: THREE.DoubleSide});
 let base_plane;
 
 function add_wall_group() {
