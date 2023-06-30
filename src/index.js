@@ -102,8 +102,14 @@ async function add_common_properties() {
 }
 
 async function wipe_scene() {
-    visibility = 'hidden';
-    if ( renderer !== undefined ) { renderer.setAnimationLoop(null); }
+    // visibility = 'hidden';
+    if ( renderer !== undefined ) {
+        // renderer.setAnimationLoop(null);
+        renderer.setAnimationLoop( () => {
+            controls.update();
+            renderer.render(scene, camera);
+        });
+    }
     if ( scene !== undefined ) {
         // scene.traverse( (o) => {
         //     console.log(o)
@@ -151,6 +157,7 @@ async function wipe_scene() {
 
         SPHERES.reset_spheres();
         RAYCAST.reset_ghosts();
+        WALLS.update_d4();
     }
 
     AUDIO.end_current_track();
@@ -173,7 +180,7 @@ export function move_to(v) {
         extra_params = apps.list[v].params;
         import("./" + apps.list[v].url).then((module) => {
             wipe_scene().then(() => {
-                visibility = 'visible';
+                // visibility = 'visible';
                 module.init();
             });
         });
@@ -202,7 +209,7 @@ export function move_to(v) {
 
         import("./" + url).then((module) => {
             wipe_scene().then(() => {
-                visibility = 'visible';
+                // visibility = 'visible';
                 module.init()
             });
         });

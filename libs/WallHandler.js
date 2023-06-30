@@ -176,10 +176,15 @@ export function add_2d_ellipse(params) {
 }
 
 export function update_d4(params) {
-    if (params.d4 !== undefined ) {
-        lut.setMin( params.d4.min );
-        lut.setMax( params.d4.max );
-        wall_material.color = lut.getColor(params.d4.cur);
+    if (params !== undefined ) {
+        if (params.d4 !== undefined ) {
+            lut.setMin( params.d4.min );
+            lut.setMax( params.d4.max );
+            wall_material.color = lut.getColor(params.d4.cur);
+        }
+    }
+    else {
+        wall_material.color = new THREE.Color(0xffffff);
     }
 }
 
