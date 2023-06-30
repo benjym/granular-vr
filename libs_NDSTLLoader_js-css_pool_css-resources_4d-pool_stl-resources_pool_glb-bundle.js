@@ -7,7 +7,7 @@
  * or disable the default devtool with "devtool: false".
  * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
  */
-(self["webpackChunkgranular_vr"] = self["webpackChunkgranular_vr"] || []).push([["libs_NDSTLLoader_js-css_pool_css-resources_4d-pool_stl-resources_pool_glb-text-to-speech_4d-p-508ccb"],{
+(self["webpackChunkgranular_vr"] = self["webpackChunkgranular_vr"] || []).push([["libs_NDSTLLoader_js-css_pool_css-resources_4d-pool_stl-resources_pool_glb"],{
 
 /***/ "./libs/NDSTLLoader.js":
 /*!*****************************!*\
@@ -56,16 +56,6 @@ eval("module.exports = __webpack_require__.p + \"6fac6a5508670a5e7f78.stl\";\n\n
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 eval("module.exports = __webpack_require__.p + \"d349df19c5a8e49f845f.glb\";\n\n//# sourceURL=webpack://granular-vr/./resources/pool.glb?");
-
-/***/ }),
-
-/***/ "./text-to-speech/4d-pool.mp3":
-/*!************************************!*\
-  !*** ./text-to-speech/4d-pool.mp3 ***!
-  \************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-eval("module.exports = __webpack_require__.p + \"e9298d53451a534a9a5c.mp3\";\n\n//# sourceURL=webpack://granular-vr/./text-to-speech/4d-pool.mp3?");
 
 /***/ })
 
