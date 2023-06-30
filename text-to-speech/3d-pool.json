@@ -5,7 +5,7 @@
         "speakingRate": 0.8
     },
     "input" : {
-        "text" : "Let’s practice how to use a pool cue in virtual reality by playing the regular three dimensional pool. The aim is to hit the white ball into the other coloured balls and make the coloured balls fall into the holes at the edges of the table. You are holding the cue used to hit the white ball. Aim the tip of the cue by moving the left controller. To hit the ball, first pull your other controller towards yourself, then push it forward to hit the ball. The faster you push the harder you hit the ball. Get some practice using the cue and when you feel ready move on to playing in four dimensions."
+        "text" : "Lets practice how to use a pool cue in virtual reality by playing the regular three dimensional pool. The aim is to hit the white ball into the other coloured balls and make the coloured balls fall into the holes at the edges of the table. You are holding the cue used to hit the white ball. Aim the tip of the cue by moving the left controller. To hit the ball, first pull your other controller towards yourself, then push it forward to hit the ball. The faster you push the harder you hit the ball. Get some practice using the cue and when you feel ready move on to playing in four dimensions."
     },
     "voice": {
         "languageCode": "en-au",
