@@ -4,11 +4,8 @@
     "pitch": 0,
     "speakingRate": 0.8
   },
-  "old_input": {
-    "text": "In four dimensions there are six rotational degrees of freedom. The first three, the ones you can see at the top, are just like the rotational degrees of freedom in 3D space. The other three at the bottom are new. Try scanning through the fourth dimension by pushing the right joystick up and down to see the rest of the surface. When you're done, click on the Pyramid button to start having some fun."
-  },
-  "input" : {
-    "text": "In four dimensions, we can rotate along six possible axes. In front of you are six spheres demonstrating those rotations. On the top row you have the same rotations as in three D. On the bottom row you have rotations that move through the fourth dimension. The position of the spheres in the fourth dimension is determined by their colour so when you see their colour change, they are moving through the fourth dimension. When you are ready click the sign to begin playing some pool."
+  "input": {
+    "text": "In four dimensions there are six rotational degrees of freedom. In front of you are six spheres demonstrating rotation in each of them. On the top row you have the same rotations as in three D. On the bottom row you have rotations that move through the fourth dimension. The position of the spheres in the fourth dimension is determined by their colour so when you see their colour change, they are moving through the fourth dimension. When you are ready click the sign to begin playing some pool."
   },
   "voice": {
     "languageCode": "en-au",
