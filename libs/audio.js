@@ -133,6 +133,6 @@ export function pause_current_track() {
 
 export function resume_current_track() {
     if (current_sound !== undefined) {
-        if (current_sound.isPlaying) { current_sound.play(); }
+        if (!current_sound.isPlaying) { current_sound.play(); }
     }
 }
