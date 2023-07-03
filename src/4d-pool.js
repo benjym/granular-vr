@@ -192,15 +192,15 @@ async function check_pockets() {
                     console.log('sunk white ball')
                     S.simu_fixParticle(0, params.white_ball_initial_loc)
                 }
-                else if (i == 11) {
-                    console.log('sunk black ball')
-                    if (sunk_balls.length < params.N - 1) {
-                        alert('You need to sink all of the coloured balls before the black ball. You lose.')
-                    } else {
-                        alert('You win!')
-                    }
-                    set_ball_positions();
-                }
+                // else if (i == 11) {
+                //     console.log('sunk black ball')
+                //     if (sunk_balls.length < params.N - 1) {
+                //         alert('You need to sink all of the coloured balls before the black ball. You lose.')
+                //     } else {
+                //         alert('You win!')
+                //     }
+                //     set_ball_positions();
+                // }
                 else {
                     console.log('SUNK BALL ' + String(i))
                     // object.visible = false;

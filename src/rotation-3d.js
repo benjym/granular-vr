@@ -11,7 +11,7 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
 
 let S;
 
@@ -65,11 +65,13 @@ async function main() {
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
     renderer.setAnimationLoop(function () {
-        if (controls !== undefined) { controls.update(); }
-        S.simu_step_forward(5);
-        SPHERES.move_spheres(S, params);
-        renderer.render(scene, camera);
-        if (circle !== undefined) { circle.rotateZ(clock.getDelta() * Math.PI / 2.) }
+        if ( visibility === 'visible' ) {
+            if (controls !== undefined) { controls.update(); }
+            S.simu_step_forward(5);
+            SPHERES.move_spheres(S, params);
+            renderer.render(scene, camera);
+            if (circle !== undefined) { circle.rotateZ(clock.getDelta() * Math.PI / 2.) }
+        }
     });
 
     // AUDIO.play_track('rotation-3d.mp3', scene, 3000);

@@ -51,11 +51,11 @@ async function build_world() {
 
 function update() {
     if ( visibility === 'visible' && started ) {
-        if (controls !== undefined) { controls.update(); }
         params = CONTROLLERS.moveInD4(params, controls);
         SPHERES.move_spheres(S, params);
         WALLS.update_d4(params);
     }
+    if (controls !== undefined) { controls.update(); }
     renderer.render(scene, camera);
 }
 

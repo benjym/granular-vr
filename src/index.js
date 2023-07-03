@@ -85,14 +85,17 @@ async function add_common_properties() {
                 case "visible":
                     console.debug('XR SESSION VISIBLE')
                     visibility = 'visible'
+                    AUDIO.resume_current_track();
                     break;
                 case "visible-blurred":
                     console.debug('XR SESSION BLURRY')
                     visibility = 'visible-blurred'
+                    AUDIO.pause_current_track();
                     break;
                 case "hidden":
                     console.debug('XR SESSION HIDDEN')
                     visibility = 'hidden'
+                    AUDIO.pause_current_track();
                     break;
             }
         });

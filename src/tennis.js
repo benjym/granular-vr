@@ -127,16 +127,15 @@ async function main() {
     gui.add(params.d4, 'cur', params.d4.min, params.d4.max, 0.001).name('D4 location (e/q)').listen();
     gui.remove_me = true;
 
-    let offset = 0.2;
-
     renderer.setAnimationLoop(update)
 }
         
 async function update() {
-    if ( visibility === 'visible' && started ) {
+    if ( visibility === 'visible' ) {
         SPHERES.move_spheres(S, params);
         S.simu_step_forward(5);
-        console.log(controls)
+        // console.log(controls)
+        let offset = 0.2;
 
         if (controls.player.position.x < -params.L + offset) { controls.player.position.x = -params.L + offset; }
         else if (controls.player.position.x > params.L - offset) { controls.player.position.x = params.L - offset; }

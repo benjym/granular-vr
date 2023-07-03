@@ -64,7 +64,7 @@ async function main() {
     renderer.setAnimationLoop(update);
 }
 async function update() {
-    if ( visibility === 'visible' && started ) {
+    if ( visibility === 'visible' ) {
         if (controls !== undefined) {
             controls.update();
             if (controls.vrControls.controllerGrips.left !== undefined) {
