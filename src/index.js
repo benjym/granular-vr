@@ -14,6 +14,18 @@ import * as LIGHTS from "../libs/lights";
 import * as POOLCUE from "../libs/PoolCue";
 import * as RAYCAST from "../libs/RaycastHandler";
 
+
+// Save the current URL and state when the app starts
+var initialUrl = window.location.href;
+var initialState = window.history.state;
+
+// Listen for the 'beforeunload' event when the user leaves the app
+window.addEventListener('beforeunload', function(event) {
+  // Restore the initial URL and state when the user leaves the app
+  window.history.replaceState(initialState, '', initialUrl);
+});
+
+
 function replaceQueryParam(param, newval, search) {
     var regex = new RegExp("([?;&])" + param + "[^&;]*[;&]?");
     var query = search.replace(regex, "$1").replace(/&$/, '');
