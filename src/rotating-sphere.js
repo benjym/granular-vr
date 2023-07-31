@@ -16,7 +16,7 @@ import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib 
 
 let S;
 
-let start_button, stop_button;
+let boundary;
 
 export let params = {
     dimension: 3,
@@ -24,8 +24,8 @@ export let params = {
     // L: 0.025,
     // H: 0.05,
     boxratio: 1.5,
-    initial_packing_fraction: 0.5,
-    N: 400,
+    initial_packing_fraction: 0.27,
+    N: 500,
     epsilonv: 0,
     gravity: false,
     paused: false,
@@ -35,15 +35,15 @@ export let params = {
     d4: { cur: 0 },
     // r_max: 0.0033,
     // r_min: 0.0027,
-    r_max: 0.12,
-    r_min: 0.11,
+    r_max: 0.15,
+    r_min: 0.1,
     // freq: 0.05,
     new_line: false,
     loading_rate: 0.01,
     // max_vertical_strain: 0.3,
     target_stress: 1e6,
     unloading_stress: 100,
-    lut: 'None',
+    lut: 'Size',
     quality: 5,
     vmax: 1, // max velocity to colour by
     omegamax: 20, // max rotation rate to colour by
@@ -52,7 +52,7 @@ export let params = {
     particle_opacity: 0.8,
     audio: false,
     audio_sensitivity: 1,
-    F_mag_max: 1e6,
+    F_mag_max: 2e6,
     friction_coefficient: 0.5,
     pressure: 0,
     started: false,
@@ -60,6 +60,7 @@ export let params = {
     new_time: 0,
     loading_direction: 1,
     startTime: clock.getElapsedTime(),
+    omega: 50,
 }
 
 function set_derived_properties() {
@@ -69,11 +70,13 @@ function set_derived_properties() {
     params.particle_volume = 4. / 3. * Math.PI * Math.pow(params.average_radius, 3);
     console.log('estimate of particle volume: ' + params.particle_volume * params.N)
     params.particle_mass = params.particle_volume * params.particle_density;
-    params.L = Math.pow(params.particle_volume * params.N / params.initial_packing_fraction / params.boxratio, 1. / 3.) / 2.;
-    params.H = params.L * params.boxratio;
 
-    params.L_cur = params.L;
-    params.H_cur = params.H;
+    params.L = Math.pow(params.N/params.initial_packing_fraction * Math.pow( params.average_radius, 3) , 1. / 3.);
+    // params.L = Math.pow(params.particle_volume * params.N / params.initial_packing_fraction / params.boxratio, 1. / 3.) / 2.;
+    // params.H = params.L * params.boxratio;
+
+    // params.L_cur = params.L;
+    // params.H_cur = params.H;
     // params.packing_fraction = params.N*params.particle_volume/Math.pow(2*params.L,3);
     // params.back = -params.L;
     // params.front = params.L;
@@ -114,14 +117,23 @@ async function main() {
 
     LIGHTS.add_default_lights(scene);
 
-    WALLS.add_cuboid_walls(params);
-    WALLS.walls.rotateX(-Math.PI / 2.); // fix y/z up compared to NDDEM
-    WALLS.walls.rotateZ(Math.PI); // fix y/z up compared to NDDEM
-    WALLS.walls.position.y = params.H;
-    console.debug('rotated and placed walls')
-    scene.add(WALLS.walls);
-    WALLS.update_isotropic_wall(params, S);
-    WALLS.add_scale(params);
+    // WALLS.add_cuboid_walls(params);
+    // WALLS.walls.rotateX(-Math.PI / 2.); // fix y/z up compared to NDDEM
+    // WALLS.walls.rotateZ(Math.PI); // fix y/z up compared to NDDEM
+    // WALLS.walls.position.y = params.H;
+    // console.debug('rotated and placed walls')
+    // scene.add(WALLS.walls);
+    // WALLS.update_isotropic_wall(params, S);
+    // WALLS.add_scale(params);
+    // const wall_geometry = new THREE.BoxGeometry( params.L*2 + thickness*2, thickness, params.L*2 + thickness*2 );
+    const wall_geometry = new THREE.SphereGeometry( params.L, 32, 32 );
+    const wall_material = new THREE.MeshLambertMaterial();
+    wall_material.wireframe = true;
+
+    boundary = new THREE.Mesh( wall_geometry, wall_material );
+    boundary.rotateX(Math.PI/2.);
+    boundary.position.y = params.L;
+    scene.add( boundary );
 
 
     SPHERES.add_spheres(S, params, scene);
@@ -167,14 +179,8 @@ async function main() {
 
     gui.remove_me = true;
 
-    start_button = BUTTONS.add_action_button('loading_active', 'Start loading', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
-    start_button.rotateY(Math.PI / 2.);
-
-    stop_button = BUTTONS.add_action_button('loading_active', 'Stop loading', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
-    stop_button.rotateY(Math.PI / 2.);
-    stop_button.visible = false;
     // make_graph();
-    WALLS.update_isotropic_wall(params, S);
+    // WALLS.update_isotropic_wall(params, S);
     animate();
 
     // let graph = GRAPHS.add_axes("Solid Fraction", "Pressure", 0.35, 0.7, 0, params.target_stress, scene);
@@ -184,23 +190,9 @@ async function main() {
 
     // AUDIO.play_track('isotropic.mp3', scene, 3000);
 
-    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
-    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1.5], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
+    BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1.25, 1.25, 1.5], 0.25, [0, Math.PI / 4, 0]);
+    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1.25, 1.25, 1.5], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
-}
-
-function new_load_path() {
-    WALLS.update_isotropic_wall(params, S);
-    // data_point_colour = Math.floor(Math.random()*16777215).toString(16);
-    // var data = [{
-    //               type: 'scatter',
-    //               mode: 'lines',
-    //               x: [], y: [],
-    //               line: { width: 5 },
-    //               name: 'Load path ' + String(document.getElementById('stats').data.length+1)
-    //             }]
-    // Plotly.addTraces('stats', data);
-    // params.new_line = false;
 }
 
 function animate() {
@@ -237,8 +229,6 @@ function animate() {
 
                 await SPHERES.draw_force_network(S, params, scene);
 
-                if ( params.loading_active ) { start_button.visible = false; stop_button.visible = true; }
-                else { start_button.visible = true; stop_button.visible = false;}
                 // await S.cg_param_read_timestep(0);
                 // await S.cg_process_timestep(0, false);
                 // // var grid = S.cg_get_gridinfo();
@@ -255,10 +245,13 @@ function animate() {
                 // console.log(density)
                 // GRAPHS.update_data(x, y);//, data_point_colour);
 
+                
+
             }
         }
 
-
+        boundary.rotateY(-params.omega*1e-3/20*5);
+        
         controls.update();
         renderer.render(scene, camera);
 
@@ -284,22 +277,30 @@ async function setup_NDDEM() {
 
     S.simu_interpret_command("mass -1 " + String(m));
     S.simu_interpret_command("auto rho");
-    S.simu_interpret_command("auto radius uniform " + params.r_min + " " + params.r_max);
+    // S.simu_interpret_command("auto radius uniform " + params.r_min + " " + params.r_max);
+    S.simu_interpret_command("auto radius bidisperse "+params.r_min+" "+params.r_max+" 0.5");
+
     S.simu_interpret_command("auto mass");
     S.simu_interpret_command("auto inertia");
     S.simu_interpret_command("auto skin");
     // console.log(params.L, params.H)
-    S.simu_interpret_command("boundary 0 WALL -" + String(params.L) + " " + String(params.L));
-    S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
-    S.simu_interpret_command("boundary 2 WALL -" + String(0) + " " + String(2 * params.H));
-    if (params.gravity === true) {
-        S.simu_interpret_command("gravity 0 0 " + String(-9.81) + "0 ".repeat(params.dimension - 3))
+    for ( let i=0;i<params.dimension;i++ ) {
+        S.simu_interpret_command("boundary "+String(i)+" WALL -"+2*String(params.L)+" "+2*String(params.L));
     }
-    else {
-        S.simu_interpret_command("gravity 0 0 0 " + "0 ".repeat(params.dimension - 3))
-    }
+
+    S.simu_interpret_command("boundary "+String(params.dimension)+" ROTATINGSPHERE "+String(params.L)+" 0 0 " + String(params.L) + " 0 " + String(params.omega) + " 0"); // add a sphere!
+
+    // if (params.gravity === true) {
+    S.simu_interpret_command("gravity 0 0 " + String(-1e4) + "0 ".repeat(params.dimension - 3))
+    // }
+    // else {
+    //     S.simu_interpret_command("gravity 0 0 0 " + "0 ".repeat(params.dimension - 3))
+    // }
     // S.simu_interpret_command("auto location randomsquare");
-    S.simu_interpret_command("auto location randomdrop");
+    // S.simu_interpret_command("auto location randomdrop");
+    S.simu_interpret_command("auto location insphere");
+    // S.simu_interpret_command("gravityrotate 10000 " + params.omega + " 0 2"); // intensity, omega, rotdim0, rotdim1
+
 
     let tc = 1e-3;
     let rest = 0.2; // super low restitution coeff to dampen out quickly
@@ -320,8 +321,8 @@ async function setup_NDDEM() {
     // S.simu_interpret_command("ContactModel Hertz");
 
     S.simu_interpret_command("set Mu " + String(params.friction_coefficient));
-    S.simu_interpret_command("set Mu_wall 0");
-    S.simu_interpret_command("set damping 0.01");
+    S.simu_interpret_command("set Mu_wall 1");
+    // S.simu_interpret_command("set damping 0.01");
     S.simu_interpret_command("set T 150");
     S.simu_interpret_command("set dt " + String(tc / 20));
     S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces

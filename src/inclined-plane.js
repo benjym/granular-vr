@@ -16,23 +16,23 @@ import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib 
 
 let S;
 
-let start_button, stop_button;
-
 export let params = {
     dimension: 3,
     // L: 4, //system size
     // L: 0.025,
     // H: 0.05,
-    boxratio: 1.5,
-    initial_packing_fraction: 0.5,
-    N: 400,
+    boxratio: 3,
+    initial_packing_fraction: 0.25,
+    N: 500,
     epsilonv: 0,
     gravity: false,
+    g_mag: 1e3,
     paused: false,
     H_cur: 0,
     pressure_set_pt: 1e4,
     deviatoric_set_pt: 0,
     d4: { cur: 0 },
+    theta: 20,
     // r_max: 0.0033,
     // r_min: 0.0027,
     r_max: 0.12,
@@ -167,41 +167,13 @@ async function main() {
 
     gui.remove_me = true;
 
-    start_button = BUTTONS.add_action_button('loading_active', 'Start loading', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
-    start_button.rotateY(Math.PI / 2.);
-
-    stop_button = BUTTONS.add_action_button('loading_active', 'Stop loading', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
-    stop_button.rotateY(Math.PI / 2.);
-    stop_button.visible = false;
-    // make_graph();
-    WALLS.update_isotropic_wall(params, S);
     animate();
-
-    // let graph = GRAPHS.add_axes("Solid Fraction", "Pressure", 0.35, 0.7, 0, params.target_stress, scene);
-    // graph.position.y = 1.6;
-    // graph.position.z = 1.5 * params.L;
-    // graph.rotateY(-Math.PI / 2.);
-
-    // AUDIO.play_track('isotropic.mp3', scene, 3000);
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, 'Back: ' + apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1.5], 0.25, [0, Math.PI / 4, 0]);
     setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1.5], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
 
 }
 
-function new_load_path() {
-    WALLS.update_isotropic_wall(params, S);
-    // data_point_colour = Math.floor(Math.random()*16777215).toString(16);
-    // var data = [{
-    //               type: 'scatter',
-    //               mode: 'lines',
-    //               x: [], y: [],
-    //               line: { width: 5 },
-    //               name: 'Load path ' + String(document.getElementById('stats').data.length+1)
-    //             }]
-    // Plotly.addTraces('stats', data);
-    // params.new_line = false;
-}
 
 function animate() {
     renderer.setAnimationLoop(async function () {
@@ -212,24 +184,6 @@ function animate() {
         params.new_time = clock.getElapsedTime() - params.startTime;
         if (!params.paused) {
             if (params.started) {
-                if (params.loading_active) {
-                    var dt = params.new_time - params.old_time;
-                    params.epsilonv += params.loading_direction * params.loading_rate * dt;
-                    if ((params.pressure >= params.target_stress) && (params.loading_direction === 1)) { // just run this once
-                        window.setTimeout(() => { params.loading_direction = -1 }, 3000) // wait then reverse
-                    }
-                    if ((params.pressure >= params.target_stress) && (params.loading_direction > 0)) {
-                        params.loading_direction *= 0.5; // slow down gradually
-                    }
-                    if ((params.epsilonv <= 1e-4 || params.pressure < params.unloading_stress) && (params.loading_direction === -1)) { // just run this once
-                        window.setTimeout(() => { params.loading_direction = 1; new_load_path(); }, 3000) // wait then reverse
-                    }
-                    if ((params.epsilonv <= 1e-4 || params.pressure < params.unloading_stress) && (params.loading_direction < 0)) {
-                        params.loading_direction *= 0.5; // slow down gradually
-                    }
-                    WALLS.update_isotropic_wall(params, S);
-                    // update_graph();
-                }
 
                 if (AUDIO.listener !== undefined) {
                     SPHERES.update_fixed_sounds(S, params);
@@ -237,8 +191,7 @@ function animate() {
 
                 await SPHERES.draw_force_network(S, params, scene);
 
-                if ( params.loading_active ) { start_button.visible = false; stop_button.visible = true; }
-                else { start_button.visible = true; stop_button.visible = false;}
+                
                 // await S.cg_param_read_timestep(0);
                 // await S.cg_process_timestep(0, false);
                 // // var grid = S.cg_get_gridinfo();
@@ -289,17 +242,16 @@ async function setup_NDDEM() {
     S.simu_interpret_command("auto inertia");
     S.simu_interpret_command("auto skin");
     // console.log(params.L, params.H)
-    S.simu_interpret_command("boundary 0 WALL -" + String(params.L) + " " + String(params.L));
-    S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
-    S.simu_interpret_command("boundary 2 WALL -" + String(0) + " " + String(2 * params.H));
-    if (params.gravity === true) {
-        S.simu_interpret_command("gravity 0 0 " + String(-9.81) + "0 ".repeat(params.dimension - 3))
-    }
-    else {
-        S.simu_interpret_command("gravity 0 0 0 " + "0 ".repeat(params.dimension - 3))
-    }
-    // S.simu_interpret_command("auto location randomsquare");
+    S.simu_interpret_command("boundary 0 PBC -" + String(params.L) + " " + String(params.L));
+    S.simu_interpret_command("boundary 1 PBC -" + String(params.L) + " " + String(params.L));
+    S.simu_interpret_command("boundary 2 WALL 0 " + String(2 * params.H));
+    
+    S.simu_interpret_command("gravity " + String(-params.g_mag*Math.sin(params.theta*Math.PI/180.)) + " 0 " + String(-params.g_mag*Math.cos(params.theta*Math.PI/180.)))
+    // S.simu_interpret_command("gravity 0 0 -10")
+
     S.simu_interpret_command("auto location randomdrop");
+    // S.simu_interpret_command("auto location roughinclineplane");
+    
 
     let tc = 1e-3;
     let rest = 0.2; // super low restitution coeff to dampen out quickly
@@ -320,8 +272,8 @@ async function setup_NDDEM() {
     // S.simu_interpret_command("ContactModel Hertz");
 
     S.simu_interpret_command("set Mu " + String(params.friction_coefficient));
-    S.simu_interpret_command("set Mu_wall 0");
-    S.simu_interpret_command("set damping 0.01");
+    S.simu_interpret_command("set Mu_wall 2");
+    // S.simu_interpret_command("set damping 0.01");
     S.simu_interpret_command("set T 150");
     S.simu_interpret_command("set dt " + String(tc / 20));
     S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces

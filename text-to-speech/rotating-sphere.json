@@ -5,7 +5,7 @@
         "speakingRate": 0.8
     },
     "input" : {
-        "text" : "In front of you are two three dimensional spheres. Try walking around the spheres to see that they have volume and fill a three D space. When you are ready, click the sign to move to the next room."
+        "text" : "Now the particles are a mix of two different sizes placed inside a rotating sphere. Watch them segregate by size."
     },
     "voice": {
         "languageCode": "en-au",

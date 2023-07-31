@@ -15,15 +15,16 @@ import * as POOLCUE from "../libs/PoolCue";
 import * as RAYCAST from "../libs/RaycastHandler";
 
 
-// Save the current URL and state when the app starts
-var initialUrl = window.location.href;
-var initialState = window.history.state;
+// // Save the current URL and state when the app starts
+// var initialUrl = window.location.href;
+// var initialState = window.history.state;
 
-// Listen for the 'beforeunload' event when the user leaves the app
-window.addEventListener('beforeunload', function(event) {
-  // Restore the initial URL and state when the user leaves the app
-  window.history.replaceState(initialState, '', initialUrl);
-});
+// // Listen for the 'beforeunload' event when the user leaves the app
+// window.addEventListener('beforeunload', function(event) {
+//   // Restore the initial URL and state when the user leaves the app
+//   console.log('UNLOADING PAGE')
+//   window.history.replaceState(initialState, '', initialUrl);
+// });
 
 
 function replaceQueryParam(param, newval, search) {
@@ -91,7 +92,7 @@ async function add_common_properties() {
 
     // BELOW CODE IS MEANT TO FIRE WHEN HEADSET IS TAKEN ON/OFF. SHOULD ADD params.paused VALUES AND MAKE SURE params.paused STOPS UPDATE LOOPS WHERE IT CAN?
     renderer.xr.addEventListener('sessionstart', function () {
-
+        console.debug('adding visibilitychange listener')
         renderer.xr.addEventListener("visibilitychange", (eventData) => {
             switch (eventData.session.visibilityState) {
                 case "visible":

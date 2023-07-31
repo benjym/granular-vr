@@ -33,6 +33,20 @@
             "audio_delay" : 3000
         },
         {
+            "url": "inclined-plane",
+            "name": "Inclined plane",
+            "button_delay": 20000,
+            "audio_track" : "inclined-plane.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "rotating-sphere",
+            "name": "Rotating sphere",
+            "button_delay": 20000,
+            "audio_track" : "rotating-sphere.mp3",
+            "audio_delay" : 3000
+        },
+        {
             "url": "hyperspheres",
             "name": "What is a hypersphere?",
             "button_delay": 39000,

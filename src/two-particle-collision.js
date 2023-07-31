@@ -61,7 +61,7 @@ async function update() {
         }
         S.simu_step_forward(5);
         SPHERES.move_spheres(S, params);
-        SPHERES.draw_force_network(S, params, scene);
+        await SPHERES.draw_force_network(S, params, scene);
 
         // if (AUDIO.listener !== undefined) {
         //     SPHERES.update_fixed_sounds(S, params);
