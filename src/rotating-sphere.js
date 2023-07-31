@@ -1,5 +1,5 @@
 import css from "../css/main.css";
-import track from "../text-to-speech/isotropic.mp3";
+import track from "../text-to-speech/rotating-sphere.mp3";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import ImmersiveControls from '@depasquale/three-immersive-controls';
@@ -251,7 +251,7 @@ function animate() {
         }
 
         boundary.rotateY(-params.omega*1e-3/20*5);
-        
+
         controls.update();
         renderer.render(scene, camera);
 
