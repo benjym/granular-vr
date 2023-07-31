@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = [
   {
@@ -24,6 +25,11 @@ module.exports = [
       new webpack.ProvidePlugin({
         THREE: 'three',
         Comlink: 'comlink'
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: path.resolve(__dirname, "*.json"), },
+        ],
       }),
       new HtmlWebpackPlugin({
         title: 'NDDEM in VR',
