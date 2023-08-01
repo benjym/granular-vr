@@ -21,38 +21,38 @@ export let params = {
     // L: 4, //system size
     // L: 0.025,
     // H: 0.05,
-    boxratio: 3,
+    boxratio: 2,
     initial_packing_fraction: 0.25,
     N: 500,
     epsilonv: 0,
     gravity: false,
-    g_mag: 1e3,
+    g_mag: 1e1,
     paused: false,
     H_cur: 0,
     pressure_set_pt: 1e4,
     deviatoric_set_pt: 0,
     d4: { cur: 0 },
-    theta: 20,
+    theta: -30,
     // r_max: 0.0033,
     // r_min: 0.0027,
-    r_max: 0.12,
-    r_min: 0.11,
+    r_max: 0.16,
+    r_min: 0.08,
     // freq: 0.05,
     new_line: false,
     loading_rate: 0.01,
     // max_vertical_strain: 0.3,
     target_stress: 1e6,
     unloading_stress: 100,
-    lut: 'None',
+    lut: 'Size',
     quality: 5,
     vmax: 1, // max velocity to colour by
     omegamax: 20, // max rotation rate to colour by
     loading_active: false,
     particle_density: 2700, // kg/m^3
-    particle_opacity: 0.8,
+    particle_opacity: 1,
     audio: false,
     audio_sensitivity: 1,
-    F_mag_max: 1e6,
+    F_mag_max: 1e4,
     friction_coefficient: 0.5,
     pressure: 0,
     started: false,
@@ -71,16 +71,6 @@ function set_derived_properties() {
     params.particle_mass = params.particle_volume * params.particle_density;
     params.L = Math.pow(params.particle_volume * params.N / params.initial_packing_fraction / params.boxratio, 1. / 3.) / 2.;
     params.H = params.L * params.boxratio;
-
-    params.L_cur = params.L;
-    params.H_cur = params.H;
-    // params.packing_fraction = params.N*params.particle_volume/Math.pow(2*params.L,3);
-    // params.back = -params.L;
-    // params.front = params.L;
-    // params.left = -params.L;
-    // params.right = params.L;
-    // params.floor = -params.L;
-    // params.roof = params.L;
 }
 
 function reset_particles() {
@@ -92,8 +82,6 @@ function reset_particles() {
     WALLS.add_cuboid_walls(params);
     WALLS.update_isotropic_wall(params, S);
     setup_CG();
-    params.started = false;
-    params.startTime = clock.getElapsedTime()
 }
 export function init() {
     SPHERES.createNDParticleShader(params).then(main);
@@ -178,46 +166,12 @@ async function main() {
 function animate() {
     renderer.setAnimationLoop(async function () {
         if ( visibility === 'visible' ) {
-            if (clock.getElapsedTime() - params.startTime > 3) { params.started = true; }
-            // requestAnimationFrame( animate );
             S.simu_step_forward(5);
             SPHERES.move_spheres(S, params);
-            params.new_time = clock.getElapsedTime() - params.startTime;
-            if (!params.paused) {
-                if (params.started) {
-
-                    if (AUDIO.listener !== undefined) {
-                        SPHERES.update_fixed_sounds(S, params);
-                    }
-
-                    SPHERES.draw_force_network(S, params, scene);
-
-                    
-                    // await S.cg_param_read_timestep(0);
-                    // await S.cg_process_timestep(0, false);
-                    // // var grid = S.cg_get_gridinfo();
-                    // let sigma_xx = await S.cg_get_result(0, "TC", 0)[0];
-                    // let sigma_yy = await S.cg_get_result(0, "TC", 4)[0];
-                    // let sigma_zz = await S.cg_get_result(0, "TC", 8)[0];
-                    // params.pressure = (sigma_xx + sigma_yy + sigma_zz) / 3
-                    // let density = await S.cg_get_result(0, "RHO", 0)[0];
-
-                    // let packing_fraction = density / params.particle_density; // NOTE: THIS IS JUST A HACK --- REPLACE WITH REAL LOGIC
-                    // let x = ((packing_fraction - 0.35) / (0.7 - 0.35));
-                    // // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
-                    // let y = params.pressure / params.target_stress; // value between 0 and 1
-                    // console.log(density)
-                    // GRAPHS.update_data(x, y);//, data_point_colour);
-
-                }
-            }
-
-
+            SPHERES.draw_force_network(S, params, scene);
             if ( controls !== undefined ) { controls.update() }
-            renderer.render(scene, camera);
-
-            params.old_time = params.new_time;
         }
+        renderer.render(scene, camera);
     });
 
 
@@ -252,10 +206,23 @@ async function setup_NDDEM() {
     // S.simu_interpret_command("gravity 0 0 -10")
 
     S.simu_interpret_command("auto location randomdrop");
-    // S.simu_interpret_command("auto location roughinclineplane");
-    
+    // S.simu_interpret_command("auto location roughinclineplaneZ");
 
-    let tc = 1e-3;
+    let n = 0;
+    for (let i = -params.L+params.r_max; i < params.L-params.r_max; i+=2*params.r_max) {
+        for (let j = -params.L+params.r_max; j < params.L-params.r_max; j+=2*params.r_max) {
+            S.simu_interpret_command("location " + String(n) + " " + String(i) + " " + String(j) + " 0");
+            S.simu_setRadius(n, params.r_max);
+            S.simu_setFrozen(n);
+            n++;
+            console.log(n)
+        }
+    }
+    for (let i=n; i<params.N; i++) {
+        S.simu_fixParticle(i,[params.L*(2*Math.random()-1),params.L*(2*Math.random()-1),3*params.r_max + (2*params.H-4*params.r_max)*Math.random()])
+    }
+
+    let tc = 1e-2;
     let rest = 0.2; // super low restitution coeff to dampen out quickly
     let min_particle_mass = params.particle_density * 4. / 3. * Math.PI * Math.pow(params.r_min, 3);
     let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, min_particle_mass);
@@ -277,7 +244,7 @@ async function setup_NDDEM() {
     S.simu_interpret_command("set Mu_wall 2");
     // S.simu_interpret_command("set damping 0.01");
     S.simu_interpret_command("set T 150");
-    S.simu_interpret_command("set dt " + String(tc / 20));
+    S.simu_interpret_command("set dt " + String(tc / 10));
     S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
 
     await S.simu_finalise_init();
