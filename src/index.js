@@ -74,8 +74,8 @@ async function add_common_properties() {
     scene.background = new THREE.Color(0x111);
 
     if ( urlParams.has('master') ) { master = urlParams.get('master') }
-    // else { master = "apps.json"; }
-    else { master = "geomech.json"; }
+    else { master = "apps.json"; }
+    // else { master = "geomech.json"; }
 
     controls = new ImmersiveControls(camera, renderer, scene, {
         initialPosition: new THREE.Vector3(0, human_height, 2),
@@ -123,7 +123,7 @@ async function wipe_scene() {
     if ( renderer !== undefined ) {
         // renderer.setAnimationLoop(null);
         renderer.setAnimationLoop( () => {
-            controls.update();
+            if ( controls !== undefined ) { controls.update() }
             renderer.render(scene, camera);
         });
     }

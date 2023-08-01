@@ -206,68 +206,70 @@ function new_load_path() {
 
 function animate() {
     renderer.setAnimationLoop(async function () {
-        if (clock.getElapsedTime() - params.startTime > 3) { params.started = true; }
-        // requestAnimationFrame( animate );
-        S.simu_step_forward(5);
-        SPHERES.move_spheres(S, params);
-        params.new_time = clock.getElapsedTime() - params.startTime;
-        if (!params.paused) {
-            if (params.started) {
-                if (params.loading_active) {
-                    var dt = params.new_time - params.old_time;
-                    params.epsilonv += params.loading_direction * params.loading_rate * dt;
-                    if ((params.pressure >= params.target_stress) && (params.loading_direction === 1)) { // just run this once
-                        window.setTimeout(() => { params.loading_direction = -1 }, 3000) // wait then reverse
+        if ( visibility === 'visible' ) {
+            if (clock.getElapsedTime() - params.startTime > 3) { params.started = true; }
+            // requestAnimationFrame( animate );
+            S.simu_step_forward(5);
+            SPHERES.move_spheres(S, params);
+            params.new_time = clock.getElapsedTime() - params.startTime;
+            if (!params.paused) {
+                if (params.started) {
+                    if (params.loading_active) {
+                        var dt = params.new_time - params.old_time;
+                        params.epsilonv += params.loading_direction * params.loading_rate * dt;
+                        if ((params.pressure >= params.target_stress) && (params.loading_direction === 1)) { // just run this once
+                            window.setTimeout(() => { params.loading_direction = -1 }, 3000) // wait then reverse
+                        }
+                        if ((params.pressure >= params.target_stress) && (params.loading_direction > 0)) {
+                            params.loading_direction *= 0.5; // slow down gradually
+                        }
+                        if ((params.epsilonv <= 1e-4 || params.pressure < params.unloading_stress) && (params.loading_direction === -1)) { // just run this once
+                            window.setTimeout(() => { params.loading_direction = 1; new_load_path(); }, 3000) // wait then reverse
+                        }
+                        if ((params.epsilonv <= 1e-4 || params.pressure < params.unloading_stress) && (params.loading_direction < 0)) {
+                            params.loading_direction *= 0.5; // slow down gradually
+                        }
+                        WALLS.update_isotropic_wall(params, S);
+                        // update_graph();
                     }
-                    if ((params.pressure >= params.target_stress) && (params.loading_direction > 0)) {
-                        params.loading_direction *= 0.5; // slow down gradually
+
+                    if (AUDIO.listener !== undefined) {
+                        SPHERES.update_fixed_sounds(S, params);
                     }
-                    if ((params.epsilonv <= 1e-4 || params.pressure < params.unloading_stress) && (params.loading_direction === -1)) { // just run this once
-                        window.setTimeout(() => { params.loading_direction = 1; new_load_path(); }, 3000) // wait then reverse
-                    }
-                    if ((params.epsilonv <= 1e-4 || params.pressure < params.unloading_stress) && (params.loading_direction < 0)) {
-                        params.loading_direction *= 0.5; // slow down gradually
-                    }
-                    WALLS.update_isotropic_wall(params, S);
-                    // update_graph();
-                }
 
-                if (AUDIO.listener !== undefined) {
-                    SPHERES.update_fixed_sounds(S, params);
-                }
+                    await SPHERES.draw_force_network(S, params, scene);
 
-                await SPHERES.draw_force_network(S, params, scene);
-
-                if ( params.loading_active ) { start_button.visible = false; stop_button.visible = true; }
-                else { start_button.visible = true; stop_button.visible = false;}
-                await S.cg_param_read_timestep(0);
-                await S.cg_process_timestep(0, false);
-                
-                let rho = await S.cg_get_result(0, "RHO", 0);
-                let p = await S.cg_get_result(0, "Pressure", 0);
-                // wait for awaits to resolve then get the actual data
-                let density = rho[0];
-                let pressure = p[0];
-                if ( density > 0 && pressure > 0 ) { // sometimes it returns
-                    params.pressure = pressure;
-
-                    let packing_fraction = density / params.particle_density;
-                    let x = ((packing_fraction - 0.4) / (0.65 - 0.4));
-                    // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
-                    let y = params.pressure / params.target_stress; // value between 0 and 1
+                    if ( params.loading_active ) { start_button.visible = false; stop_button.visible = true; }
+                    else { start_button.visible = true; stop_button.visible = false;}
+                    await S.cg_param_read_timestep(0);
+                    await S.cg_process_timestep(0, false);
                     
-                    if ( x > 0 && x < 1 && y > 0 && y < 1) {
-                        GRAPHS.update_data(x, y);//, data_point_colour);
+                    let rho = await S.cg_get_result(0, "RHO", 0);
+                    let p = await S.cg_get_result(0, "Pressure", 0);
+                    // wait for awaits to resolve then get the actual data
+                    let density = rho[0];
+                    let pressure = p[0];
+                    if ( density > 0 && pressure > 0 ) { // sometimes it returns
+                        params.pressure = pressure;
+
+                        let packing_fraction = density / params.particle_density;
+                        let x = ((packing_fraction - 0.4) / (0.65 - 0.4));
+                        // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
+                        let y = params.pressure / params.target_stress; // value between 0 and 1
+                        
+                        if ( x > 0 && x < 1 && y > 0 && y < 1) {
+                            GRAPHS.update_data(x, y);//, data_point_colour);
+                        }
+
+                        // console.log(density, params.particle_density, params.pressure, params.target_stress, x, y);
                     }
 
-                    // console.log(density, params.particle_density, params.pressure, params.target_stress, x, y);
                 }
-
             }
         }
 
 
-        controls.update();
+        if ( controls !== undefined ) { controls.update() }
         renderer.render(scene, camera);
 
         params.old_time = params.new_time;

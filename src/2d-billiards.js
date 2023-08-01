@@ -100,7 +100,7 @@ async function update() {
         // update_cg_field();
         // }
         // SPHERES.draw_force_network(S, params, scene);
-        controls.update();
+        if (controls !== undefined) { controls.update(); }
         renderer.render(scene, camera);
     }
 }

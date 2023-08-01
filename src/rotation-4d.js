@@ -61,7 +61,7 @@ async function main() {
 }
 async function update() {
     if ( visibility === 'visible' && started ) {
-        if (controls !== undefined) { controls.update(); }
+        if ( controls !== undefined ) { controls.update() }
         S.simu_step_forward(5);
         SPHERES.move_spheres(S, params);
         renderer.render(scene, camera);

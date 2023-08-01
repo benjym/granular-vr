@@ -158,7 +158,7 @@ function update() {
 
         check_pockets();
 
-        controls.update();
+        if (controls !== undefined) { controls.update(); }
     }
 }
 

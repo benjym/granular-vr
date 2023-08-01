@@ -55,7 +55,7 @@ function update() {
         SPHERES.move_spheres(S, params);
         WALLS.update_d4(params);
     }
-    if (controls !== undefined) { controls.update(); }
+    if (controls !== undefined) { controls.update() }
     renderer.render(scene, camera);
 }
 

@@ -103,7 +103,7 @@ async function update() {
         if (controls.player.position.z < -params.L + offset) { controls.player.position.z = -params.L + offset; }
         else if (controls.player.position.z > params.L - offset) { controls.player.position.z = params.L - offset; }
 
-        controls.update();
+        if (controls !== undefined) { controls.update(); }
         renderer.render(scene, camera);
         // params = CONTROLLERS.moveInD4(params, controls);
         // WALLS.update_d4(params);

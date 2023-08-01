@@ -56,12 +56,10 @@ async function build_world() {
 async function update() {
 
     if ( visibility === 'visible' && started ) {
-        if (controls !== undefined) {
-            controls.update();
-        }
+        if ( controls !== undefined ) { controls.update() }
         S.simu_step_forward(5);
         SPHERES.move_spheres(S, params);
-        await SPHERES.draw_force_network(S, params, scene);
+        // await SPHERES.draw_force_network(S, params, scene);
 
         // if (AUDIO.listener !== undefined) {
         //     SPHERES.update_fixed_sounds(S, params);
@@ -77,10 +75,10 @@ async function update() {
 async function NDDEMCGPhysics() {
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
-    setup_NDDEM();
+    await setup_NDDEM();
 }
 
-function setup_NDDEM() {
+async function setup_NDDEM() {
     S.simu_interpret_command("dimensions " + String(params.dimension) + " " + String(params.N));
     S.simu_interpret_command("radius -1 " + params.radius);
     S.simu_interpret_command("mass -1 1");
@@ -120,6 +118,6 @@ function setup_NDDEM() {
     S.simu_interpret_command("set dt " + String(tc / 20));
     S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
     S.simu_interpret_command("auto skin");
-    S.simu_finalise_init();
+    await S.simu_finalise_init();
 
 }

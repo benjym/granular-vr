@@ -177,45 +177,47 @@ async function main() {
 
 function animate() {
     renderer.setAnimationLoop(async function () {
-        if (clock.getElapsedTime() - params.startTime > 3) { params.started = true; }
-        // requestAnimationFrame( animate );
-        S.simu_step_forward(5);
-        SPHERES.move_spheres(S, params);
-        params.new_time = clock.getElapsedTime() - params.startTime;
-        if (!params.paused) {
-            if (params.started) {
+        if ( visibility === 'visible' ) {
+            if (clock.getElapsedTime() - params.startTime > 3) { params.started = true; }
+            // requestAnimationFrame( animate );
+            S.simu_step_forward(5);
+            SPHERES.move_spheres(S, params);
+            params.new_time = clock.getElapsedTime() - params.startTime;
+            if (!params.paused) {
+                if (params.started) {
 
-                if (AUDIO.listener !== undefined) {
-                    SPHERES.update_fixed_sounds(S, params);
+                    if (AUDIO.listener !== undefined) {
+                        SPHERES.update_fixed_sounds(S, params);
+                    }
+
+                    await SPHERES.draw_force_network(S, params, scene);
+
+                    
+                    // await S.cg_param_read_timestep(0);
+                    // await S.cg_process_timestep(0, false);
+                    // // var grid = S.cg_get_gridinfo();
+                    // let sigma_xx = await S.cg_get_result(0, "TC", 0)[0];
+                    // let sigma_yy = await S.cg_get_result(0, "TC", 4)[0];
+                    // let sigma_zz = await S.cg_get_result(0, "TC", 8)[0];
+                    // params.pressure = (sigma_xx + sigma_yy + sigma_zz) / 3
+                    // let density = await S.cg_get_result(0, "RHO", 0)[0];
+
+                    // let packing_fraction = density / params.particle_density; // NOTE: THIS IS JUST A HACK --- REPLACE WITH REAL LOGIC
+                    // let x = ((packing_fraction - 0.35) / (0.7 - 0.35));
+                    // // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
+                    // let y = params.pressure / params.target_stress; // value between 0 and 1
+                    // console.log(density)
+                    // GRAPHS.update_data(x, y);//, data_point_colour);
+
                 }
-
-                await SPHERES.draw_force_network(S, params, scene);
-
-                
-                // await S.cg_param_read_timestep(0);
-                // await S.cg_process_timestep(0, false);
-                // // var grid = S.cg_get_gridinfo();
-                // let sigma_xx = await S.cg_get_result(0, "TC", 0)[0];
-                // let sigma_yy = await S.cg_get_result(0, "TC", 4)[0];
-                // let sigma_zz = await S.cg_get_result(0, "TC", 8)[0];
-                // params.pressure = (sigma_xx + sigma_yy + sigma_zz) / 3
-                // let density = await S.cg_get_result(0, "RHO", 0)[0];
-
-                // let packing_fraction = density / params.particle_density; // NOTE: THIS IS JUST A HACK --- REPLACE WITH REAL LOGIC
-                // let x = ((packing_fraction - 0.35) / (0.7 - 0.35));
-                // // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
-                // let y = params.pressure / params.target_stress; // value between 0 and 1
-                // console.log(density)
-                // GRAPHS.update_data(x, y);//, data_point_colour);
-
             }
+
+
+            if ( controls !== undefined ) { controls.update() }
+            renderer.render(scene, camera);
+
+            params.old_time = params.new_time;
         }
-
-
-        controls.update();
-        renderer.render(scene, camera);
-
-        params.old_time = params.new_time;
     });
 
 

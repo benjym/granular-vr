@@ -31,6 +31,6 @@ export function init() {
 }
 
 function render() {
-    controls.update();
+    if ( controls !== undefined ) { controls.update() }
     renderer.render(scene, camera);
 };

@@ -179,7 +179,7 @@ async function update() {
 
         onFireLeftSphere();
 
-        controls.update();
+        if ( controls !== undefined ) { controls.update() }
         renderer.render(scene, camera);
         params = CONTROLLERS.moveInD4(params, controls);
         WALLS.update_d4(params);
