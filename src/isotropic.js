@@ -24,19 +24,19 @@ export let params = {
     // L: 0.025,
     // H: 0.05,
     boxratio: 1.5,
-    initial_packing_fraction: 0.5,
+    initial_packing_fraction: 0.4,
     N: 400,
     epsilonv: 0,
     gravity: false,
     paused: false,
     H_cur: 0,
-    pressure_set_pt: 1e4,
+    pressure_set_pt: 1e5,
     deviatoric_set_pt: 0,
     d4: { cur: 0 },
     // r_max: 0.0033,
     // r_min: 0.0027,
-    r_max: 0.12,
-    r_min: 0.11,
+    r_max: 0.15,
+    r_min: 0.08,
     // freq: 0.05,
     new_line: false,
     loading_rate: 0.01,
@@ -52,7 +52,7 @@ export let params = {
     particle_opacity: 0.8,
     audio: false,
     audio_sensitivity: 1,
-    F_mag_max: 1e6,
+    F_mag_max: 2e5,
     friction_coefficient: 0.5,
     pressure: 0,
     started: false,
@@ -177,10 +177,11 @@ async function main() {
     WALLS.update_isotropic_wall(params, S);
     animate();
 
-    // let graph = GRAPHS.add_axes("Solid Fraction", "Pressure", 0.35, 0.7, 0, params.target_stress, scene);
-    // graph.position.y = 1.6;
-    // graph.position.z = 1.5 * params.L;
-    // graph.rotateY(-Math.PI / 2.);
+    GRAPHS.update_nchildren(2000);
+    let graph = GRAPHS.add_axes("Solid Fraction", "Pressure", 0.4, 0.65, 0, params.target_stress, scene);
+    graph.position.y = 1.6;
+    graph.position.z = 1.5 * params.L;
+    graph.rotateY(-Math.PI / 2.);
 
     // AUDIO.play_track('isotropic.mp3', scene, 3000);
 
@@ -239,21 +240,28 @@ function animate() {
 
                 if ( params.loading_active ) { start_button.visible = false; stop_button.visible = true; }
                 else { start_button.visible = true; stop_button.visible = false;}
-                // await S.cg_param_read_timestep(0);
-                // await S.cg_process_timestep(0, false);
-                // // var grid = S.cg_get_gridinfo();
-                // let sigma_xx = await S.cg_get_result(0, "TC", 0)[0];
-                // let sigma_yy = await S.cg_get_result(0, "TC", 4)[0];
-                // let sigma_zz = await S.cg_get_result(0, "TC", 8)[0];
-                // params.pressure = (sigma_xx + sigma_yy + sigma_zz) / 3
-                // let density = await S.cg_get_result(0, "RHO", 0)[0];
+                await S.cg_param_read_timestep(0);
+                await S.cg_process_timestep(0, false);
+                
+                let rho = await S.cg_get_result(0, "RHO", 0);
+                let p = await S.cg_get_result(0, "Pressure", 0);
+                // wait for awaits to resolve then get the actual data
+                let density = rho[0];
+                let pressure = p[0];
+                if ( density > 0 && pressure > 0 ) { // sometimes it returns
+                    params.pressure = pressure;
 
-                // let packing_fraction = density / params.particle_density; // NOTE: THIS IS JUST A HACK --- REPLACE WITH REAL LOGIC
-                // let x = ((packing_fraction - 0.35) / (0.7 - 0.35));
-                // // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
-                // let y = params.pressure / params.target_stress; // value between 0 and 1
-                // console.log(density)
-                // GRAPHS.update_data(x, y);//, data_point_colour);
+                    let packing_fraction = density / params.particle_density;
+                    let x = ((packing_fraction - 0.4) / (0.65 - 0.4));
+                    // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
+                    let y = params.pressure / params.target_stress; // value between 0 and 1
+                    
+                    if ( x > 0 && x < 1 && y > 0 && y < 1) {
+                        GRAPHS.update_data(x, y);//, data_point_colour);
+                    }
+
+                    // console.log(density, params.particle_density, params.pressure, params.target_stress, x, y);
+                }
 
             }
         }
@@ -344,7 +352,7 @@ async function setup_CG() {
     cgparam["skip"] = 0;
     cgparam["max time"] = 1;
     cgparam["time average"] = "None";
-    cgparam["fields"] = ["RHO", "TC"];
+    cgparam["fields"] = ["RHO", "TC", "Pressure"];
     cgparam["periodicity"] = [false, false, false];
     cgparam["window"] = "Lucy3D";
     cgparam["dimension"] = 3;

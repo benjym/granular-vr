@@ -74,7 +74,8 @@ async function add_common_properties() {
     scene.background = new THREE.Color(0x111);
 
     if ( urlParams.has('master') ) { master = urlParams.get('master') }
-    else { master = "apps.json"; }
+    // else { master = "apps.json"; }
+    else { master = "geomech.json"; }
 
     controls = new ImmersiveControls(camera, renderer, scene, {
         initialPosition: new THREE.Vector3(0, human_height, 2),
@@ -189,8 +190,37 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
+// window.addEventListener('keydown', (event) => {
+//     switch (event.key) {
+//         case 'n':
+//             next_scene();
+//         case 'p':
+//             previous_scene();
+//     }
+// });
+
+
+// function next_scene(){
+//     if (apps.current < apps.list.length - 1) {
+//         move_to(apps.current + 1);
+//     }
+//     else {
+//         move_to(0);
+//     }
+// }
+
+// function previous_scene(){
+//     if (apps.current > 0) {
+//         move_to(apps.current - 1);
+//     }
+//     else {
+//         move_to(apps.list.length - 1);
+//     }
+// }
+
 export function move_to(v) {
     if (typeof v === 'number') {
+        console.log(apps.current)
         apps.current = v;
         console.log('CHANGING TO ' + apps.list[v].url)
         extra_params = apps.list[v].params;

@@ -7,6 +7,10 @@ data_points.nchildren = 1000;
 // let global_scale = 0.05;
 let global_scale = 2;
 
+export function update_nchildren(n){
+    data_points.nchildren = n;
+}
+
 export function add_axes(xlabel, ylabel, xmin, xmax, ymin, ymax, scene) {
     axes = new THREE.Group();
     let bg_mat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
