@@ -237,7 +237,7 @@ function animate() {
                         SPHERES.update_fixed_sounds(S, params);
                     }
 
-                    await SPHERES.draw_force_network(S, params, scene);
+                    SPHERES.draw_force_network(S, params, scene);
 
                     if ( params.loading_active ) { start_button.visible = false; stop_button.visible = true; }
                     else { start_button.visible = true; stop_button.visible = false;}

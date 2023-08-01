@@ -1,7 +1,5 @@
 import css from "../css/main.css";
 import JSON5 from "json5";
-import json_file from "../apps.json";
-
 
 import ImmersiveControls from '@depasquale/three-immersive-controls';
 import * as CONTROLLERS from '../libs/controllers.js';
@@ -74,8 +72,8 @@ async function add_common_properties() {
     scene.background = new THREE.Color(0x111);
 
     if ( urlParams.has('master') ) { master = urlParams.get('master') }
-    else { master = "apps.json"; }
-    // else { master = "geomech.json"; }
+    // else { master = "ISS.json"; }
+    else { master = "grain-days-2023.json"; }
 
     controls = new ImmersiveControls(camera, renderer, scene, {
         initialPosition: new THREE.Vector3(0, human_height, 2),
@@ -273,7 +271,7 @@ export function move_to(v) {
 }
 
 function load_json_apps() {
-    fetch(master)
+    fetch('master/' + master)
         .then( response => response.text() )
         .then(text => {            
             apps = JSON5.parse(text);

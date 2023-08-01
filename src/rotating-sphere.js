@@ -228,7 +228,7 @@ function animate() {
                         SPHERES.update_fixed_sounds(S, params);
                     }
 
-                    await SPHERES.draw_force_network(S, params, scene);
+                    SPHERES.draw_force_network(S, params, scene);
 
                     // await S.cg_param_read_timestep(0);
                     // await S.cg_process_timestep(0, false);

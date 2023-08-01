@@ -17,9 +17,16 @@ export let spheres;
 let forces;
 
 export function reset_spheres() {
-    spheres = new THREE.Group();
+    if ( forces !== undefined ) {
+        for (var i = 0; i < forces.children.length; i++) {
+            forces.children[i].geometry.dispose();
+            forces.children[i].material.dispose();
+        }
+    }
     forces = new THREE.Group();
     forces.remove_me = true;
+
+    spheres = new THREE.Group();
     spheres.remove_me = true;
 }
 
@@ -606,19 +613,14 @@ export async function haptic_pulse(S, params, controller, NDDEM_index) {
 
 
 export async function draw_force_network(S, params, scene) {
+    if ( forces.children.length === 0) { 
+        scene.add(forces);
+    }
     // console.log(S)
     if (S !== undefined) {
         if (params.particle_opacity < 1) {
-            for (var i = 0; i < forces.children.length; i++) {
-                forces.children[i].geometry.dispose();
-                forces.children[i].material.dispose();
-            }
-            scene.remove(forces);
-            forces = new THREE.Group();
-            forces.remove_me = true;
 
             var F = await S.simu_getContactInfos(0x80 | 0x100);
-
 
             let width = radii[0] / 2.;
             if ('F_mag_max' in params) {
@@ -628,6 +630,11 @@ export async function draw_force_network(S, params, scene) {
             }
 
             for (let i = 0; i < F.length; i++) {
+                if (forces.children[i] === undefined) {
+                    let c = cylinder.clone();
+                    forces.add(c);
+                }
+                forces.children[i].visible = false;
                 // for ( let i = 0; i < 100; i ++ ) {
                 let F_mag;
                 if (params.dimension === 2) {
@@ -651,11 +658,14 @@ export async function draw_force_network(S, params, scene) {
                         Math.pow(F[i][5], 2)
                     )
                 }
+
                 if (F_mag > 0 && spheres.children[F[i][0]] !== undefined) {
-                    let c = cylinder.clone();
+                    // let c = cylinder.clone();
+                    let c = forces.children[i];
                     let a = spheres.children[F[i][0]].position;
                     let b = spheres.children[F[i][1]].position;
                     let distance = a.distanceTo(b);
+
                     if (spheres.children[F[i][0]].visible && spheres.children[F[i][1]].visible) {
                         if (distance < (radii[F[i][0]] + radii[F[i][1]])) { // ignore periodic boundaries
                             let mid_point = new THREE.Vector3();
@@ -665,28 +675,25 @@ export async function draw_force_network(S, params, scene) {
                             let scale = width
                             // if (F_mag > F_mag_max) { scale = width }
                             if (F_mag < F_mag_max) { scale = width * F_mag / F_mag_max; }
-                            c.scale.set(scale,
-                                scale,
-                                distance);
-                            c.lookAt(a);
-                            // if (params.audio) { AUDIO.add_normal_sound(c); }
+                            if ( scale > 0. ) { 
+                                c.scale.set(scale,
+                                    scale,
+                                    distance);
+                                c.lookAt(a);
+                                // if (params.audio) { AUDIO.add_normal_sound(c); }
 
-                            // c.material.emissiveIntensity = F_mag/F_mag_max;
-
-                            forces.add(c);
+                                // c.material.emissiveIntensity = F_mag/F_mag_max;
+                                c.visible = true;
+                                forces.add(c);
+                                // console.log(scale)
+                            }
                         }
                     }
                 }
             }
-            scene.add(forces);
-        }
-        else {
-            if (forces.parent === scene) {
-                for (var i = 0; i < forces.children.length; i++) {
-                    forces.children[i].geometry.dispose();
-                    forces.children[i].material.dispose();
-                }
-                scene.remove(forces);
+            // hide anything else
+            for ( let i=F.length; i<forces.children.length; i++){
+                forces.children[i].visible = false;
             }
         }
     }

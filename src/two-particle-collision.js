@@ -59,7 +59,7 @@ async function update() {
         if ( controls !== undefined ) { controls.update() }
         S.simu_step_forward(5);
         SPHERES.move_spheres(S, params);
-        // await SPHERES.draw_force_network(S, params, scene);
+        SPHERES.draw_force_network(S, params, scene);
 
         // if (AUDIO.listener !== undefined) {
         //     SPHERES.update_fixed_sounds(S, params);

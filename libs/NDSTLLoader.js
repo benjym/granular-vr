@@ -1,17 +1,3 @@
-import {
-	BufferAttribute,
-	BufferGeometry,
-	FileLoader,
-	Float32BufferAttribute,
-	Loader,
-	LoaderUtils,
-	Vector3,
-	Mesh,
-	Group,
-	Box3,
-	BoxGeometry,
-} from 'three';
-
 import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
 import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHelper.js';
 
@@ -68,7 +54,7 @@ import { VertexNormalsHelper } from 'three/examples/jsm/helpers/VertexNormalsHel
  */
 
 
-class NDSTLLoader extends Loader {
+class NDSTLLoader extends THREE.Loader {
 
 	constructor(manager) {
 
@@ -80,7 +66,7 @@ class NDSTLLoader extends Loader {
 
 		const scope = this;
 
-		const loader = new FileLoader(this.manager);
+		const loader = new THREE.FileLoader(this.manager);
 		loader.setPath(this.path);
 		loader.setResponseType('arraybuffer');
 		loader.setRequestHeader(this.requestHeader);
@@ -199,7 +185,7 @@ class NDSTLLoader extends Loader {
 			const dataOffset = 84;
 			const faceLength = 12 * 4 + 2;
 
-			const geometry = new BufferGeometry();
+			const geometry = new THREE.BufferGeometry();
 
 			const vertices = new Float32Array(faces * 3 * 3);
 			const normals = new Float32Array(faces * 3 * 3);
@@ -258,12 +244,12 @@ class NDSTLLoader extends Loader {
 
 			}
 
-			geometry.setAttribute('position', new BufferAttribute(vertices, 3));
-			geometry.setAttribute('normal', new BufferAttribute(normals, 3));
+			geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+			geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
 
 			if (hasColors) {
 
-				geometry.setAttribute('color', new BufferAttribute(colors, 3));
+				geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 				geometry.hasColors = true;
 				geometry.alpha = alpha;
 
@@ -322,7 +308,7 @@ class NDSTLLoader extends Loader {
 
 			if (typeof buffer !== 'string') {
 
-				return LoaderUtils.decodeText(new Uint8Array(buffer));
+				return THREE.LoaderUtils.decodeText(new Uint8Array(buffer));
 
 			}
 
@@ -406,7 +392,7 @@ function renderSTL(meshes, NDsolids, scene, material, x4) {
 	var N = NDsolids[0][0][0].length; // get dimension from vertex length
 
 	NDsolids.forEach((solid, i) => {
-		var geometry = new BufferGeometry();
+		var geometry = new THREE.BufferGeometry();
 		vertices = [];
 		normals = [];
 		let tol = 1e-6;
@@ -442,16 +428,16 @@ function renderSTL(meshes, NDsolids, scene, material, x4) {
 			});
 		});
 
-		geometry.setAttribute('position', new Float32BufferAttribute(vertices, 3));
-		geometry.setAttribute('normal', new Float32BufferAttribute(normals, 3));
+		geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+		geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
 
 		let points = [];
-		// for ( let i=0; i<vertices.length/3; i++ ) { points.push( new Vector3( vertices[i*3]   + Math.random()*1e-6,
+		// for ( let i=0; i<vertices.length/3; i++ ) { points.push( new THREE.Vector3( vertices[i*3]   + Math.random()*1e-6,
 		//                                                                       vertices[i*3+1] + Math.random()*1e-6,
 		//                                                                       vertices[i*3+2] + Math.random()*1e-6
 		//                                                                      ) ) };
 		for (let i = 0; i < vertices.length / 3; i++) {
-			points.push(new Vector3(vertices[i * 3],
+			points.push(new THREE.Vector3(vertices[i * 3],
 				vertices[i * 3 + 1],
 				vertices[i * 3 + 2]
 			)
@@ -459,19 +445,19 @@ function renderSTL(meshes, NDsolids, scene, material, x4) {
 		};
 
 		let min_val = 0.005;
-		let WHD = new Vector3();
-		let center = new Vector3();
+		let WHD = new THREE.Vector3();
+		let center = new THREE.Vector3();
 		if (points.length > 3) {
 			// geometry = new ConvexGeometry( points ); // causing all kinds of problems for planes
-			const box = new Box3();
+			const box = new THREE.Box3();
 			box.setFromPoints(points);
 			box.getSize(WHD);
 			box.getCenter(center);
 			WHD.clampScalar(min_val, 1e4); // set a minimum width
-			geometry = new BoxGeometry(WHD.x, WHD.y, WHD.z);
+			geometry = new THREE.BoxGeometry(WHD.x, WHD.y, WHD.z);
 		}
 
-		var this_mesh = new Mesh(geometry, material);
+		var this_mesh = new THREE.Mesh(geometry, material);
 		this_mesh.position.set(center.x, center.y - min_val, center.z);
 		this_mesh.castShadow = true;
 		this_mesh.receiveShadow = true;
