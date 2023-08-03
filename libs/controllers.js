@@ -52,3 +52,12 @@ export const doNothing = () => { };
 export function noEmissivity(object) {
     object.material.emissiveIntensity = 0;
 }
+
+export function toggleParticleOpacity(params, controls){
+    if (controls.vrControls.controllerGrips.right !== undefined) {
+        if ( controls.vrControls.controllerGrips.right.buttons.right.b.buttonDown ) {
+            if (params.particle_opacity === 1) { params.particle_opacity = 0.2; }
+            else { params.particle_opacity = 1; }
+        }
+    }
+}

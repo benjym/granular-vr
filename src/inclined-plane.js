@@ -169,7 +169,10 @@ function animate() {
             S.simu_step_forward(5);
             SPHERES.move_spheres(S, params);
             SPHERES.draw_force_network(S, params, scene);
-            if ( controls !== undefined ) { controls.update() }
+            if ( controls !== undefined ) {
+                controls.update();
+                CONTROLLERS.toggleParticleOpacity(params,controls);
+            }
         }
         renderer.render(scene, camera);
     });
