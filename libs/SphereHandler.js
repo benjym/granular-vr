@@ -670,10 +670,6 @@ export async function draw_force_network(S, params, scene) {
                     let b = spheres.children[F[i][1]].position;
                     let distance = a.distanceTo(b);
 
-                    if ( (F[i][0] == 0) || (F[i][1] == 0) ) { // first particle
-                        console.log(F_mag);
-                    }
-
                     if (spheres.children[F[i][0]].visible && spheres.children[F[i][1]].visible) {
                         if (distance < (radii[F[i][0]] + radii[F[i][1]])) { // ignore periodic boundaries
                             let mid_point = new THREE.Vector3();
