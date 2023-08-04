@@ -236,7 +236,7 @@ function animate() {
                     if (AUDIO.listener !== undefined) {
                         SPHERES.update_fixed_sounds(S, params);
                     }
-
+                    // console.log(params.r_min)
                     SPHERES.draw_force_network(S, params, scene);
 
                     if ( params.loading_active ) { start_button.visible = false; stop_button.visible = true; }

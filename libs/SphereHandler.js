@@ -625,8 +625,8 @@ export async function draw_force_network(S, params, scene) {
         else {
 
             var F = await S.simu_getContactInfos(0x80 | 0x100);
-
-            let width = radii[0] / 2.;
+            console.log(F.length)
+            let width = params.r_min;
             if ('F_mag_max' in params) {
                 F_mag_max = params.F_mag_max;
             } else {
@@ -670,14 +670,17 @@ export async function draw_force_network(S, params, scene) {
                     let b = spheres.children[F[i][1]].position;
                     let distance = a.distanceTo(b);
 
+                    if ( (F[i][0] == 0) || (F[i][1] == 0) ) { // first particle
+                        console.log(F_mag);
+                    }
+
                     if (spheres.children[F[i][0]].visible && spheres.children[F[i][1]].visible) {
                         if (distance < (radii[F[i][0]] + radii[F[i][1]])) { // ignore periodic boundaries
                             let mid_point = new THREE.Vector3();
                             mid_point.addVectors(a, b);
                             mid_point.divideScalar(2);
                             c.position.copy(mid_point);
-                            let scale = width
-                            // if (F_mag > F_mag_max) { scale = width }
+                            let scale = width; // nothing bigger than this
                             if (F_mag < F_mag_max) { scale = width * F_mag / F_mag_max; }
                             if ( scale > 0. ) { 
                                 c.scale.set(scale,
@@ -688,7 +691,7 @@ export async function draw_force_network(S, params, scene) {
 
                                 // c.material.emissiveIntensity = F_mag/F_mag_max;
                                 c.visible = true;
-                                forces.add(c);
+                                // forces.add(c);
                                 // console.log(scale)
                             }
                         }
