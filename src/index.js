@@ -72,8 +72,8 @@ async function add_common_properties() {
     scene.background = new THREE.Color(0x111);
 
     if ( urlParams.has('master') ) { master = urlParams.get('master') }
-    // else { master = "ISS.json"; }
-    else { master = "grain-days-2023.json"; }
+    else { master = "ISS.json"; }
+    // else { master = "grain-days-2023.json"; }
 
     controls = new ImmersiveControls(camera, renderer, scene, {
         initialPosition: new THREE.Vector3(0, human_height, 2),

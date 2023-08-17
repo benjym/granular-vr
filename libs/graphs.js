@@ -6,6 +6,7 @@ data_points.last_updated = 0;
 data_points.nchildren = 1000;
 // let global_scale = 0.05;
 let global_scale = 2;
+let old_ref_location = new THREE.Vector3(0,0,0);
 
 export function update_nchildren(n){
     data_points.nchildren = n;
@@ -72,3 +73,26 @@ export function update_data(xvalue, yvalue) {
     if (data_points.last_updated == data_points.nchildren - 1) { data_points.last_updated = 0; }
 
 }
+
+// export function update_data(xvalue, yvalue) {
+//     if ( data_points !== undefined ) {
+//         let ref_location = new THREE.Vector3(xvalue, yvalue-0.5, 0);
+//         data_points.children[data_points.last_updated].position.x = (ref_location.x + old_ref_location.x)/2.;
+//         data_points.children[data_points.last_updated].position.y = (ref_location.y + old_ref_location.y)/2.;
+//         // data_points.children[data_points.last_updated].position.z = (ref_location.z + old_ref_location.z)/2.;
+//         // if ( params.dimension === 4) { data_points.children[data_points.last_updated].d4 = x[0][3]; }
+
+//         console.log(ref_location)
+
+//         let l = ref_location.distanceTo(old_ref_location);
+//         data_points.children[data_points.last_updated].scale.z = l;
+//         data_points.children[data_points.last_updated].lookAt(ref_location);
+
+//         console.log(l);
+
+//         data_points.last_updated += 1;
+
+//         old_ref_location = ref_location.clone();
+//         if (data_points.last_updated == data_points.nchildren - 1) { data_points.last_updated = 0; }
+//     }
+// }
