@@ -290,13 +290,13 @@ function load_json_apps() {
                 let next;
                 if (urlParams.has('fname')) { next = urlParams.get('fname') }
                 else { next = apps.current }
-                let buttons_container = document.getElementById('buttonsContainer');
-                buttons_container.style.position = 'absolute';
-                buttons_container.style.width = '100%';
-                buttons_container.style.height = '100%';
-                buttons_container.style.top = '0';
-                buttons_container.style.left = '0';
-                buttons_container.style.zindex = 3;
+                // let buttons_container = document.getElementById('buttonsContainer');
+                // buttons_container.style.position = 'absolute';
+                // buttons_container.style.width = '100%';
+                // buttons_container.style.height = '100%';
+                // buttons_container.style.top = '0';
+                // buttons_container.style.left = '0';
+                // buttons_container.style.zindex = 3;
                 
                 let enter_button = document.getElementById('enterVRButton');
                 enter_button.innerText = 'Click here to enter VR';
