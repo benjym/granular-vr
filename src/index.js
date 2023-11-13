@@ -297,9 +297,16 @@ function load_json_apps() {
                     document.body.append(buttonsContainer);
                 }
                 
-                let enter_button = document.getElementById('enterVRButton');
-                enter_button.innerText = 'Click here to enter VR';
-                enter_button.addEventListener('click', () => {move_to(next);});            
+                let enterVRButton = document.getElementById('enterVRButton');
+                if (!enterVRButton) {
+                    enterVRButton = document.createElement("button");
+                    enterVRButton.id = "enterVRButton";
+                    enterVRButton.classList.add("button");
+                    enterVRButton.innerText = 'Click here to enter VR';
+                    buttonsContainer?.prepend(enterVRButton);
+                }
+                enterVRButton.addEventListener('click', () => {move_to(next);});            
+
             }
         });
     }

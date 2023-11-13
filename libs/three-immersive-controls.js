@@ -297,16 +297,18 @@ var VRControls = class {
         buttonsContainer.id = "buttonsContainer";
         document.body.append(buttonsContainer);
       }
-    // console.log(buttonsContainer)
-      const enterVRButton = document.createElement("button");
+    let enterVRButton = document.getElementById("enterVRButton");
+    if (!enterVRButton)
+      enterVRButton = document.createElement("button");
       enterVRButton.id = "enterVRButton";
       enterVRButton.classList.add("button");
-      enterVRButton.append("Enter VR");
-      enterVRButton.addEventListener("click", () => {
-        this.enterVR();
-      });
+      enterVRButton.innerText = 'Click here to enter VR';
       buttonsContainer?.prepend(enterVRButton);
     }
+    enterVRButton.addEventListener("click", () => {
+        this.enterVR();
+      });
+
     this.userButtons = new THREE2.Group();
     this.hideUserButtons();
     this.repositionUserButtons();
