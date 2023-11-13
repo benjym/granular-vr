@@ -290,7 +290,7 @@ function load_json_apps() {
                 let next;
                 if (urlParams.has('fname')) { next = urlParams.get('fname') }
                 else { next = apps.current }
-                let buttonsContainer = document.createElement('div');
+                let buttonsContainer = document.getElementById('div');
                 if (!buttonsContainer) {
                     buttonsContainer = document.createElement("div");
                     buttonsContainer.id = "buttonsContainer";
