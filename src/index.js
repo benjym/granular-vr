@@ -1,7 +1,8 @@
 import css from "../css/main.css";
 import JSON5 from "json5";
 
-import ImmersiveControls from '@depasquale/three-immersive-controls';
+// import ImmersiveControls from '@depasquale/three-immersive-controls';
+import ImmersiveControls from '../libs/three-immersive-controls';
 import * as CONTROLLERS from '../libs/controllers.js';
 import * as SPHERES from "../libs/SphereHandler.js"
 import * as WALLS from "../libs/WallHandler.js"
@@ -11,7 +12,6 @@ import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 import * as POOLCUE from "../libs/PoolCue";
 import * as RAYCAST from "../libs/RaycastHandler";
-
 
 // // Save the current URL and state when the app starts
 // var initialUrl = window.location.href;
@@ -290,15 +290,12 @@ function load_json_apps() {
                 let next;
                 if (urlParams.has('fname')) { next = urlParams.get('fname') }
                 else { next = apps.current }
-                let buttons_container = document.getElementById('buttonsContainer');
-                // console.log(buttons_container)
-                buttons_container.style.position = 'absolute';
-                buttons_container.style.width = '100%';
-                buttons_container.style.height = '100%';
-                buttons_container.style.top = '0';
-                buttons_container.style.left = '0';
-                buttons_container.style.zindex = 3;
-                // console.log(buttons_container)
+                let buttonsContainer = document.createElement('div');
+                if (!buttonsContainer) {
+                    buttonsContainer = document.createElement("div");
+                    buttonsContainer.id = "buttonsContainer";
+                    document.body.append(buttonsContainer);
+                }
                 
                 let enter_button = document.getElementById('enterVRButton');
                 enter_button.innerText = 'Click here to enter VR';
