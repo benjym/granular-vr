@@ -296,7 +296,6 @@ function load_json_apps() {
                     enterVRButton = document.createElement("button");
                     enterVRButton.id = "enterVRButton";
                     enterVRButton.classList.add("button");
-                    buttonsContainer?.prepend(enterVRButton);
                 }
                 enterVRButton.addEventListener('click', () => {move_to(next);});            
 

@@ -291,21 +291,21 @@ var VRControls = class {
     this.firstControllerReady = this.getController(0);
     this.secondControllerReady = this.getController(1);
     if (this.showEnterVRButton === true) {
-        let buttonsContainer = document.getElementById("buttonsContainer");
-        let enterVRButton = document.getElementById("enterVRButton");
-        if (!enterVRButton)
+      let enterVRButton = document.getElementById("enterVRButton");
+        if (!enterVRButton) {
         enterVRButton = document.createElement("button");
         enterVRButton.id = "enterVRButton";
         enterVRButton.classList.add("button");
         enterVRButton.innerText = 'Click here to enter VR';
-        buttonsContainer?.prepend(enterVRButton);
+      }
+      let buttonsContainer = document.getElementById("buttonsContainer");
+      buttonsContainer?.prepend(enterVRButton);
+      enterVRButton.addEventListener("click", () => {
+          this.enterVR();
+        });
+      buttonsContainer.style.visibility = "visible";
+      console.debug('Buttons container visible')
     }
-    enterVRButton.addEventListener("click", () => {
-        this.enterVR();
-      });
-    buttonsContainer.style.visibility = "visible";
-    console.debug('Buttons container visible')
-
     this.userButtons = new THREE.Group();
     this.hideUserButtons();
     this.repositionUserButtons();
@@ -346,7 +346,7 @@ var VRControls = class {
       this.inVr = true;
       this.showUserButtons();
       this.repositionUserButtons();
-      buttonsContainer = document.getElementById("buttonsContainer");
+      let buttonsContainer = document.getElementById("buttonsContainer");
       buttonsContainer.style.visibility = "hidden";
     });
   }
@@ -356,7 +356,7 @@ var VRControls = class {
     console.debug(`cameraHeight: ${this.cameraHeight}`);
     this.hideUserButtons();
     this.inVr = false;
-    buttonsContainer = document.getElementById("buttonsContainer");
+    let buttonsContainer = document.getElementById("buttonsContainer");
     buttonsContainer.style.visibility = "visible";
   }
   resetUserButtonRepositionTimer() {
