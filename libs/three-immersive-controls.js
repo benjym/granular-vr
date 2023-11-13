@@ -1,9 +1,9 @@
 // build/ImmersiveControls.js
-import * as THREE7 from "three";
+// import * as THREE7 from "three";
 import StatsMesh from "@depasquale/three-stats-mesh";
 
 // build/modules/controls/VRControls.js
-import * as THREE2 from "three";
+// import * as THREE2 from "three";
 import * as TWEEN from "@tweenjs/tween.js";
 import { XRControllerModelFactory } from "three/examples/jsm/webxr/XRControllerModelFactory.js";
 
@@ -22,7 +22,7 @@ CanvasRenderingContext2D.prototype.roundedRectangle = function(x, y, width, heig
 };
 
 // build/modules/overlays.js
-import * as THREE from "three";
+// import * as THREE from "three";
 var getLines = (ctx, text, maxWidth) => {
   const words = text.split(" ");
   const lines = [];
@@ -252,8 +252,8 @@ var ImmersiveButton = class {
 var ImmersiveButton_default = ImmersiveButton;
 
 // build/modules/controls/VRControls.js
-var xAxis = new THREE2.Vector3(1, 0, 0);
-var yAxis = new THREE2.Vector3(0, 1, 0);
+var xAxis = new THREE.Vector3(1, 0, 0);
+var yAxis = new THREE.Vector3(0, 1, 0);
 var VRControls = class {
   constructor(controls, { showControllerModel = false, showEnterVRButton = true, showExitVRButton = true } = {}) {
     this.controls = controls;
@@ -306,7 +306,7 @@ var VRControls = class {
     buttonsContainer.style.visibility = "visible";
     console.debug('Buttons container visible')
 
-    this.userButtons = new THREE2.Group();
+    this.userButtons = new THREE.Group();
     this.hideUserButtons();
     this.repositionUserButtons();
     this.controls.player.add(this.userButtons);
@@ -346,6 +346,8 @@ var VRControls = class {
       this.inVr = true;
       this.showUserButtons();
       this.repositionUserButtons();
+      buttonsContainer = document.getElementById("buttonsContainer");
+      buttonsContainer.style.visibility = "hidden";
     });
   }
   exitVR() {
@@ -354,6 +356,8 @@ var VRControls = class {
     console.debug(`cameraHeight: ${this.cameraHeight}`);
     this.hideUserButtons();
     this.inVr = false;
+    buttonsContainer = document.getElementById("buttonsContainer");
+    buttonsContainer.style.visibility = "visible";
   }
   resetUserButtonRepositionTimer() {
     clearInterval(this.userButtonRepositionTimer);
@@ -363,11 +367,11 @@ var VRControls = class {
   }
   repositionUserButtons() {
     this.resetUserButtonRepositionTimer();
-    const gazeVector = new THREE2.Vector3(0, 0, -1).applyQuaternion(this.controls.camera.quaternion);
+    const gazeVector = new THREE.Vector3(0, 0, -1).applyQuaternion(this.controls.camera.quaternion);
     gazeVector.setY(0);
     gazeVector.normalize();
     const gazeVectorRotated = gazeVector.applyAxisAngle(yAxis, Math.PI / 5);
-    this.userButtons.position.copy(new THREE2.Vector3().addVectors(this.controls.camera.position, gazeVectorRotated));
+    this.userButtons.position.copy(new THREE.Vector3().addVectors(this.controls.camera.position, gazeVectorRotated));
     this.userButtons.position.y -= 0.75;
     this.userButtons.lookAt(this.controls.cameraData.worldPosition);
   }
@@ -452,18 +456,18 @@ var VRControls = class {
       }
     }
     if (this.controllerGrips.left && this.controls.renderer.xr.isPresenting === true) {
-      const leftControllerWorldPosition = new THREE2.Vector3();
-      const leftControllerWorldRotation = new THREE2.Quaternion();
-      const leftControllerWorldScale = new THREE2.Vector3();
+      const leftControllerWorldPosition = new THREE.Vector3();
+      const leftControllerWorldRotation = new THREE.Quaternion();
+      const leftControllerWorldScale = new THREE.Vector3();
       this.controllerGrips.left.matrixWorld.decompose(leftControllerWorldPosition, leftControllerWorldRotation, leftControllerWorldScale);
       this.leftControllerWorldData = { position: leftControllerWorldPosition, rotation: leftControllerWorldRotation, scale: leftControllerWorldScale };
     } else {
       this.leftControllerWorldData = void 0;
     }
     if (this.controllerGrips.right && this.controls.renderer.xr.isPresenting === true) {
-      const rightControllerWorldPosition = new THREE2.Vector3();
-      const rightControllerWorldRotation = new THREE2.Quaternion();
-      const rightControllerWorldScale = new THREE2.Vector3();
+      const rightControllerWorldPosition = new THREE.Vector3();
+      const rightControllerWorldRotation = new THREE.Quaternion();
+      const rightControllerWorldScale = new THREE.Vector3();
       this.controllerGrips.right.matrixWorld.decompose(rightControllerWorldPosition, rightControllerWorldRotation, rightControllerWorldScale);
       this.rightControllerWorldData = { position: rightControllerWorldPosition, rotation: rightControllerWorldRotation, scale: rightControllerWorldScale };
     } else {
@@ -491,7 +495,7 @@ var VRControls = class {
       const movementValZ = moveSpeedPerMillisecond * this.controls.millisecondsSinceLastFrame * thumbstickY * inertiaCoefficient;
       const movementValX = moveSpeedPerMillisecond * this.controls.millisecondsSinceLastFrame * thumbstickX * inertiaCoefficient;
       this.leftThumbstickMomentum.val = thumbstickY;
-      const move = new THREE2.Vector3(movementValX, 0, movementValZ).applyQuaternion(this.controls.cameraData.worldRotation);
+      const move = new THREE.Vector3(movementValX, 0, movementValZ).applyQuaternion(this.controls.cameraData.worldRotation);
       if (typeof this.controls.floor === "number" && move.y !== 0) {
         const minPlayerY = this.controls.floor + this.controls.eyeLevel - this.initialCameraHeight;
         const moveYResult = this.controls.player.position.y + move.y;
@@ -522,7 +526,7 @@ var VRControls = class {
       const inertiaCoefficient = 1 - this.rightThumbstickInertia.val;
       if (thumbstickX !== 0 || thumbstickY !== 0 && this.controls.tumble === true) {
         const yRotationAmount = rotateSpeedPerMillisecond * this.controls.millisecondsSinceLastFrame * thumbstickX * inertiaCoefficient;
-        const diff = new THREE2.Vector3().subVectors(this.controls.cameraData.worldPosition, this.controls.player.position);
+        const diff = new THREE.Vector3().subVectors(this.controls.cameraData.worldPosition, this.controls.player.position);
         this.controls.player.position.add(diff);
         this.controls.player.rotateOnAxis(yAxis, -yRotationAmount);
         let xRotationAmount;
@@ -530,7 +534,7 @@ var VRControls = class {
           xRotationAmount = rotateSpeedPerMillisecond * this.controls.millisecondsSinceLastFrame * thumbstickY * inertiaCoefficient;
           this.controls.player.rotateOnAxis(xAxis, xRotationAmount);
         }
-        const rotatedDiff = diff.applyEuler(new THREE2.Euler(xRotationAmount || 0, -yRotationAmount, 0));
+        const rotatedDiff = diff.applyEuler(new THREE.Euler(xRotationAmount || 0, -yRotationAmount, 0));
         this.controls.player.position.sub(rotatedDiff);
       }
       if (thumbstickX !== 0 || thumbstickY !== 0) {
@@ -557,7 +561,7 @@ var VRControls = class {
       if (intersections.length > 0) {
         const intersection = intersections[0];
         const object = intersection.object;
-        if (object instanceof THREE2.Mesh) {
+        if (object instanceof THREE.Mesh) {
           this.controls.interaction.handleIntersection(object);
         }
         controllerLine.scale.z = intersection.distance;
@@ -581,13 +585,13 @@ var VRControls = class {
     }
   }
   getController(i) {
-    const lineGeometry = new THREE2.BufferGeometry().setFromPoints([new THREE2.Vector3(0, 0, 0), new THREE2.Vector3(0, 0, -1)]);
-    const lineMaterial = new THREE2.LineBasicMaterial({
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -1)]);
+    const lineMaterial = new THREE.LineBasicMaterial({
       color: 16777215,
       transparent: true,
       opacity: 0.1
     });
-    const line = new THREE2.Line(lineGeometry, lineMaterial);
+    const line = new THREE.Line(lineGeometry, lineMaterial);
     line.name = "line";
     line.scale.z = 5;
     return new Promise((resolve) => {
@@ -632,11 +636,11 @@ var VRControls = class {
 var VRControls_default = VRControls;
 
 // build/modules/controls/KeyboardControls.js
-import * as THREE3 from "three";
-import * as TWEEN2 from "@tweenjs/tween.js";
+// import * as THREE3 from "three";
+// import * as TWEEN from "@tweenjs/tween.js";
 var inertiaTweenDuration = 350;
-var xAxis2 = new THREE3.Vector3(1, 0, 0);
-var yAxis2 = new THREE3.Vector3(0, 1, 0);
+var xAxis2 = new THREE.Vector3(1, 0, 0);
+var yAxis2 = new THREE.Vector3(0, 1, 0);
 var KeyboardControls = class {
   constructor(controls) {
     this.controls = controls;
@@ -704,11 +708,11 @@ var KeyboardControls = class {
     }
   }
   rotate() {
-    let vector = new THREE3.Vector3(0, 0, -1);
+    let vector = new THREE.Vector3(0, 0, -1);
     vector.applyAxisAngle(xAxis2, this.xRotation);
     vector.applyAxisAngle(yAxis2, this.yRotation);
     vector = vector.negate();
-    const lookAtPoint = new THREE3.Vector3().addVectors(this.controls.player.position, vector);
+    const lookAtPoint = new THREE.Vector3().addVectors(this.controls.player.position, vector);
     this.controls.player.lookAt(lookAtPoint);
   }
   rotateLeft(rotationAmount) {
@@ -728,7 +732,7 @@ var KeyboardControls = class {
     }
   }
   update() {
-    TWEEN2.update();
+    TWEEN.update();
     const moveSpeedPerMillisecond = this.controls.moveSpeed.keyboard / 1e3;
     const rotateSpeedPerMillisecond = this.controls.rotateSpeed / 1e3;
     let movementKeyActive = false;
@@ -736,33 +740,33 @@ var KeyboardControls = class {
       movementKeyActive = true;
     }
     if (this.lastFrameMovementWas0 === true && movementKeyActive === true) {
-      this.movementTween = new TWEEN2.Tween(this.movementInertia).to({ val: 0 }, inertiaTweenDuration).easing(TWEEN2.Easing.Quadratic.Out).start();
+      this.movementTween = new TWEEN.Tween(this.movementInertia).to({ val: 0 }, inertiaTweenDuration).easing(TWEEN.Easing.Quadratic.Out).start();
     }
     const movementInertiaCoefficient = 1 - this.movementInertia.val;
     const movementAmount = moveSpeedPerMillisecond * this.controls.millisecondsSinceLastFrame * movementInertiaCoefficient;
-    const move = new THREE3.Vector3(0, 0, 0);
+    const move = new THREE.Vector3(0, 0, 0);
     let rotationKeyActive = false;
     if (this.activeKeys.includes("ArrowUp") || this.activeKeys.includes("ArrowDown") || this.activeKeys.includes("ArrowRight") || this.activeKeys.includes("ArrowLeft")) {
       rotationKeyActive = true;
     }
     if (this.lastFrameRotationWas0 === true && rotationKeyActive === true) {
-      this.rotationTween = new TWEEN2.Tween(this.rotationInertia).to({ val: 0 }, inertiaTweenDuration).easing(TWEEN2.Easing.Quadratic.Out).start();
+      this.rotationTween = new TWEEN.Tween(this.rotationInertia).to({ val: 0 }, inertiaTweenDuration).easing(TWEEN.Easing.Quadratic.Out).start();
     }
     const rotationInertiaCoefficient = 1 - this.rotationInertia.val;
     const rotationAmount = rotateSpeedPerMillisecond * this.controls.millisecondsSinceLastFrame * rotationInertiaCoefficient;
     let movementFlag = true;
     if (this.activeKeys.includes("KeyW")) {
-      move.add(new THREE3.Vector3(0, 0, -movementAmount).applyQuaternion(this.controls.cameraData.worldRotation));
+      move.add(new THREE.Vector3(0, 0, -movementAmount).applyQuaternion(this.controls.cameraData.worldRotation));
       movementFlag = false;
     } else if (this.activeKeys.includes("KeyS")) {
-      move.add(new THREE3.Vector3(0, 0, movementAmount).applyQuaternion(this.controls.cameraData.worldRotation));
+      move.add(new THREE.Vector3(0, 0, movementAmount).applyQuaternion(this.controls.cameraData.worldRotation));
       movementFlag = false;
     }
     if (this.activeKeys.includes("KeyA")) {
-      move.add(new THREE3.Vector3(-movementAmount, 0, 0).applyQuaternion(this.controls.cameraData.worldRotation));
+      move.add(new THREE.Vector3(-movementAmount, 0, 0).applyQuaternion(this.controls.cameraData.worldRotation));
       movementFlag = false;
     } else if (this.activeKeys.includes("KeyD")) {
-      move.add(new THREE3.Vector3(movementAmount, 0, 0).applyQuaternion(this.controls.cameraData.worldRotation));
+      move.add(new THREE.Vector3(movementAmount, 0, 0).applyQuaternion(this.controls.cameraData.worldRotation));
       movementFlag = false;
     }
     if (movementFlag === true) {
@@ -807,11 +811,11 @@ var KeyboardControls = class {
 var KeyboardControls_default = KeyboardControls;
 
 // build/modules/controls/MouseControls.js
-import * as THREE4 from "three";
+// import * as THREE4 from "three";
 var MouseControls = class {
   constructor(controls) {
     this.controls = controls;
-    this.mousePosition = new THREE4.Vector2();
+    this.mousePosition = new THREE.Vector2();
     this.controls.renderer.domElement.addEventListener("mousemove", (event) => {
       this.mousePosition.x = event.clientX / window.innerWidth * 2 - 1;
       this.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -831,7 +835,7 @@ var MouseControls = class {
     if (!this.controls.vrControls?.inVr) {
       this.controls.raycaster.setFromCamera(this.mousePosition, this.controls.camera);
       this.intersections = this.controls.raycaster.intersectObjects(this.controls.interaction.selectableObjects);
-      if (this.intersections.length > 0 && this.intersections[0].object.visible === true && this.intersections[0].object instanceof THREE4.Mesh) {
+      if (this.intersections.length > 0 && this.intersections[0].object.visible === true && this.intersections[0].object instanceof THREE.Mesh) {
         this.controls.interaction.handleIntersection(this.intersections[0].object);
       }
     }
@@ -840,7 +844,7 @@ var MouseControls = class {
 var MouseControls_default = MouseControls;
 
 // build/modules/Interaction.js
-import * as THREE5 from "three";
+// import * as THREE5 from "three";
 var Interaction = class {
   constructor() {
     this.intersectedObjects = [];
@@ -869,14 +873,14 @@ var Interaction = class {
   cleanIntersected() {
     while (this.intersectedObjects.length) {
       const object = this.intersectedObjects.pop();
-      if (object instanceof THREE5.Mesh) {
+      if (object instanceof THREE.Mesh) {
         object.material.emissive?.setScalar(0);
         Interaction.handleButtonMaterialMaps(object, false);
       }
     }
   }
   static handleButtonMaterialMaps(object, intersected = false) {
-    if (object.userData.textures && object.material instanceof THREE5.MeshBasicMaterial) {
+    if (object.userData.textures && object.material instanceof THREE.MeshBasicMaterial) {
       if (object.userData.active === true) {
         object.material.map = intersected ? object.userData.textures.activeIntersected : object.userData.textures.activeStandard;
       } else {
@@ -887,7 +891,7 @@ var Interaction = class {
   handleIntersection(object) {
     this.intersectedObjects.push(object);
     Interaction.handleButtonMaterialMaps(object, true);
-    if (object.material instanceof THREE5.MeshStandardMaterial) {
+    if (object.material instanceof THREE.MeshStandardMaterial) {
       object.material.emissive?.setScalar(this.intersectedObjectEmissiveVal);
     }
     if (object.userData.type in this.intersectionHandlers) {
@@ -898,13 +902,13 @@ var Interaction = class {
 var Interaction_default = Interaction;
 
 // build/modules/CameraData.js
-import * as THREE6 from "three";
+// import * as THREE6 from "three";
 var CameraData = class {
   constructor(camera) {
     this.camera = camera;
-    this.worldPosition = new THREE6.Vector3();
-    this.worldRotation = new THREE6.Quaternion();
-    this.worldScale = new THREE6.Vector3();
+    this.worldPosition = new THREE.Vector3();
+    this.worldRotation = new THREE.Quaternion();
+    this.worldScale = new THREE.Vector3();
     this.update();
   }
   update() {
@@ -917,8 +921,8 @@ var CameraData_default = CameraData;
 var eyeLevel = 1.6;
 var ThreeImmersiveControls = class {
   constructor(camera, renderer, scene, {
-    initialPosition = new THREE7.Vector3(0, eyeLevel, 4),
-    lookAt = new THREE7.Vector3(initialPosition.x, initialPosition.y, initialPosition.z - 1e4),
+    initialPosition = new THREE.Vector3(0, eyeLevel, 4),
+    lookAt = new THREE.Vector3(initialPosition.x, initialPosition.y, initialPosition.z - 1e4),
     floor = 0,
     gravity = true,
     moveSpeed = { vr: 2.5, keyboard: 5 },
@@ -935,7 +939,7 @@ var ThreeImmersiveControls = class {
     this.camera = camera;
     this.renderer = renderer;
     this.scene = scene;
-    this.player = new THREE7.Group();
+    this.player = new THREE.Group();
     this.player.position.copy(initialPosition);
     this.scene.add(this.player);
     this.player.add(this.camera);
@@ -948,8 +952,8 @@ var ThreeImmersiveControls = class {
     this.eyeLevel = eyeLevel;
     this.interaction = new Interaction_default();
     this.cameraData = new CameraData_default(this.camera);
-    this.tempMatrix = new THREE7.Matrix4();
-    this.raycaster = new THREE7.Raycaster();
+    this.tempMatrix = new THREE.Matrix4();
+    this.raycaster = new THREE.Raycaster();
     this.vrSupported = new Promise((resolve) => {
       if ("xr" in navigator) {
         navigator.xr?.isSessionSupported("immersive-vr").then((vrSupported) => {
