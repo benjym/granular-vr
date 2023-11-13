@@ -135,6 +135,8 @@ async function update() {
         renderer.render(scene, camera);
         params = CONTROLLERS.moveInD4(params, controls);
         WALLS.update_d4(params);
+
+        renderer.show_on_2d_canvas(scene,camera);
     }
 
     // });

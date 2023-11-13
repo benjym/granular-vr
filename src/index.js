@@ -40,6 +40,7 @@ let container = document.createElement("div");
 document.body.appendChild(container);
 
 export let camera, scene, renderer, controls, clock, apps, NDDEMCGLib;
+
 let master;
 let worker = new Worker(new URL('../libs/worker.js', import.meta.url));
 let wrapped_worker = Comlink.wrap(worker);
@@ -61,6 +62,20 @@ async function add_common_properties() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.xr.enabled = true;
     renderer.keep_me = true;
+
+    renderer.show_on_2d_canvas = function(scene,camera) {
+        // Re-Render the scene, but this time to the canvas (don't do this on Mobile!)
+        if (this.xr.isPresenting) {
+            this.xr.enabled = false;
+            // let oldFramebuffer = this._framebuffer;
+            // this.state.bindXRFramebuffer( null );
+            //renderer.setRenderTarget( renderer.getRenderTarget() ); // Hack #15830 - Unneeded?
+            this.render(scene, camera);
+            this.xr.enabled = true;
+            // this.state.bindXRFramebuffer(oldFramebuffer);
+        }
+    }
+
     // renderer.shadowMap.enabled = true;
     // renderer.shadowMap.mapSize = new THREE.Vector2(512,512);
     // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
