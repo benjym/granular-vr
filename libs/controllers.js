@@ -1,13 +1,15 @@
 import { move_to } from "../src/index.js";
 
 export function moveInD4(params, controller) {
-    if (controller.vrControls.controllers.right !== undefined) {
-        let d4_rate = 0.01;
-        params.d4.cur += d4_rate * controls.vrControls.controllers.right.gamepad.axes[3];
-        if (params.d4.cur < params.d4.min) {
-            params.d4.cur = params.d4.min;
-        } else if (params.d4.cur > params.d4.max) {
-            params.d4.cur = params.d4.max;
+    if (controller !== undefined ) {
+        if (controller.vrControls.controllers.right !== undefined) {
+            let d4_rate = 0.01;
+            params.d4.cur += d4_rate * controls.vrControls.controllers.right.gamepad.axes[3];
+            if (params.d4.cur < params.d4.min) {
+                params.d4.cur = params.d4.min;
+            } else if (params.d4.cur > params.d4.max) {
+                params.d4.cur = params.d4.max;
+            }
         }
     }
     return params

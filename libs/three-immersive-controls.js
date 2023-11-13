@@ -291,23 +291,18 @@ var VRControls = class {
     this.firstControllerReady = this.getController(0);
     this.secondControllerReady = this.getController(1);
     if (this.showEnterVRButton === true) {
-      let buttonsContainer = document.getElementById("buttonsContainer");
-      if (!buttonsContainer) {
-        buttonsContainer = document.createElement("div");
-        buttonsContainer.id = "buttonsContainer";
-        document.body.append(buttonsContainer);
-      }
-    let enterVRButton = document.getElementById("enterVRButton");
-    if (!enterVRButton)
-      enterVRButton = document.createElement("button");
-      enterVRButton.id = "enterVRButton";
-      enterVRButton.classList.add("button");
-      enterVRButton.innerText = 'Click here to enter VR';
-      buttonsContainer?.prepend(enterVRButton);
+        let enterVRButton = document.getElementById("enterVRButton");
+        if (!enterVRButton)
+        enterVRButton = document.createElement("button");
+        enterVRButton.id = "enterVRButton";
+        enterVRButton.classList.add("button");
+        enterVRButton.innerText = 'Click here to enter VR';
+        buttonsContainer?.prepend(enterVRButton);
     }
     enterVRButton.addEventListener("click", () => {
         this.enterVR();
       });
+    buttonsContainer.style.visibility = "visible";
 
     this.userButtons = new THREE2.Group();
     this.hideUserButtons();
