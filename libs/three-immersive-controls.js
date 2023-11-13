@@ -291,6 +291,7 @@ var VRControls = class {
     this.firstControllerReady = this.getController(0);
     this.secondControllerReady = this.getController(1);
     if (this.showEnterVRButton === true) {
+        let buttonsContainer = document.getElementById("buttonsContainer");
         let enterVRButton = document.getElementById("enterVRButton");
         if (!enterVRButton)
         enterVRButton = document.createElement("button");
@@ -303,6 +304,7 @@ var VRControls = class {
         this.enterVR();
       });
     buttonsContainer.style.visibility = "visible";
+    console.debug('Buttons container visible')
 
     this.userButtons = new THREE2.Group();
     this.hideUserButtons();
