@@ -14,30 +14,33 @@ import * as AUDIO from './audio.js';
 var lut = new Lut("blackbody", 512); // options are rainbow, cooltowarm and blackbody
 
 export let spheres;
-let forces;
 
 export function reset_spheres() {
-    if ( forces !== undefined ) {
-        for (var i = 0; i < forces.children.length; i++) {
-            forces.children[i].geometry.dispose();
-            forces.children[i].material.dispose();
-        }
-    }
-    forces = new THREE.Group();
-    forces.remove_me = true;
+    // if ( forces !== undefined ) {
+    //     for (var i = 0; i < forces.children.length; i++) {
+    //         forces.children[i].geometry.dispose();
+    //         forces.children[i].material.dispose();
+    //     }
+    // }
+    // forces = new THREE.Group();
+    // forces.remove_me = true;
+    forces.count = 0;
 
     spheres = new THREE.Group();
     spheres.remove_me = true;
 }
 
-reset_spheres();
-
-const cylinder_geometry = new THREE.CylinderGeometry(1, 1, 1, 16);
+const cylinder_geometry = new THREE.CylinderGeometry(1, 1, 1, 8);
 cylinder_geometry.applyMatrix4(new THREE.Matrix4().makeRotationX(Math.PI / 2)); // rotate the geometry to make the forces point in the right direction
 const cylinder_material = new THREE.MeshStandardMaterial({ color: 0xffffff });
 cylinder_material.emissive = new THREE.Color(0x0000ff);
 cylinder_material.transparent = false;
 const cylinder = new THREE.Mesh(cylinder_geometry, cylinder_material);
+
+let max_forces = 1000 // will get an error if over 1000 forces
+let forces = new THREE.InstancedMesh( cylinder_geometry, cylinder_material, max_forces );
+
+reset_spheres();
 
 // ray = new THREE.Line(
 //     new THREE.BufferGeometry().setFromPoints([
@@ -610,8 +613,112 @@ export async function haptic_pulse(S, params, controller, NDDEM_index) {
     }
 }
 
-
 export async function draw_force_network(S, params, scene) {
+    forces.instanceMatrix.needsUpdate = true;
+    if ( forces.children.length === 0) { 
+        scene.add(forces);
+    }
+    // console.log(S)
+    if (S !== undefined) {
+        if (params.particle_opacity === 1) {
+            forces.count = 0;
+            // for ( let i=0; i<forces.children.length; i++){
+            //     forces.children[i].visible = false;
+            // }
+        }
+        else {
+
+            var F = await S.simu_getContactInfos(0x80 | 0x100);
+            
+            let width = params.r_min;
+            if ('F_mag_max' in params) {
+                F_mag_max = params.F_mag_max;
+            } else {
+                F_mag_max = 1e0;
+            }
+
+            // step 1: work out how many to draw
+            let to_draw = [];
+            for (let i = 0; i < F.length; i++) {
+                // forces.children[i].visible = false;
+                // for ( let i = 0; i < 100; i ++ ) {
+                let F_mag;
+                if (params.dimension === 2) {
+                    F_mag = Math.sqrt(
+                        Math.pow(F[i][2], 2) +
+                        Math.pow(F[i][3], 2)
+                    )
+                }
+                else if (params.dimension === 3) {
+                    F_mag = Math.sqrt(
+                        Math.pow(F[i][2], 2) +
+                        Math.pow(F[i][3], 2) +
+                        Math.pow(F[i][4], 2)
+                    )
+                }
+                else if (params.dimension === 4) {
+                    F_mag = Math.sqrt(
+                        Math.pow(F[i][2], 2) +
+                        Math.pow(F[i][3], 2) +
+                        Math.pow(F[i][4], 2) +
+                        Math.pow(F[i][5], 2)
+                    )
+                }
+
+                if (F_mag > 0 && spheres.children[F[i][0]] !== undefined) {
+                    to_draw.push([i,F_mag]);
+                }
+            }
+
+            const c = new THREE.Object3D();
+            forces.count = to_draw.length;
+
+            for ( let n = 0; n < to_draw.length; n ++ ) {
+                if ( n < max_forces ) { // only draw first 1000 forces
+                    let i = to_draw[n][0];
+                    let F_mag = to_draw[n][1];
+
+                    let a = spheres.children[F[i][0]].position;
+                    let b = spheres.children[F[i][1]].position;
+                    let distance = a.distanceTo(b);
+
+                    if (spheres.children[F[i][0]].visible && spheres.children[F[i][1]].visible) {
+                        if (distance < (radii[F[i][0]] + radii[F[i][1]])) { // ignore periodic boundaries
+                            let mid_point = new THREE.Vector3();
+                            mid_point.addVectors(a, b);
+                            mid_point.divideScalar(2);
+
+                            c.position.copy(mid_point);
+                            
+                            let scale = width; // nothing bigger than this
+                            if (F_mag < F_mag_max) { scale = width * F_mag / F_mag_max; }
+                            c.scale.set(scale,scale,distance);
+                            c.lookAt(a);
+                        }
+                        else {
+                            c.scale.set(0,0,0);
+                        }
+                    }
+                    else {
+                        c.scale.set(0,0,0);
+                    }
+                    c.updateMatrix();
+                    forces.setMatrixAt( n, c.matrix );
+                    // console.log(n, c.matrix)
+                
+                    // console.log(i)
+                }
+            }
+            // // hide anything else
+            // for ( let i=F.length; i<forces.children.length; i++){
+            //     forces.children[i].visible = false;
+            // }
+        }
+    }
+}
+
+
+export async function draw_force_network_DEP(S, params, scene) {
     if ( forces.children.length === 0) { 
         scene.add(forces);
     }
