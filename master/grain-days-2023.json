@@ -19,7 +19,7 @@
             "audio_delay" : 3000
         },
         {
-            "url": "two-particle-collision",
+            "url": "two-particle-collision?forces",
             "name": "Intro to 3D",
             "button_delay": 20000,
             "audio_track" : "two-particle-collision.mp3",
@@ -82,7 +82,7 @@
             "audio_delay" : 3000
         },
         {
-            "url": "pyramid",
+            "url": "pyramid?forces",
             "name": "Pyramid",
             "button_delay": 8000,
             "audio_track" : "pyramid.mp3",
