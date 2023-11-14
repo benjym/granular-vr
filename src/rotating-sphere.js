@@ -55,11 +55,7 @@ export let params = {
     F_mag_max: 2e6,
     friction_coefficient: 0.5,
     pressure: 0,
-    started: false,
-    old_time: 0,
-    new_time: 0,
     loading_direction: 1,
-    startTime: clock.getElapsedTime(),
     omega: 50,
 }
 
@@ -93,10 +89,8 @@ function reset_particles() {
     set_derived_properties();
     SPHERES.randomise_particles_isotropic(params, S);
     WALLS.add_cuboid_walls(params);
-    WALLS.update_isotropic_wall(params, S);
-    setup_CG();
-    params.started = false;
-    params.startTime = clock.getElapsedTime()
+    // WALLS.update_isotropic_wall(params, S);
+    // setup_CG();
 }
 export function init() {
     SPHERES.createNDParticleShader(params).then(main);
@@ -216,7 +210,7 @@ async function NDDEMPhysics() {
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
     await setup_NDDEM();
-    await setup_CG();
+    // await setup_CG();
 }
 
 async function setup_NDDEM() {

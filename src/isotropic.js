@@ -47,7 +47,7 @@ export let params = {
     quality: 5,
     vmax: 1, // max velocity to colour by
     omegamax: 20, // max rotation rate to colour by
-    loading_active: false,
+    loading_active: true,
     particle_density: 2700, // kg/m^3
     particle_opacity: 0.8,
     audio: false,
@@ -207,7 +207,7 @@ function new_load_path() {
 function animate() {
     renderer.setAnimationLoop(async function () {
         if ( visibility === 'visible' ) {
-            if (clock.getElapsedTime() - params.startTime > 3) { params.started = true; }
+            if (clock.getElapsedTime() - params.startTime > 3) { params.started = true;}
             // requestAnimationFrame( animate );
             S.simu_step_forward(5);
             SPHERES.move_spheres(S, params);
@@ -241,11 +241,11 @@ function animate() {
 
                     if ( params.loading_active ) { start_button.visible = false; stop_button.visible = true; }
                     else { start_button.visible = true; stop_button.visible = false;}
-                    await S.cg_param_read_timestep(0);
-                    await S.cg_process_timestep(0, false);
+                    S.cg_param_read_timestep(0);
+                    S.cg_process_timestep(0, false);
                     
-                    let rho = await S.cg_get_result(0, "RHO", 0);
-                    let p = await S.cg_get_result(0, "Pressure", 0);
+                    let rho = S.cg_get_result(0, "RHO", 0);
+                    let p = S.cg_get_result(0, "Pressure", 0);
                     // wait for awaits to resolve then get the actual data
                     let density = rho[0];
                     let pressure = p[0];

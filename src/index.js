@@ -242,9 +242,8 @@ export function move_to(v) {
         let url = arr[0]
         if (arr.length === 2) {
             extra_params = new URLSearchParams(arr[1]);
-            // console.log(extra_params)
         } else {
-            extra_params = undefined;
+            extra_params = new URLSearchParams('null');
         }
         console.log('CHANGING TO ' + apps.list[v].url)
         // extra_params = apps.list[v].params;
@@ -265,9 +264,8 @@ export function move_to(v) {
                 apps.current = index;
                 if (arr.length === 2) {
                     extra_params = new URLSearchParams(arr[1]);
-                    // console.log(extra_params)
                 } else {
-                    extra_params = undefined;
+                    extra_params = new URLSearchParams('null');
                 }
             }
         });

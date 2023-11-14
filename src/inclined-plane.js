@@ -81,7 +81,7 @@ function reset_particles() {
     SPHERES.randomise_particles_isotropic(params, S);
     WALLS.add_cuboid_walls(params);
     WALLS.update_isotropic_wall(params, S);
-    setup_CG();
+    // setup_CG();
 }
 export function init() {
     SPHERES.createNDParticleShader(params).then(main);
@@ -185,7 +185,7 @@ async function NDDEMPhysics() {
     await NDDEMCGLib.init(params.dimension, params.N);
     S = NDDEMCGLib.S;
     await setup_NDDEM();
-    await setup_CG();
+    // await setup_CG();
 }
 
 async function setup_NDDEM() {
