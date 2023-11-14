@@ -233,11 +233,23 @@ function onWindowResize() {
 
 export function move_to(v) {
     if (typeof v === 'number') {
-        console.log(apps.current)
+        if ( v > apps.list.length - 1 ) { v = 0; }
+        if ( v < 0 ) { v = apps.list.length - 1 }
+        // console.log(apps.current)
+        // console.log(apps.list[v].url)
         apps.current = v;
+        const arr = apps.list[v].url.split("?");
+        let url = arr[0]
+        if (arr.length === 2) {
+            extra_params = new URLSearchParams(arr[1]);
+            // console.log(extra_params)
+        } else {
+            extra_params = undefined;
+        }
         console.log('CHANGING TO ' + apps.list[v].url)
-        extra_params = apps.list[v].params;
-        import("./" + apps.list[v].url).then((module) => {
+        // extra_params = apps.list[v].params;
+
+        import("./" + url).then((module) => {
             wipe_scene().then(() => {
                 // visibility = 'visible';
                 module.init();
@@ -285,6 +297,17 @@ export function move_to(v) {
 
 }
 
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'o') {
+        move_to(apps.current - 1);
+    } else if (event.key === 'p') {
+        move_to(apps.current + 1);
+    } else if (event.key === 'm') {
+        move_to(0);
+    }
+});
+
+
 function load_json_apps() {
     fetch('master/' + master)
         .then( response => response.text() )
@@ -296,6 +319,8 @@ function load_json_apps() {
                 });
             }
             if (urlParams.has('desktop')) {
+                let buttonsContainer = document.getElementById("buttonsContainer");
+                buttonsContainer.style.visibility = 'hidden';
                 if (urlParams.has('fname')) {
                     move_to(urlParams.get('fname'));
                 }
