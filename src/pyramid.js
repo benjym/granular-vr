@@ -11,13 +11,14 @@ import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 import * as WALLS from "../libs/WallHandler";
 
-import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib, extra_params } from "./index";
 
 let S;
 
 var params = {
     dimension: 4,
     radius: 0.15,
+    r_min: 0.15,
     L: 500, //system size
     d4: { cur: 0, min: -0.3, max: 0.3 },
     lut: 'None',
@@ -93,9 +94,9 @@ async function update() {
             }
         }
         // console.log(SPHERES.spheres.children[params.N-1])
-        S.simu_step_forward(5);
+        if ( extra_params.has('forces') ) { SPHERES.draw_force_network(S, params, scene); }
+        S.simu_step_forward(15);
         SPHERES.move_spheres(S, params);
-        await SPHERES.draw_force_network(S, params, scene);
         renderer.render(scene, camera);
         // console.log(controls.player.position)
         CONTROLLERS.moveInD4(params, controls);
@@ -216,9 +217,9 @@ function setup_NDDEM() {
     S.simu_interpret_command("set GammaT " + String(vals.dissipation));
     S.simu_interpret_command("set Mu 0.5");
     S.simu_interpret_command("set Mu_wall 1");
-    S.simu_interpret_command("set damping 1e-3");
+    S.simu_interpret_command("set damping 1e-2");
     S.simu_interpret_command("set T 150");
-    S.simu_interpret_command("set dt " + String(tc / 20));
+    S.simu_interpret_command("set dt " + String(tc / 60));
     S.simu_interpret_command("set tdump 1000000"); // how often to calculate wall forces
     S.simu_interpret_command("auto skin");
     S.simu_finalise_init();

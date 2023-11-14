@@ -7,7 +7,7 @@ import * as BUTTONS from "../libs/buttons";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib, extra_params } from "./index";
 
 let S;
 let started = false;
@@ -15,6 +15,7 @@ let started = false;
 var params = {
     dimension: 3,
     radius: 0.5,
+    r_min: 0.5,
     L: 500, //system size
     lut: 'None',
     quality: 7,
@@ -59,7 +60,7 @@ async function update() {
         if ( controls !== undefined ) { controls.update() }
         S.simu_step_forward(5);
         SPHERES.move_spheres(S, params);
-        SPHERES.draw_force_network(S, params, scene);
+        if (extra_params.has('forces')) { SPHERES.draw_force_network(S, params, scene) }
 
         // if (AUDIO.listener !== undefined) {
         //     SPHERES.update_fixed_sounds(S, params);
