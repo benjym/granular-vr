@@ -78,7 +78,8 @@ function reset_particles() {
     S.simu_interpret_command("boundary 0 WALL -" + String(params.L) + " " + String(params.L));
 
     set_derived_properties();
-    SPHERES.randomise_particles_isotropic(params, S);
+    // SPHERES.randomise_particles_isotropic(params, S);
+    S.simu_randomDrop();
     WALLS.add_cuboid_walls(params);
     WALLS.update_isotropic_wall(params, S);
     // setup_CG();

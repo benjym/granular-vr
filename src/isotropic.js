@@ -88,7 +88,8 @@ function reset_particles() {
     params.vertical_displacement = 0;
     params.loading_direction = 1;
     set_derived_properties();
-    SPHERES.randomise_particles_isotropic(params, S);
+    // SPHERES.randomise_particles_isotropic(params, S);
+    S.simu_randomDrop();
     WALLS.add_cuboid_walls(params);
     WALLS.update_isotropic_wall(params, S);
     setup_CG();
