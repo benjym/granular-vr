@@ -18,6 +18,8 @@ import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib 
 
 let left_locked = true;
 let right_locked = true;
+let left_fired = false;
+let right_fired = false;
 let S;
 let sunk_balls = [];
 let button_added = false;
@@ -108,7 +110,7 @@ async function main() {
     });
     WALLS.add_shadows();
 
-    await SPHERES.add_spheres(S, params, scene);
+    SPHERES.add_spheres(S, params, scene);
     SPHERES.add_shadows();
 
     WALLS.update_isotropic_wall(params, S);
@@ -128,6 +130,8 @@ async function main() {
     gui.remove_me = true;
 
     renderer.setAnimationLoop(update)
+
+    
 }
         
 async function update() {
@@ -142,40 +146,10 @@ async function update() {
 
         if (controls.player.position.z < -params.L + offset) { controls.player.position.z = -params.L + offset; }
         else if (controls.player.position.z > params.L - offset) { controls.player.position.z = params.L - offset; }
+        
+        do_haptics();
 
-        if (controls.vrControls.controllerGrips.left !== undefined) {
-            let loc = new THREE.Vector3();
-            controls.vrControls.controllerGrips.left.getWorldPosition(loc);
-            // console.log( controls.vrControls.controllerGrips.left.position )
-            if ( left_locked ) {
-                S.simu_fixParticle(params.N - 1,
-                    [loc.x,
-                    loc.z,
-                    loc.y,
-                    params.d4.cur
-                    ]
-                );
-                await SPHERES.haptic_pulse(S, params, controls.vrControls.controls.left, params.N - 1);
-            }
-        }
-        if (controls.vrControls.controllerGrips.right !== undefined) {
-            let loc = new THREE.Vector3();
-            controls.vrControls.controllerGrips.right.getWorldPosition(loc);
-            if ( right_locked ) {
-                S.simu_fixParticle(params.N - 2,
-                    [loc.x,
-                    loc.z,
-                    loc.y,
-                    params.d4.cur
-                    ]
-                );
-                await SPHERES.haptic_pulse(S, params, controls.vrControls.controls.right, params.N - 2);
-            }
-        }
-
-
-
-        await check_side();
+        check_side();
 
         onFireLeftSphere();
 
@@ -186,12 +160,83 @@ async function update() {
     }
 }
 
+function do_haptics() {
+    if (controls.vrControls.controllers.left !== undefined) {
+        let loc = new THREE.Vector3();
+        controls.vrControls.controllers.left.getWorldPosition(loc);
+        
+        if ( left_locked ) {
+            S.simu_fixParticle(params.N - 1,
+                [loc.x,
+                loc.z,
+                loc.y,
+                params.d4.cur
+                ]
+            );
+            SPHERES.haptic_pulse(S, params, controls.vrControls.controllers.left, params.N - 1);
+        }
+    }
+    if (controls.vrControls.controllers.right !== undefined) {
+        let loc = new THREE.Vector3();
+        controls.vrControls.controllers.right.getWorldPosition(loc);
+        if ( right_locked ) {
+            S.simu_fixParticle(params.N - 2,
+                [loc.x,
+                loc.z,
+                loc.y,
+                params.d4.cur
+                ]
+            );
+            SPHERES.haptic_pulse(S, params, controls.vrControls.controllers.right, params.N - 2);
+        }
+    }
+}
+
 function onFireLeftSphere() {
+    if ( controls.vrControls.controllers.left.gamepad.buttons[0].pressed ) {
+        left_locked = false;
+        if (left_fired) {
+            left_fired = false;
+        }
+    }
+    else {
+        left_locked = true;
+    }
     // console.log('AASFAKJSGHFKDALJH')
-    if ( left_locked ) {
-        console.log(controls.vrControls.controllerGrips.left)
-        // S.simu_setVelocity(params.N - 2, 
-        // left_locked = false;
+    if ( !left_locked && !left_fired ) {
+        // console.log(controls.vrControls.controllerGrips.left)
+        let loc = new THREE.Vector3();
+        controls.vrControls.controllerGrips.left.getWorldDirection(loc);
+        // loc.applyEuler( new THREE.Euler( Math.PI/2,0,0, 'XYZ' ) );
+        loc.multiplyScalar(10);
+        // S.simu_setExternalForce(params.N - 1, 5, [loc.x, loc.y, loc.z, 0]);
+        S.simu_setVelocity(params.N - 1, [loc.x, loc.y, loc.z, 0]);
+        // S.simu_setVelocity(params.N - 1, [10, 0, 0, 0]); 
+        // console.log(loc)
+        left_fired = true;
+    }
+
+    if ( controls.vrControls.controllers.right.gamepad.buttons[0].pressed ) {
+        right_locked = false;
+        if (right_fired) {
+            right_fired = false;
+        }
+    }
+    else {
+        right_locked = true;
+    }
+    // console.log('AASFAKJSGHFKDALJH')
+    if ( !right_locked && !right_fired ) {
+        console.log(controls.vrControls.controllerGrips.right)
+        let loc = new THREE.Vector3();
+        controls.vrControls.controllerGrips.right.getWorldDirection(loc);
+        // loc.applyEuler( new THREE.Euler( Math.PI/2,0,0, 'XYZ' ) );
+        loc.multiplyScalar(10);
+        // S.simu_setExternalForce(params.N - 1, 5, [loc.x, loc.y, loc.z, 0]);
+        S.simu_setVelocity(params.N - 2, [loc.x, loc.y, loc.z, 0]);
+        // S.simu_setVelocity(params.N - 1, [10, 0, 0, 0]); 
+        // console.log(loc)
+        right_fired = true;
     }
 }
 

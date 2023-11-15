@@ -579,35 +579,37 @@ export async function haptic_pulse(S, params, controller, NDDEM_index) {
     } else {
         F_mag_max = 1e0;
     }
+    
+    if (controller.gamepad.hapticActuators !== undefined) {
+        if ( controller.gamepad.hapticActuators.length > 0) {
 
-    if ("hapticActuators" in controller.gamepad && controller.gamepad.hapticActuators.length > 0) {
-
-        var F = await S.simu_getContactInfos(0x80 | 0x100);
-        for (let i = 0; i < F.length; i++) {
-            if (F[i][0] === NDDEM_index || F[i][1] || NDDEM_index) {
-                let F_mag;
-                if (params.dimension === 2) {
-                    F_mag = Math.sqrt(
-                        Math.pow(F[i][2], 2) +
-                        Math.pow(F[i][3], 2)
-                    )
+            var F = await S.simu_getContactInfos(0x80 | 0x100);
+            for (let i = 0; i < F.length; i++) {
+                if (F[i][0] === NDDEM_index || F[i][1] || NDDEM_index) {
+                    let F_mag;
+                    if (params.dimension === 2) {
+                        F_mag = Math.sqrt(
+                            Math.pow(F[i][2], 2) +
+                            Math.pow(F[i][3], 2)
+                        )
+                    }
+                    else if (params.dimension === 3) {
+                        F_mag = Math.sqrt(
+                            Math.pow(F[i][2], 2) +
+                            Math.pow(F[i][3], 2) +
+                            Math.pow(F[i][4], 2)
+                        )
+                    }
+                    else if (params.dimension === 4) {
+                        F_mag = Math.sqrt(
+                            Math.pow(F[i][2], 2) +
+                            Math.pow(F[i][3], 2) +
+                            Math.pow(F[i][4], 2) +
+                            Math.pow(F[i][5], 2)
+                        )
+                    }
+                    controller.gamepad.hapticActuators[0].pulse(F_mag / F_mag_max, 100);
                 }
-                else if (params.dimension === 3) {
-                    F_mag = Math.sqrt(
-                        Math.pow(F[i][2], 2) +
-                        Math.pow(F[i][3], 2) +
-                        Math.pow(F[i][4], 2)
-                    )
-                }
-                else if (params.dimension === 4) {
-                    F_mag = Math.sqrt(
-                        Math.pow(F[i][2], 2) +
-                        Math.pow(F[i][3], 2) +
-                        Math.pow(F[i][4], 2) +
-                        Math.pow(F[i][5], 2)
-                    )
-                }
-                controller.gamepad.hapticActuators[0].pulse(F_mag / F_mag_max, 100);
             }
         }
     }
