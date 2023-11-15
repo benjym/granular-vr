@@ -96,6 +96,13 @@
             "audio_delay" : 3000
         },
         {
+            "url": "dam-break",
+            "name": "Dam break",
+            "button_delay": 30000,
+            "audio_track" : "tennis.mp3",
+            "audio_delay" : 3000
+        },
+        {
             "url": "4d-pool",
             "name": "4D pool",
             "audio_track" : "4d-pool.mp3",
