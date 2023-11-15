@@ -564,7 +564,7 @@ export async function randomise_particles(params, S) {
 export async function randomise_particles_isotropic(params, S) {
     if (S !== undefined) {
         for (let i = 0; i < params.N; i++) {
-            await S.simu_fixParticle(i, [
+            S.simu_fixParticle(i, [
                 -params.L + params.r_max + Math.random() * 2 * (params.L - params.r_max),
                 -params.L + params.r_max + Math.random() * 2 * (params.L - params.r_max),
                 params.r_max + Math.random() * 2 * (params.H - params.r_max)]);

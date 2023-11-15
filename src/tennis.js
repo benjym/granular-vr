@@ -147,11 +147,12 @@ async function update() {
         if (controls.player.position.z < -params.L + offset) { controls.player.position.z = -params.L + offset; }
         else if (controls.player.position.z > params.L - offset) { controls.player.position.z = params.L - offset; }
         
-        do_haptics();
+        if (controls.vrControls.controllers.right !== undefined) {
+            do_haptics();
+            onFireLeftSphere();
+        }
 
-        check_side();
-
-        onFireLeftSphere();
+        check_side();      
 
         if ( controls !== undefined ) { controls.update() }
         renderer.render(scene, camera);
