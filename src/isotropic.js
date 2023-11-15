@@ -173,7 +173,7 @@ async function main() {
     stop_button = BUTTONS.add_action_button('loading_active', 'Stop loading', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
     stop_button.rotateY(Math.PI / 2.);
     stop_button.visible = false;
-    // make_graph();
+
     WALLS.update_isotropic_wall(params, S);
     animate();
 
@@ -241,28 +241,8 @@ function animate() {
 
                     if ( params.loading_active ) { start_button.visible = false; stop_button.visible = true; }
                     else { start_button.visible = true; stop_button.visible = false;}
-                    S.cg_param_read_timestep(0);
-                    S.cg_process_timestep(0, false);
                     
-                    let rho = S.cg_get_result(0, "RHO", 0);
-                    let p = S.cg_get_result(0, "Pressure", 0);
-                    // wait for awaits to resolve then get the actual data
-                    let density = rho[0];
-                    let pressure = p[0];
-                    if ( density > 0 && pressure > 0 ) { // sometimes it returns
-                        params.pressure = pressure;
-
-                        let packing_fraction = density / params.particle_density;
-                        let x = ((packing_fraction - 0.4) / (0.65 - 0.4));
-                        // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
-                        let y = params.pressure / params.target_stress; // value between 0 and 1
-                        
-                        if ( x > 0 && x < 1 && y > 0 && y < 1) {
-                            GRAPHS.update_data(x, y);//, data_point_colour);
-                        }
-
-                        // console.log(density, params.particle_density, params.pressure, params.target_stress, x, y);
-                    }
+                    update_graph();
 
                 }
             }
@@ -284,6 +264,31 @@ async function NDDEMPhysics() {
     S = NDDEMCGLib.S;
     await setup_NDDEM();
     await setup_CG();
+}
+
+async function update_graph() {
+    S.cg_param_read_timestep(0);
+    S.cg_process_timestep(0, false);
+    
+    let rho = await S.cg_get_result(0, "RHO", 0);
+    let p = await S.cg_get_result(0, "Pressure", 0);
+    // wait for awaits to resolve then get the actual data
+    let density = rho[0];
+    let pressure = p[0];
+    if ( density > 0 && pressure > 0 ) { // sometimes it returns
+        params.pressure = pressure;
+
+        let packing_fraction = density / params.particle_density;
+        let x = ((packing_fraction - 0.4) / (0.65 - 0.4));
+        // let y = (pressure - params.unloading_stress) / (params.target_stress - params.unloading_stress); // value between 0 and 1
+        let y = params.pressure / params.target_stress; // value between 0 and 1
+        
+        if ( x > 0 && x < 1 && y > 0 && y < 1) {
+            GRAPHS.update_data(x, y);//, data_point_colour);
+        }
+
+        console.log(density, params.particle_density, params.pressure, params.target_stress, x, y);
+    }
 }
 
 async function setup_NDDEM() {
