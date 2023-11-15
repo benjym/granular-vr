@@ -202,17 +202,18 @@ function onFireLeftSphere() {
     else {
         left_locked = true;
     }
-    // console.log('AASFAKJSGHFKDALJH')
+
     if ( !left_locked && !left_fired ) {
-        // console.log(controls.vrControls.controllerGrips.left)
-        let loc = new THREE.Vector3();
-        controls.vrControls.controllerGrips.left.getWorldDirection(loc);
-        // loc.applyEuler( new THREE.Euler( Math.PI/2,0,0, 'XYZ' ) );
+        let quaternion = controls.vrControls.controllerGrips.left.quaternion;
+
+        // Default direction vector (pointing in -Z direction)
+        let loc = new THREE.Vector3(0, 0, -1);
+
+        // Apply the quaternion to the direction vector
+        loc.applyQuaternion(quaternion);
         loc.multiplyScalar(10);
-        // S.simu_setExternalForce(params.N - 1, 5, [loc.x, loc.y, loc.z, 0]);
-        S.simu_setVelocity(params.N - 1, [loc.x, loc.y, loc.z, 0]);
-        // S.simu_setVelocity(params.N - 1, [10, 0, 0, 0]); 
-        // console.log(loc)
+        S.simu_setVelocity(params.N - 1, [loc.x, loc.z, loc.y, 0]);
+        
         left_fired = true;
     }
 
@@ -227,15 +228,15 @@ function onFireLeftSphere() {
     }
     // console.log('AASFAKJSGHFKDALJH')
     if ( !right_locked && !right_fired ) {
-        console.log(controls.vrControls.controllerGrips.right)
-        let loc = new THREE.Vector3();
-        controls.vrControls.controllerGrips.right.getWorldDirection(loc);
-        // loc.applyEuler( new THREE.Euler( Math.PI/2,0,0, 'XYZ' ) );
+        let quaternion = controls.vrControls.controllerGrips.right.quaternion;
+
+        // Default direction vector (pointing in -Z direction)
+        let loc = new THREE.Vector3(0, 0, -1);
+
+        // Apply the quaternion to the direction vector
+        loc.applyQuaternion(quaternion);
         loc.multiplyScalar(10);
-        // S.simu_setExternalForce(params.N - 1, 5, [loc.x, loc.y, loc.z, 0]);
-        S.simu_setVelocity(params.N - 2, [loc.x, loc.y, loc.z, 0]);
-        // S.simu_setVelocity(params.N - 1, [10, 0, 0, 0]); 
-        // console.log(loc)
+        S.simu_setVelocity(params.N - 2, [loc.x, loc.z, loc.y, 0]);
         right_fired = true;
     }
 }
@@ -315,7 +316,7 @@ async function check_side() {
     for (let i = 0; i < params.N - 2; i++) {
         // var object = SPHERES.spheres.children[i];
 
-        if (!sunk_balls.includes(i) && SPHERES.spheres.length > 0) {
+        if (!sunk_balls.includes(i) && SPHERES.spheres.children.length > 0) {
             if (SPHERES.spheres.children[i].position.z < 0) {
                 let balls_left = params.N - 3 - sunk_balls.length;
 
