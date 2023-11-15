@@ -638,7 +638,8 @@ export async function draw_force_network(S, params, scene) {
             }
 
             // step 1: work out how many to draw
-            let to_draw = [];
+            const c = new THREE.Object3D();
+            let n = 0;
             for (let i = 0; i < F.length; i++) {
                 // forces.children[i].visible = false;
                 // for ( let i = 0; i < 100; i ++ ) {
@@ -666,18 +667,6 @@ export async function draw_force_network(S, params, scene) {
                 }
 
                 if (F_mag > 0 && spheres.children[F[i][0]] !== undefined) {
-                    to_draw.push([i,F_mag]);
-                }
-            }
-
-            const c = new THREE.Object3D();
-            forces.count = to_draw.length;
-
-            for ( let n = 0; n < to_draw.length; n ++ ) {
-                if ( n < max_forces ) { // only draw first 1000 forces
-                    let i = to_draw[n][0];
-                    let F_mag = to_draw[n][1];
-
                     let a = spheres.children[F[i][0]].position;
                     let b = spheres.children[F[i][1]].position;
                     let distance = a.distanceTo(b);
@@ -694,25 +683,19 @@ export async function draw_force_network(S, params, scene) {
                             if (F_mag < F_mag_max) { scale = width * F_mag / F_mag_max; }
                             c.scale.set(scale,scale,distance);
                             c.lookAt(a);
-                        }
-                        else {
-                            c.scale.set(0,0,0);
+
+                            c.updateMatrix();
+                            forces.setMatrixAt( n, c.matrix );
+                            n += 1;
+        
                         }
                     }
-                    else {
-                        c.scale.set(0,0,0);
-                    }
-                    c.updateMatrix();
-                    forces.setMatrixAt( n, c.matrix );
-                    // console.log(n, c.matrix)
-                
-                    // console.log(i)
+                    
                 }
             }
-            // // hide anything else
-            // for ( let i=F.length; i<forces.children.length; i++){
-            //     forces.children[i].visible = false;
-            // }
+
+            if ( n > max_forces ) { n = max_forces }// only draw first max_forces forces         
+            forces.count = n;
         }
     }
 }

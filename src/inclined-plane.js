@@ -12,7 +12,7 @@ import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib, extra_params } from "./index";
 
 let S;
 
@@ -168,10 +168,10 @@ function animate() {
         if ( visibility === 'visible' ) {
             S.simu_step_forward(5);
             SPHERES.move_spheres(S, params);
-            SPHERES.draw_force_network(S, params, scene);
+            if (extra_params.has('forces')) { SPHERES.draw_force_network(S, params, scene); }
             if ( controls !== undefined ) {
                 controls.update();
-                CONTROLLERS.toggleParticleOpacity(params,controls);
+                // CONTROLLERS.toggleParticleOpacity(params,controls);
             }
         }
         renderer.render(scene, camera);
@@ -218,7 +218,7 @@ async function setup_NDDEM() {
             S.simu_setRadius(n, params.r_max);
             S.simu_setFrozen(n);
             n++;
-            console.log(n)
+            // console.log(n)
         }
     }
     for (let i=n; i<params.N; i++) {
@@ -253,30 +253,30 @@ async function setup_NDDEM() {
     await S.simu_finalise_init();
 }
 
-async function setup_CG() {
-    var cgparam = {};
-    cgparam["file"] = [{ "filename": "none", "content": "particles", "format": "interactive", "number": 1 }];
-    cgparam["boxes"] = [1, 1, 1];
-    // cgparam["boundaries"]=[[-params.L,-params.L,-params.L],[params.L,params.L,params.L]] ;
-    cgparam["boundaries"] = [
-        [-params.L / 2., -params.L / 2., params.boxratio * params.L / 2.],
-        [params.L / 2., params.L / 2., 3 * params.boxratio * params.L / 2.]];
-    // [-params.L+params.r_max,-params.L+params.r_max,-params.L+params.r_max],
-    // [ params.L-params.r_max, params.L-params.r_max, params.L-params.r_max]] ;
+// async function setup_CG() {
+//     var cgparam = {};
+//     cgparam["file"] = [{ "filename": "none", "content": "particles", "format": "interactive", "number": 1 }];
+//     cgparam["boxes"] = [1, 1, 1];
+//     // cgparam["boundaries"]=[[-params.L,-params.L,-params.L],[params.L,params.L,params.L]] ;
+//     cgparam["boundaries"] = [
+//         [-params.L / 2., -params.L / 2., params.boxratio * params.L / 2.],
+//         [params.L / 2., params.L / 2., 3 * params.boxratio * params.L / 2.]];
+//     // [-params.L+params.r_max,-params.L+params.r_max,-params.L+params.r_max],
+//     // [ params.L-params.r_max, params.L-params.r_max, params.L-params.r_max]] ;
 
-    cgparam["window size"] = params.L / 2.;
-    cgparam["skip"] = 0;
-    cgparam["max time"] = 1;
-    cgparam["time average"] = "None";
-    cgparam["fields"] = ["RHO", "TC"];
-    cgparam["periodicity"] = [false, false, false];
-    cgparam["window"] = "Lucy3D";
-    cgparam["dimension"] = 3;
+//     cgparam["window size"] = params.L / 2.;
+//     cgparam["skip"] = 0;
+//     cgparam["max time"] = 1;
+//     cgparam["time average"] = "None";
+//     cgparam["fields"] = ["RHO", "TC"];
+//     cgparam["periodicity"] = [false, false, false];
+//     cgparam["window"] = "Lucy3D";
+//     cgparam["dimension"] = 3;
 
 
-    // console.log(JSON.stringify(cgparam)) ;
-    await S.cg_param_from_json_string(JSON.stringify(cgparam));
-    await S.cg_setup_CG();
-}
+//     // console.log(JSON.stringify(cgparam)) ;
+//     await S.cg_param_from_json_string(JSON.stringify(cgparam));
+//     await S.cg_setup_CG();
+// }
 
 // main();

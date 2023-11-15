@@ -12,7 +12,7 @@ import * as GRAPHS from "../libs/graphs";
 import * as AUDIO from "../libs/audio";
 import * as LIGHTS from "../libs/lights";
 
-import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib } from "./index";
+import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib, extra_params } from "./index";
 
 let S;
 
@@ -194,7 +194,7 @@ function animate() {
         if ( visibility === 'visible' ) {
             S.simu_step_forward(5);
             SPHERES.move_spheres(S, params);
-            SPHERES.draw_force_network(S, params, scene);
+            if (extra_params.has('forces')) { SPHERES.draw_force_network(S, params, scene); }
 
             boundary.rotateY(-params.omega*1e-3/20*5);
         }
