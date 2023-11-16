@@ -1,0 +1,22 @@
+"use strict";
+/*
+ * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(self["webpackChunkgranular_vr"] = self["webpackChunkgranular_vr"] || []).push([["src_controller_js"],{
+
+/***/ "./src/controller.js":
+/*!***************************!*\
+  !*** ./src/controller.js ***!
+  \***************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var json5__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! json5 */ \"./node_modules/json5/dist/index.js\");\n/* harmony import */ var json5__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(json5__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var socket_io_client__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! socket.io-client */ \"./node_modules/socket.io-client/build/esm/index.js\");\n\n\n\nlet server = 'https://snowy-surf-elk.glitch.me/'\nlet apps;\nlet socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_1__.io)(server);\n\nfunction init() {\n    fetch('master/' + master + '.json')\n        .then( response => response.text() )\n        .then(text => {\n            apps = json5__WEBPACK_IMPORTED_MODULE_0___default().parse(text);\n            let links = [];\n            apps.list.forEach( (val, index) => {\n                if ( val.url !== 'menu' ) {\n                    // BUTTONS.add_scene_change_button(val.url, String(index) + '. ' + val.name, controls, scene, [0, height - 0.2*index, 0], 0.3, [0, 0, 0]);\n                    links.push({\n                        href: val.url,\n                        text: String(index) + '. ' + val.name })\n                }\n            });\n\n            // Create full-screen div\n            const fullScreenDiv = document.createElement('div');\n            fullScreenDiv.style.position = 'fixed';\n            fullScreenDiv.style.top = '0';\n            fullScreenDiv.style.left = '0';\n            fullScreenDiv.style.width = '100%';\n            fullScreenDiv.style.height = '100%';\n            fullScreenDiv.style.backgroundColor = 'black';\n            // fullScreenDiv.style.zIndex = '1000'; // High z-index to overlay content\n            fullScreenDiv.style.display = 'flex';\n            fullScreenDiv.style.justifyContent = 'center';\n            fullScreenDiv.style.alignItems = 'center';\n\n            // Create and populate the list\n            const list = document.createElement('ul');\n            list.style.listStyle = 'none';\n            list.style.color = 'white'; // Example styling\n            socket.on(\"connect\", () => {\n                console.log('Connected to socket.io server')\n                links.forEach(link => {\n                    const listItem = document.createElement('li');\n                    const anchor = document.createElement('a');\n                    anchor.addEventListener('click', (e) => {\n                        e.preventDefault(); // Prevent default link behavior\n                        socket.emit('send_move', link.href);\n                        console.log('emitted send_move ' + link.href )\n                    });\n                    anchor.href = '#';\n                    anchor.textContent = link.text;\n                    anchor.style.color = 'white'; // Example styling\n\n                    listItem.appendChild(anchor);\n                    list.appendChild(listItem);\n                });\n\n                // Append the list to the full-screen div\n                fullScreenDiv.appendChild(list);\n\n                // Append the full-screen div to the body\n                document.body.appendChild(fullScreenDiv);\n                console.log('HI!')\n            });\n        });\n    }\n\nlet master = 'grain-days-2023'\n\ninit();\n\n//# sourceURL=webpack://granular-vr/./src/controller.js?");
+
+/***/ })
+
+}]);
