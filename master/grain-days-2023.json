@@ -29,7 +29,7 @@
             "url": "isotropic",
             "name": "Squeezing lots of grains",
             "button_delay": 20000,
-            "audio_track" : "isotropic.mp3",
+            "audio_track" : "isotropic-grain-days.mp3",
             "audio_delay" : 3000
         },
         {
@@ -99,7 +99,7 @@
             "url": "dam-break",
             "name": "Dam break",
             "button_delay": 30000,
-            "audio_track" : "tennis.mp3",
+            "audio_track" : "dam-break.mp3",
             "audio_delay" : 3000
         },
         {
