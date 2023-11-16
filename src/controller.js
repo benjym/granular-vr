@@ -1,3 +1,4 @@
+import css from "../css/controller.css"
 import JSON5 from "json5";
 import { io } from "socket.io-client";
 
@@ -26,21 +27,9 @@ function init() {
 
             // Create full-screen div
             const fullScreenDiv = document.createElement('div');
-            fullScreenDiv.style.position = 'fixed';
-            fullScreenDiv.style.top = '0';
-            fullScreenDiv.style.left = '0';
-            fullScreenDiv.style.width = '100%';
-            fullScreenDiv.style.height = '100%';
-            fullScreenDiv.style.backgroundColor = 'black';
-            // fullScreenDiv.style.zIndex = '1000'; // High z-index to overlay content
-            fullScreenDiv.style.display = 'flex';
-            fullScreenDiv.style.justifyContent = 'center';
-            fullScreenDiv.style.alignItems = 'center';
 
             // Create and populate the list
             const list = document.createElement('ul');
-            list.style.listStyle = 'none';
-            list.style.color = 'white'; // Example styling
             
                 links.forEach(link => {
                     const listItem = document.createElement('li');
@@ -52,7 +41,6 @@ function init() {
                     });
                     anchor.href = '#';
                     anchor.textContent = link.text;
-                    anchor.style.color = 'white'; // Example styling
 
                     listItem.appendChild(anchor);
                     list.appendChild(listItem);
@@ -63,7 +51,7 @@ function init() {
 
                 // Append the full-screen div to the body
                 document.body.appendChild(fullScreenDiv);
-                console.log('HI!')
+                // console.log('HI!')
             // });
         });
     }

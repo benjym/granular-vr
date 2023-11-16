@@ -1,0 +1,23 @@
+div {
+    position : fixed;
+    top : 0;
+    left : 0;
+    width : 100%;
+    height : 100%;
+    background-color : black;
+    display : flex;
+    justify-content : center;
+    align-items : center;
+}
+
+ul {
+    list-style: none;
+    /* color : 'white'; */
+}
+
+a {
+    color : white;
+    line-height : 200%;
+    font-size: large;
+    font-family: 'Montserrat', sans-serif;
+}

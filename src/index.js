@@ -109,7 +109,7 @@ async function add_common_properties() {
     socket.on("connect", () => {
         console.log('Connected to socket.io server')
         socket.on('receive_move', (dest) => {
-            console.log('received move to ' + dest)
+            console.log('received move to ' + dest);
             move_to(dest)
         });
     });
