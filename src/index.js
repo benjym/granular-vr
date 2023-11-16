@@ -196,9 +196,17 @@ async function wipe_scene() {
         controls.interaction.selectEndHandlers = {};
         controls.interaction.selectableObjects = [];
 
+        controls.player.position.x = 0
+        controls.player.position.z = 2
+        controls.player.rotation.x = 0
+        controls.player.rotation.y = 0
+        controls.player.rotation.z = 0
+
         SPHERES.reset_spheres();
         RAYCAST.reset_ghosts();
         WALLS.update_d4();
+
+
     }
 
     AUDIO.end_current_track();
