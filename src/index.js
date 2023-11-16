@@ -106,6 +106,14 @@ async function add_common_properties() {
 
     window.addEventListener('resize', onWindowResize, false);
 
+    socket.on("connect", () => {
+        console.log('Connected to socket.io server')
+        socket.on('receive_move', (dest) => {
+            console.log('received move to ' + dest)
+            move_to(dest)
+        });
+    });
+
 
     // BELOW CODE IS MEANT TO FIRE WHEN HEADSET IS TAKEN ON/OFF. SHOULD ADD params.paused VALUES AND MAKE SURE params.paused STOPS UPDATE LOOPS WHERE IT CAN?
     renderer.xr.addEventListener('sessionstart', function () {
@@ -295,14 +303,6 @@ export function move_to(v) {
         if ( apps.list[apps.current].audio_delay === undefined ) { apps.list[apps.current].audio_delay = 3000;}
         AUDIO.play_track(apps.list[apps.current].audio_track, scene, apps.list[apps.current].audio_delay);
     }
-
-    socket.on("connect", () => {
-        console.log('Connected to socket.io server')
-        socket.on('receive_move', (dest) => {
-            console.log('received move to ' + dest)
-            move_to(dest)
-        });
-    });
 
 }
 

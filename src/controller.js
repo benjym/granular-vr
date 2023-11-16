@@ -5,6 +5,10 @@ let server = 'https://snowy-surf-elk.glitch.me/'
 let apps;
 let socket = io(server);
 
+socket.on("connect", () => {
+    console.log('Connected to socket.io server')
+});
+
 function init() {
     fetch('master/' + master + '.json')
         .then( response => response.text() )
@@ -37,8 +41,7 @@ function init() {
             const list = document.createElement('ul');
             list.style.listStyle = 'none';
             list.style.color = 'white'; // Example styling
-            socket.on("connect", () => {
-                console.log('Connected to socket.io server')
+            
                 links.forEach(link => {
                     const listItem = document.createElement('li');
                     const anchor = document.createElement('a');
@@ -61,10 +64,13 @@ function init() {
                 // Append the full-screen div to the body
                 document.body.appendChild(fullScreenDiv);
                 console.log('HI!')
-            });
+            // });
         });
     }
 
-let master = 'grain-days-2023'
+let urlParams = new URLSearchParams(window.location.search);
+let master;
+if ( urlParams.has('master') ) { master = urlParams.get('master') }
+else { master = "grain-days-2023"; }
 
 init();
