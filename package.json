@@ -41,6 +41,8 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "json5": "^2.2.3",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
     "three": "^0.143.0"
   }
 }

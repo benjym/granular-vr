@@ -20,6 +20,7 @@ module.exports = [
       "hyperspheres": './src/hyperspheres.js',
       "two-particle-collision": './src/two-particle-collision.js',
       "2d-rain": './src/2d-rain.js',
+      "controller": './src/controller.js',
     },
     plugins: [
       new webpack.ProvidePlugin({
@@ -107,6 +108,13 @@ module.exports = [
         template: "index.html",
         filename: "2d-rain.html",
         chunks: ['2d-rain']
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Controller',
+        favicon: "./resources/favicon512.png",
+        template: "index.html",
+        filename: "controller.html",
+        chunks: ['controller']
       })
     ],
     resolve: {

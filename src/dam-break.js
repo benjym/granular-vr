@@ -64,6 +64,7 @@ export let params = {
 }
 
 function set_derived_properties() {
+    
     params.average_radius = (params.r_min + params.r_max) / 2.;
     params.thickness = 0.0001;//params.average_radius;
 

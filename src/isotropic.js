@@ -168,12 +168,12 @@ async function main() {
 
     gui.remove_me = true;
 
-    start_button = BUTTONS.add_action_button('loading_active', 'Start loading', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
-    start_button.rotateY(Math.PI / 2.);
+    // start_button = BUTTONS.add_action_button('loading_active', 'Start loading', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
+    // start_button.rotateY(Math.PI / 2.);
 
-    stop_button = BUTTONS.add_action_button('loading_active', 'Stop loading', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
-    stop_button.rotateY(Math.PI / 2.);
-    stop_button.visible = false;
+    // stop_button = BUTTONS.add_action_button('loading_active', 'Stop loading', CONTROLLERS.selectStartLoading.bind(null, params), CONTROLLERS.selectEndLoading.bind(null, params), CONTROLLERS.intersectLoading.bind(null, params), [-2, 1.6, 2.5 * params.L], 1, controls, scene);
+    // stop_button.rotateY(Math.PI / 2.);
+    // stop_button.visible = false;
 
     WALLS.update_isotropic_wall(params, S);
     animate();
@@ -240,8 +240,8 @@ function animate() {
                     // console.log(params.r_min)
                     SPHERES.draw_force_network(S, params, scene);
 
-                    if ( params.loading_active ) { start_button.visible = false; stop_button.visible = true; }
-                    else { start_button.visible = true; stop_button.visible = false;}
+                    // if ( params.loading_active ) { start_button.visible = false; stop_button.visible = true; }
+                    // else { start_button.visible = true; stop_button.visible = false;}
                     
                     update_graph();
 
@@ -288,7 +288,7 @@ async function update_graph() {
             GRAPHS.update_data(x, y);//, data_point_colour);
         }
 
-        console.log(density, params.particle_density, params.pressure, params.target_stress, x, y);
+        // console.log(density, params.particle_density, params.pressure, params.target_stress, x, y);
     }
 }
 

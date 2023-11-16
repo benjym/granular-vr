@@ -212,7 +212,7 @@ function onFireLeftSphere() {
 
         // Apply the quaternion to the direction vector
         loc.applyQuaternion(quaternion);
-        loc.multiplyScalar(10);
+        loc.multiplyScalar(20);
         S.simu_setVelocity(params.N - 1, [loc.x, loc.z, loc.y, 0]);
         
         left_fired = true;

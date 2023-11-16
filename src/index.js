@@ -1,5 +1,6 @@
 import css from "../css/main.css";
 import JSON5 from "json5";
+import { io } from "socket.io-client";
 
 // import ImmersiveControls from '@depasquale/three-immersive-controls';
 import ImmersiveControls from '../libs/three-immersive-controls';
@@ -24,6 +25,8 @@ import * as RAYCAST from "../libs/RaycastHandler";
 //   window.history.replaceState(initialState, '', initialUrl);
 // });
 
+let server = 'https://snowy-surf-elk.glitch.me/'
+let socket = io(server);
 
 function replaceQueryParam(param, newval, search) {
     var regex = new RegExp("([?;&])" + param + "[^&;]*[;&]?");
@@ -292,6 +295,14 @@ export function move_to(v) {
         if ( apps.list[apps.current].audio_delay === undefined ) { apps.list[apps.current].audio_delay = 3000;}
         AUDIO.play_track(apps.list[apps.current].audio_track, scene, apps.list[apps.current].audio_delay);
     }
+
+    socket.on("connect", () => {
+        console.log('Connected to socket.io server')
+        socket.on('receive_move', (dest) => {
+            console.log('received move to ' + dest)
+            move_to(dest)
+        });
+    });
 
 }
 
