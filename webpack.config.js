@@ -30,6 +30,7 @@ module.exports = [
       new CopyPlugin({
         patterns: [
           { from: path.resolve(__dirname, "master/*.json"), },
+          { from: path.resolve(__dirname, "text_to_speech/*.mp3"), },
         ],
       }),
       new HtmlWebpackPlugin({

@@ -1,6 +1,5 @@
 import css from "../css/main.css";
 import pool_css from "../css/pool.css";
-import track from "../text-to-speech/3d-pool.mp3";
 import table from "../resources/4d-pool.stl";
 import nice_table from "../resources/pool.glb";
 

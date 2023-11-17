@@ -1,5 +1,4 @@
 import css from "../css/main.css";
-import track from "../text-to-speech/inclined-plane.mp3";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import ImmersiveControls from '@depasquale/three-immersive-controls';
@@ -23,7 +22,7 @@ export let params = {
     // H: 0.05,
     boxratio: 2,
     initial_packing_fraction: 0.5,
-    N: 500,
+    N: 300,
     epsilonv: 0,
     gravity: false,
     g_mag: 1e1,
@@ -222,7 +221,7 @@ async function setup_NDDEM() {
     S.simu_interpret_command("auto skin");
     // console.log(params.L, params.H)
     S.simu_interpret_command("boundary 0 WALL -" + String(params.L) + " " + String(params.L));
-    S.simu_interpret_command("boundary 1 PBC -" + String(params.L) + " " + String(params.L));
+    S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
     S.simu_interpret_command("boundary 2 WALL 0 " + String(2 * params.H));
     
     S.simu_interpret_command("gravity " + String(-params.g_mag*Math.sin(params.theta*Math.PI/180.)) + " 0 " + String(-params.g_mag*Math.cos(params.theta*Math.PI/180.)))

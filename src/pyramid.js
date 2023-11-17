@@ -95,7 +95,7 @@ async function update() {
         }
         // console.log(SPHERES.spheres.children[params.N-1])
         if ( extra_params.has('forces') ) { SPHERES.draw_force_network(S, params, scene); }
-        S.simu_step_forward(15);
+        S.simu_step_forward(25);
         SPHERES.move_spheres(S, params);
         renderer.render(scene, camera);
         // console.log(controls.player.position)

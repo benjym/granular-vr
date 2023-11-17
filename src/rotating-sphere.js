@@ -25,7 +25,7 @@ export let params = {
     // H: 0.05,
     boxratio: 1.5,
     initial_packing_fraction: 0.27,
-    N: 500,
+    N: 300,
     epsilonv: 0,
     gravity: false,
     paused: false,

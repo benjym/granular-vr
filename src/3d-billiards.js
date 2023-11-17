@@ -1,6 +1,4 @@
 import css from "../css/main.css";
-import track1 from "../text-to-speech/3d-billiards-cube.mp3";
-import track2 from "../text-to-speech/3d-billiards-sphere.mp3";
 
 // import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 

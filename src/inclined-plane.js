@@ -23,7 +23,7 @@ export let params = {
     // H: 0.05,
     boxratio: 2,
     initial_packing_fraction: 0.25,
-    N: 500,
+    N: 300,
     epsilonv: 0,
     gravity: false,
     g_mag: 1e1,

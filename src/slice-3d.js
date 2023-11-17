@@ -1,5 +1,4 @@
 import css from "../css/main.css";
-import track from "../text-to-speech/slice-3d.mp3";
 // import * as DEMCGND from "../resources/DEMCGND.js";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -56,7 +55,7 @@ export function init() {
 
     let sphere_geometry = new THREE.SphereGeometry(0.5, 256, 256);
     let circle_geometry = new THREE.CircleGeometry(0.5, 256);
-    let wall_geometry = new THREE.PlaneBufferGeometry(0.5, 0.5);
+    let wall_geometry = new THREE.PlaneGeometry(0.5, 0.5);
     let material = new THREE.MeshStandardMaterial({ color: 0xeeeeee, side: THREE.DoubleSide });//, opacity: 0.9 } );
     // material.transparent = true;
     let wall_material = new THREE.MeshStandardMaterial({ color: 0xe72564, side: THREE.DoubleSide });

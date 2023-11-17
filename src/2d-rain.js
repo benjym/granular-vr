@@ -1,5 +1,4 @@
 import css from "../css/main.css";
-import track from "../text-to-speech/2d-rain.mp3";
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -150,7 +149,7 @@ function setup_NDDEM() {
     S.simu_interpret_command("auto inertia");
     S.simu_interpret_command("auto skin");
 
-        S.simu_interpret_command("boundary 0 WALL 0 " + String(3 * params.L));
+        S.simu_interpret_command("boundary 0 WALL 0 " + String(5 * params.L));
         S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
         if (params.dimension > 2) {
             S.simu_interpret_command("boundary 2 WALL -" + String(params.r_max) + " " + String(params.r_max));
