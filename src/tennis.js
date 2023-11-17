@@ -1,6 +1,4 @@
 import css from "../css/main.css";
-import track from "../text-to-speech/tennis.mp3";
-import track2 from "../text-to-speech/tennis-win.mp3";
 // import * as DEMCGND from "../resources/DEMCGND.js";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';

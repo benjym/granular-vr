@@ -1,5 +1,4 @@
 import css from "../css/main.css";
-import track from "../text-to-speech/two-particle-collision.mp3";
 
 import * as CONTROLLERS from '../libs/controllers.js';
 import * as SPHERES from "../libs/SphereHandler.js"

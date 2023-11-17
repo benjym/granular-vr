@@ -1,5 +1,4 @@
 import css from "../css/main.css";
-import track from "../text-to-speech/2d-rain.mp3";
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';

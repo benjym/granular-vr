@@ -1,7 +1,4 @@
 import css from "../css/main.css";
-import track1 from "../text-to-speech/2d-billiards-circle.mp3";
-import track2 from "../text-to-speech/2d-billiards-square.mp3";
-import track3 from "../text-to-speech/2d-billiards-ellipse.mp3";
 
 import * as SPHERES from "../libs/SphereHandler.js"
 import * as WALLS from "../libs/WallHandler.js"

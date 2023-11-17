@@ -1,30 +1,14 @@
 var N = 3;
 var uniforms = {
   N: { value: N },
-  // N_lines: { value: 5.0 },
-  //A: { value: new THREE.Matrix4() },
-  A: { value: [] }, // Size N*N
-  xview: { value: [] }, //Size N-3
-  xpart: { value: [] }, //Size N-3
-  // x4: { value: 0 },
-  // x4p: { value: 0 },
+  A: { value: new THREE.Matrix3(1,0,0,0,1,0,0,0,1) },
+  // A: { value: [] }, // Size 3x3
   R: { value: 0.5 },
   ambient: { value: 1.0 },
   banding: { value: 3.0 },
   opacity: { value: 1.0 },
 };
 
-for (var ij = 0; ij < N - 3; ij++) {
-  uniforms.xview.value[ij] = 0.0;
-  uniforms.xpart.value[ij] = 0.0;
-}
-if (N > 3) {
-  uniforms.x4.value = 0.0;
-}
-for (var ij = 0; ij < N * N; ij++) {
-  if (ij % N == Math.floor(ij / N)) uniforms.A.value[ij] = 1;
-  else uniforms.A.value[ij] = 0;
-}
 
 var NDDEMShader = new THREE.ShaderMaterial({
   uniforms: uniforms,
@@ -33,7 +17,8 @@ var NDDEMShader = new THREE.ShaderMaterial({
   vertexShader: [
     "uniform int N;", // number of dimensions in simulation
     "uniform float N_lines;", // number of lines to render across particle
-    "uniform float A[3*3];", // orientation matrix for this particle
+    // "uniform float A[3*3];", // orientation matrix for this particle
+    "uniform mat3 A;",
     "uniform float R;", // particle radius
     "uniform float banding ;", // numbers of bands across particle
     "varying vec3 vColor;", // colour at vertex (output)
@@ -58,9 +43,9 @@ var NDDEMShader = new THREE.ShaderMaterial({
     //x.w = x4 - x4p;
 
     // compute the rotated location by doing transpose(A) * x, with A the orientation matrix from the dumps
-    "x_rotated.x = A[0]*x.x + A[3]*x.y + A[6]*x.z ;",
-    "x_rotated.y = A[1]*x.x + A[4]*x.y + A[7]*x.z ;",
-    "x_rotated.z = A[2]*x.x + A[5]*x.y + A[8]*x.z ;",
+    "x_rotated.x = A[0][0]*x.x + A[1][0]*x.y + A[2][0]*x.z ;",
+    "x_rotated.y = A[0][1]*x.x + A[1][1]*x.y + A[2][1]*x.z ;",
+    "x_rotated.z = A[0][2]*x.x + A[1][2]*x.y + A[2][2]*x.z ;",
     // "x_rotated.w=0. ;",
 
     // convert that new vector in hyperspherical coordinates (you can have a look at the hyperspherical_xtophi function in Tools.h)

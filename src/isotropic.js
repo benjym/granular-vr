@@ -1,5 +1,6 @@
 import css from "../css/main.css";
 import track from "../text-to-speech/isotropic.mp3";
+import track1 from "../text-to-speech/isotropic-grain-days.mp3";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import ImmersiveControls from '@depasquale/three-immersive-controls';

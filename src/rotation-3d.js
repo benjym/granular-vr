@@ -1,5 +1,4 @@
 import css from "../css/main.css";
-import track from "../text-to-speech/rotation-3d.mp3";
 import logo from "../resources/usyd.png";
 // import logo from "../resources/spiral.jpg"
 

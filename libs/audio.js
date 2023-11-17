@@ -96,7 +96,7 @@ export function play_track(filename, target, delay) {
 
     // load a sound and set it as the Audio object's buffer
     const audioLoader = new THREE.AudioLoader();
-    audioLoader.load(filename, function (buffer) {
+    audioLoader.load('text-to-speech/' + filename, function (buffer) {
         current_sound.setBuffer(buffer);
         current_sound.setLoop(false);
         current_sound.setVolume(0.5);
