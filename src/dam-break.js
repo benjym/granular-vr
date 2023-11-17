@@ -80,9 +80,10 @@ function reset_particles() {
     set_derived_properties();
     // SPHERES.randomise_particles_isotropic(params, S);
     S.simu_randomDrop();
-    WALLS.add_cuboid_walls(params);
-    WALLS.update_isotropic_wall(params, S);
+    // WALLS.add_cuboid_walls(params);
+    // WALLS.update_isotropic_wall(params, S);
     // setup_CG();
+    WALLS.show_left();
 }
 export function init() {
     SPHERES.createNDParticleShader(params).then(main);
@@ -94,23 +95,27 @@ async function main() {
 
     await NDDEMPhysics();
 
-    const base_geometry = new THREE.PlaneGeometry(10, 10);
+    const base_geometry = new THREE.PlaneGeometry(20, 2*params.L);
     const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
     const plane = new THREE.Mesh(base_geometry, base_material);
     plane.rotateX(Math.PI / 2.);
-    plane.position.y = -0.5 * params.r_min;
+    plane.position.y = 0;//-0.5 * params.r_min;
+    plane.position.x = -10 + params.L;
     scene.add(plane);
 
     LIGHTS.add_default_lights(scene);
 
-    WALLS.add_cuboid_walls(params);
+    WALLS.add_dam_break_walls(params);
+
+
+    // WALLS.add_cuboid_walls(params);
     WALLS.walls.rotateX(-Math.PI / 2.); // fix y/z up compared to NDDEM
     WALLS.walls.rotateZ(Math.PI); // fix y/z up compared to NDDEM
-    WALLS.walls.position.y = params.H;
-    console.debug('rotated and placed walls')
+    // WALLS.walls.position.y = params.H;
+    // console.debug('rotated and placed walls')
     scene.add(WALLS.walls);
-    WALLS.update_isotropic_wall(params, S);
-    WALLS.add_scale(params);
+    // WALLS.update_isotropic_wall(params, S);
+    // WALLS.add_scale(params);
 
 
     SPHERES.add_spheres(S, params, scene);
@@ -183,6 +188,7 @@ function animate() {
             }
             if ( params.current_time > params.wall_remove_time && !params.remove_wall ) {
                 params.remove_wall = true;
+                WALLS.hide_left();
                 S.simu_interpret_command("boundary 0 WALL -" + String(20*params.L) + " " + String(params.L));
             }
             S.simu_step_forward(5);

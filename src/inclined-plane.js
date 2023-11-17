@@ -1,5 +1,4 @@
 import css from "../css/main.css";
-import track from "../text-to-speech/inclined-plane.mp3";
 
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 import ImmersiveControls from '@depasquale/three-immersive-controls';
@@ -22,7 +21,7 @@ export let params = {
     // L: 0.025,
     // H: 0.05,
     boxratio: 2,
-    initial_packing_fraction: 0.25,
+    initial_packing_fraction: 0.15,
     N: 300,
     epsilonv: 0,
     gravity: false,

@@ -1,5 +1,4 @@
 import css from "../css/main.css";
-import track from "../text-to-speech/rotation-4d.mp3";
 
 import ImmersiveControls from '@depasquale/three-immersive-controls';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';

@@ -1,5 +1,4 @@
 import css from "../css/main.css";
-import track from "../text-to-speech/pyramid.mp3";
 
 import ImmersiveControls from '@depasquale/three-immersive-controls';
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
@@ -68,30 +67,7 @@ async function update() {
     if ( visibility === 'visible' ) {
         if (controls !== undefined) {
             controls.update();
-            if (controls.vrControls.controllerGrips.left !== undefined) {
-                let loc = new THREE.Vector3();
-                controls.vrControls.controllerGrips.left.getWorldPosition(loc);
-                // console.log( controls.vrControls.controllerGrips.left.position )
-                S.simu_fixParticle(params.N - 1,
-                    [loc.x,
-                    loc.z,
-                    loc.y,
-                    params.d4.cur
-                    ]
-                );
-            }
-            if (controls.vrControls.controllerGrips.right !== undefined) {
-                let loc = new THREE.Vector3();
-                controls.vrControls.controllerGrips.right.getWorldPosition(loc);
-                // console.log( controls.vrControls.controllerGrips.left.position )
-                S.simu_fixParticle(params.N - 2,
-                    [loc.x,
-                    loc.z,
-                    loc.y,
-                    params.d4.cur
-                    ]
-                );
-            }
+            do_haptics();
         }
         // console.log(SPHERES.spheres.children[params.N-1])
         if ( extra_params.has('forces') ) { SPHERES.draw_force_network(S, params, scene); }
@@ -102,6 +78,38 @@ async function update() {
         CONTROLLERS.moveInD4(params, controls);
         WALLS.update_d4(params);
     };
+}
+
+function do_haptics() {
+    if (controls.vrControls.controllers.left !== undefined) {
+        let loc = new THREE.Vector3();
+        controls.vrControls.controllers.left.getWorldPosition(loc);
+        
+        if ( left_locked ) {
+            S.simu_fixParticle(params.N - 1,
+                [loc.x,
+                loc.z,
+                loc.y,
+                params.d4.cur
+                ]
+            );
+            SPHERES.haptic_pulse(S, params, controls.vrControls.controllers.left, params.N - 1);
+        }
+    }
+    if (controls.vrControls.controllers.right !== undefined) {
+        let loc = new THREE.Vector3();
+        controls.vrControls.controllers.right.getWorldPosition(loc);
+        if ( right_locked ) {
+            S.simu_fixParticle(params.N - 2,
+                [loc.x,
+                loc.z,
+                loc.y,
+                params.d4.cur
+                ]
+            );
+            SPHERES.haptic_pulse(S, params, controls.vrControls.controllers.right, params.N - 2);
+        }
+    }
 }
 
 function get_num_particles(L) {

@@ -124,6 +124,51 @@ export function add_cuboid_walls(params) {
 
 }
 
+export function hide_left() {
+    front.position.y = 1e10;
+}
+
+export function show_left() {
+    front.position.y = params.L;
+}
+
+export function add_dam_break_walls(params) {
+    add_wall_group();
+    // const wall_geometry = new THREE.BoxGeometry( params.L*2 + params.thickness*2, params.thickness, params.L*2 + params.thickness*2 );
+    // const wall_material = new THREE.ShadowMaterial( )
+
+    add_left(params, walls);
+    add_right(params, walls);
+    add_floor(params, walls);
+    add_roof(params, walls);
+    add_front(params, walls);
+    add_back(params, walls);
+
+    roof.position.z = params.H + params.thickness / 2.;
+    floor.position.z = -params.H - params.thickness / 2.;
+    left.position.y = -params.L;
+    right.position.y = params.L;
+    front.position.x = params.L;
+    back.position.x = -params.L;
+
+    var horiz_walls = [floor, roof];
+    var vert_walls = [left, right, front, back];
+
+    vert_walls.forEach(function (mesh) {
+        mesh.scale.x = 2 * params.L + 2 * params.thickness;
+        mesh.scale.z = 2 * (params.H) + 2 * params.thickness;
+    });
+
+    horiz_walls.forEach(function (mesh) {
+        mesh.scale.x = 2 * params.L;//+ 2*params.thickness;
+        mesh.scale.z = 2 * params.L;//+ 2*params.thickness;
+    });
+
+    walls.position.y = params.H; // needed when the floor is not moving
+
+
+}
+
 export function add_2d_box(params) {
     add_wall_group();
     
