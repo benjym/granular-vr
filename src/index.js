@@ -25,7 +25,7 @@ import * as RAYCAST from "../libs/RaycastHandler";
 //   window.history.replaceState(initialState, '', initialUrl);
 // });
 
-let server = 'https://snowy-surf-elk.glitch.me/'
+let server = 'https://granular-vr.glitch.me/'
 let socket = io(server);
 
 function replaceQueryParam(param, newval, search) {

@@ -2,13 +2,27 @@ import css from "../css/controller.css"
 import JSON5 from "json5";
 import { io } from "socket.io-client";
 
-let server = 'https://snowy-surf-elk.glitch.me/'
+let server = 'https://granular-vr.glitch.me/'
 let apps;
 let socket = io(server);
 
 socket.on("connect", () => {
     console.log('Connected to socket.io server')
+    socket.on('receive_count', (count) => {
+        // console.log('received move to ' + dest);
+        // move_to(dest)
+        if ( count === 1) {
+            document.getElementById('count').innerHTML = String(count) + ' User';
+        } else {
+            document.getElementById('count').innerHTML = String(count) + ' Users';
+        }
+    });
 });
+
+let urlParams = new URLSearchParams(window.location.search);
+let master;
+if ( urlParams.has('master') ) { master = urlParams.get('master') }
+else { master = "grain-days-2023"; }
 
 function init() {
     fetch('master/' + master + '.json')
@@ -27,6 +41,11 @@ function init() {
 
             // Create full-screen div
             const fullScreenDiv = document.createElement('div');
+
+            const countDiv = document.createElement('div');
+            countDiv.id = 'count';
+            countDiv.innerHTML = '0 Users';
+            document.body.appendChild(countDiv);
 
             // Create and populate the list
             const list = document.createElement('ul');
@@ -52,13 +71,17 @@ function init() {
                 // Append the full-screen div to the body
                 document.body.appendChild(fullScreenDiv);
                 // console.log('HI!')
+
             // });
         });
-    }
 
-let urlParams = new URLSearchParams(window.location.search);
-let master;
-if ( urlParams.has('master') ) { master = urlParams.get('master') }
-else { master = "grain-days-2023"; }
+    const interval = setInterval(function() {
+        socket.emit('request_count');
+    }, 1000);
+        
+    // clearInterval(interval);
+    
+
+    }
 
 init();
