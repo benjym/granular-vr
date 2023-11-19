@@ -27,6 +27,7 @@ import * as RAYCAST from "../libs/RaycastHandler";
 
 let server = 'https://granular-vr.glitch.me/'
 let socket = io(server);
+// let socket_id;
 
 function replaceQueryParam(param, newval, search) {
     var regex = new RegExp("([?;&])" + param + "[^&;]*[;&]?");
@@ -107,7 +108,9 @@ async function add_common_properties() {
     window.addEventListener('resize', onWindowResize, false);
 
     socket.on("connect", () => {
-        console.log('Connected to socket.io server')
+        // socket_id = socket.id;
+        // console.log(socket_id)
+        console.log('Connected to socket.io server with id ' + socket.id)
         socket.on('receive_move', (dest) => {
             console.log('received move to ' + dest);
             move_to(dest)
@@ -265,6 +268,9 @@ export function move_to(v) {
             extra_params = new URLSearchParams('null');
         }
         console.log('CHANGING TO ' + apps.list[v].url)
+        // if ( socket_id !== undefined ) {
+            socket.emit('roomChange', apps.list[v].url);
+        // }
         // extra_params = apps.list[v].params;
 
         import("./" + url).then((module) => {
@@ -289,6 +295,9 @@ export function move_to(v) {
             }
         });
         console.log('CHANGING TO ' + v)
+        // if ( socket_id !== undefined ) {
+            socket.emit('roomChange', apps.list[v].url);
+        // }
 
         // This updates the URL without reloading the page... hasn't been tested on headset yet to see if at allows you to reload and still work. especially needs to work with extra_params
         // var str = window.location.search

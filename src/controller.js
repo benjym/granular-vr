@@ -17,6 +17,22 @@ socket.on("connect", () => {
             document.getElementById('count').innerHTML = String(count) + ' Users';
         }
     });
+    // Client receives the room list
+    socket.on('roomList', (roomList) => {
+        let ul = document.getElementById('list');
+        const links = ul.querySelectorAll('a');
+        // console.log(roomList)
+        // Loop through each link
+        let keys = Object.keys(roomList);
+        let values = Object.values(roomList);
+
+        links.forEach((link, index) => {
+            let val = apps.list[index];
+
+            link.textContent = String(index) + '. ' + val.name + ' (' + String(roomList[keys[index]]) + ')';
+        });
+
+    });
 });
 
 let urlParams = new URLSearchParams(window.location.search);
@@ -49,6 +65,7 @@ function init() {
 
             // Create and populate the list
             const list = document.createElement('ul');
+            list.id = 'list';
             
                 links.forEach(link => {
                     const listItem = document.createElement('li');
@@ -77,6 +94,7 @@ function init() {
 
     const interval = setInterval(function() {
         socket.emit('request_count');
+        socket.emit('requestRoomList');
     }, 1000);
         
     // clearInterval(interval);
