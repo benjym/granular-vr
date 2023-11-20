@@ -51,7 +51,7 @@ export let params = {
     particle_opacity: 0.8,
     audio: false,
     audio_sensitivity: 1,
-    F_mag_max: 2e4,
+    F_mag_max: 1e5,
     friction_coefficient: 0.5,
     pressure: 0,
     started: false,

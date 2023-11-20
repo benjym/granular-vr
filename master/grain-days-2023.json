@@ -40,7 +40,7 @@
             "audio_delay" : 3000
         },
         {
-            "url": "3d-dam-break",
+            "url": "3d-dam-break?forces",
             "name": "3D Dam break",
             "button_delay": 30000,
             "audio_track" : "3d-dam-break.mp3",
@@ -103,7 +103,7 @@
             "audio_delay" : 3000
         },
         {
-            "url": "4d-dam-break",
+            "url": "4d-dam-break?forces",
             "name": "4D Dam break",
             "button_delay": 30000,
             "audio_track" : "4d-dam-break.mp3",
