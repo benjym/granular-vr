@@ -31,7 +31,7 @@ export let params = {
     pressure_set_pt: 1e4,
     deviatoric_set_pt: 0,
     d4: { cur: 0 },
-    theta: -30,
+    theta: -27,
     // r_max: 0.0033,
     // r_min: 0.0027,
     r_max: 0.16,
