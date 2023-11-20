@@ -74,6 +74,8 @@ function set_derived_properties() {
     params.particle_mass = params.particle_volume * params.particle_density;
     params.L = Math.pow(params.particle_volume * params.N / params.initial_packing_fraction, 1. / 4.) / 2.;
     params.H = params.L * params.boxratio;
+    params.d4.min = -params.L;
+    params.d4.max = params.L;
 }
 
 function reset_particles() {
@@ -159,6 +161,8 @@ async function main() {
             // SPHERES.mute_sounds();
         }
     });
+    gui.add(params.d4, 'cur', params.d4.min, params.d4.max).name('D4 location (e/q)').listen();
+
     // gui.add(params, 'remove_wall').name('Remove wall').listen().onChange(() => {
     //     console.log('WALL CHANGE')
     //     if ( params.remove_wall ) {
@@ -232,6 +236,7 @@ async function setup_NDDEM() {
     S.simu_interpret_command("boundary 0 WALL -" + String(params.L) + " " + String(params.L));
     S.simu_interpret_command("boundary 1 WALL -" + String(params.L) + " " + String(params.L));
     S.simu_interpret_command("boundary 2 WALL 0 " + String(2 * params.H));
+    S.simu_interpret_command("boundary 3 WALL -" + String(params.L) + " " + String(params.L));
     
     S.simu_interpret_command("gravity " + String(-params.g_mag*Math.sin(params.theta*Math.PI/180.)) + " 0 " + String(-params.g_mag*Math.cos(params.theta*Math.PI/180.)))
     // S.simu_interpret_command("gravity 0 0 -10")
