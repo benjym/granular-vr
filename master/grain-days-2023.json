@@ -43,7 +43,7 @@
             "url": "3d-dam-break",
             "name": "3D Dam break",
             "button_delay": 30000,
-            "audio_track" : "dam-break.mp3",
+            "audio_track" : "3d-dam-break.mp3",
             "audio_delay" : 3000
         },
         {

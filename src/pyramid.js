@@ -13,6 +13,10 @@ import * as WALLS from "../libs/WallHandler";
 import { camera, scene, renderer, controls, clock, apps, visibility, NDDEMCGLib, extra_params } from "./index";
 
 let S;
+let left_locked = true;
+let right_locked = true;
+let left_fired = false;
+let right_fired = false;
 
 var params = {
     dimension: 4,
