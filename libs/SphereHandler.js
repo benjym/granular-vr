@@ -84,6 +84,7 @@ export async function add_spheres(S, params, scene) {
     }
     else {
         geometrySphere = new THREE.SphereGeometry(0.5, Math.pow(2, params.quality), Math.pow(2, params.quality));
+        geometrySphere.applyMatrix4(new THREE.Matrix4().makeRotationY(Math.PI/2.)); // rotate the geometry to make the forces point in the right direction
     }
 
     for (let i = 0; i < params.N; i++) {

@@ -43,6 +43,7 @@ export let params = {
     target_stress: 1e6,
     unloading_stress: 100,
     lut: 'Size',
+    // lut: 'None',
     quality: 5,
     vmax: 1, // max velocity to colour by
     omegamax: 20, // max rotation rate to colour by
