@@ -40,6 +40,13 @@
             "audio_delay" : 3000
         },
         {
+            "url": "3d-dam-break",
+            "name": "3D Dam break",
+            "button_delay": 30000,
+            "audio_track" : "dam-break.mp3",
+            "audio_delay" : 3000
+        },
+        {
             "url": "rotating-sphere",
             "name": "Rotating sphere",
             "button_delay": 20000,
@@ -96,10 +103,10 @@
             "audio_delay" : 3000
         },
         {
-            "url": "dam-break",
-            "name": "Dam break",
+            "url": "4d-dam-break",
+            "name": "4D Dam break",
             "button_delay": 30000,
-            "audio_track" : "dam-break.mp3",
+            "audio_track" : "4d-dam-break.mp3",
             "audio_delay" : 3000
         },
         {

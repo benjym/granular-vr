@@ -20,6 +20,8 @@ module.exports = [
       "hyperspheres": './src/hyperspheres.js',
       "two-particle-collision": './src/two-particle-collision.js',
       "2d-rain": './src/2d-rain.js',
+      // "3d-dam-break": './src/3d-dam-break.js',
+      // "4d-dam-break": './src/4d-dam-break.js',
       "controller": './src/controller.js',
     },
     plugins: [

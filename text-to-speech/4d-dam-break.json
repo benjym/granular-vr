@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input": {
+        "text": "This is a 4 dimensional dam break. The particles are initially contained inside a box. After some time, we remove a wall and let the particles flow out."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}

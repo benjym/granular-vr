@@ -269,7 +269,7 @@ export function move_to(v) {
         }
         console.log('CHANGING TO ' + apps.list[v].url)
         // if ( socket_id !== undefined ) {
-            socket.emit('roomChange', apps.list[v].url);
+        socket.emit('roomChange', apps.list[v].url);
         // }
         // extra_params = apps.list[v].params;
 
@@ -296,7 +296,8 @@ export function move_to(v) {
         });
         console.log('CHANGING TO ' + v)
         // if ( socket_id !== undefined ) {
-            socket.emit('roomChange', apps.list[v].url);
+        // console.log(apps.list)
+        socket.emit('roomChange', apps.list[apps.current].url);
         // }
 
         // This updates the URL without reloading the page... hasn't been tested on headset yet to see if at allows you to reload and still work. especially needs to work with extra_params

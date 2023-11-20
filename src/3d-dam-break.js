@@ -63,6 +63,7 @@ export let params = {
 }
 
 function set_derived_properties() {
+
     
     params.average_radius = (params.r_min + params.r_max) / 2.;
     params.thickness = 0.0001;//params.average_radius;
@@ -83,7 +84,7 @@ function reset_particles() {
     // WALLS.add_cuboid_walls(params);
     // WALLS.update_isotropic_wall(params, S);
     // setup_CG();
-    WALLS.show_left();
+    WALLS.show_right();
 }
 export function init() {
     SPHERES.createNDParticleShader(params).then(main);
@@ -100,7 +101,7 @@ async function main() {
     const plane = new THREE.Mesh(base_geometry, base_material);
     plane.rotateX(Math.PI / 2.);
     plane.position.y = 0;//-0.5 * params.r_min;
-    plane.position.x = -10 + params.L;
+    plane.position.x = 10 - params.L;
     scene.add(plane);
 
     LIGHTS.add_default_lights(scene);
@@ -188,8 +189,8 @@ function animate() {
             }
             if ( params.current_time > params.wall_remove_time && !params.remove_wall ) {
                 params.remove_wall = true;
-                WALLS.hide_left();
-                S.simu_interpret_command("boundary 0 WALL -" + String(20*params.L) + " " + String(params.L));
+                WALLS.hide_right();
+                S.simu_interpret_command("boundary 0 WALL -" + String(params.L) + " " + String(20*params.L));
             }
             S.simu_step_forward(5);
             SPHERES.move_spheres(S, params);

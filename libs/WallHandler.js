@@ -124,12 +124,12 @@ export function add_cuboid_walls(params) {
 
 }
 
-export function hide_left() {
-    front.position.y = 1e10;
+export function hide_right() {
+    back.position.y = 1e10;
 }
 
-export function show_left() {
-    front.position.y = params.L;
+export function show_right() {
+    back.position.y = -params.L;
 }
 
 export function add_dam_break_walls(params) {
