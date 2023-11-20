@@ -138,6 +138,40 @@ export function add_scene_change_button(new_scene, label, controls, scene, locat
     return button
 }
 
+export function add_scene_rainfall_change_button(S,new_scene, label, controls, scene, location, scale, rotation, dimension) {
+    let button = make_button_object(label, location, scale);
+    button.S = S;
+
+    button.children[0].userData.new_scene = new_scene;
+    button.children[1].userData.new_scene = new_scene;
+
+    button.children[0].S = S;
+    button.children[1].S = S;
+    button.children[0].dimension = dimension;
+    button.children[1].dimension = dimension;
+    
+
+    const type = 'scene_change_rainfall';
+    // button.userData.type = type; // this sets up interaction group for controllers
+    button.children[0].userData.type = type; // this sets up interaction group for controllers
+    button.children[1].userData.type = type; // this sets up interaction group for controllers
+
+    controls.interaction.selectStartHandlers[type] = CONTROLLERS.onSceneChangeRainfallButtonSelectStart;
+    controls.interaction.selectEndHandlers[type] = CONTROLLERS.onSceneChangeButtonSelectEnd;
+    // controls.interaction.intersectionHandlers[type] = () => {console.log('INTERSECTION')};
+
+    controls.interaction.selectableObjects.push(button.children[0]);
+    controls.interaction.selectableObjects.push(button.children[1]);
+
+    button.rotateX(rotation[0]);
+    button.rotateY(rotation[1]);
+    button.rotateZ(rotation[2]);
+    scene.add(button);
+    // controls.player.add(button);
+
+    return button
+}
+
 export function add_action_button(type, name, selectStartFunction, selectEndFunction, intersectionFunction, location, scale, controls, scene) {
     // if (font !== undefined) {
     let button = make_button_object(name, location, scale);

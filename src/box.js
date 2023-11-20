@@ -111,7 +111,7 @@ async function build_world() {
     WALLS.update_isotropic_wall(params, S);
 
     BUTTONS.add_scene_change_button(apps.list[apps.current - 1].url, apps.list[apps.current - 1].name, controls, scene, [-1, 1, 1], 0.25, [0, Math.PI / 4, 0]);
-    setTimeout(() => { BUTTONS.add_scene_change_button(apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0]) }, apps.list[apps.current].button_delay);
+    setTimeout(() => { BUTTONS.add_scene_rainfall_change_button(S,apps.list[apps.current + 1].url, 'Next: ' + apps.list[apps.current + 1].name, controls, scene, [1, 1, 1], 0.25, [0, -Math.PI / 4, 0],params.dimension) }, apps.list[apps.current].button_delay);
 
     // let offset = 0.5;
     
@@ -179,11 +179,17 @@ function setup_NDDEM() {
         params.initial_speed * (Math.random() - 0.5),
         params.initial_speed * (Math.random() - 0.5),
         params.initial_speed * (Math.random() - 0.5)]);
-
+        
+        S.simu_setAngularVelocity(i, [params.initial_speed * (Math.random() - 0.5),
+            params.initial_speed * (Math.random() - 0.5),
+            params.initial_speed * (Math.random() - 0.5),
+            params.initial_speed * (Math.random() - 0.5),
+            params.initial_speed * (Math.random() - 0.5),
+            params.initial_speed * (Math.random() - 0.5)]);
     }
 
     let tc = 1e-2;
-    let rest = 0.999; // super low restitution coeff to dampen out quickly
+    let rest = 0.8; // super low restitution coeff to dampen out quickly
     let min_particle_mass = params.particle_density * 4. / 3. * Math.PI * Math.pow(params.r_min, 3);
     let vals = SPHERES.setCollisionTimeAndRestitutionCoefficient(tc, rest, min_particle_mass);
     S.simu_interpret_command("set Kn " + String(vals.stiffness));

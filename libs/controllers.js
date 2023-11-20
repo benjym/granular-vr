@@ -30,6 +30,13 @@ export function onSceneChangeButtonSelectStart(object, controller) {
 
 }
 
+export function onSceneChangeRainfallButtonSelectStart(object, controller) {
+    console.log(object)
+    object.S.simu_interpret_command("gravity 0 0 " + String(-50) + "0 ".repeat(object.dimension - 3));
+    setTimeout(() => {object.S.simu_interpret_command("set damping 0.05");}, 4000);
+    setTimeout(() => {move_to(object.userData.new_scene)}, 5000);
+}
+
 export function onSceneChangeButtonSelectEnd(object, controller) {
     console.log('scene change end')
     // do nothing, you're already gone
