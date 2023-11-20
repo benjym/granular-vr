@@ -47,12 +47,12 @@ function init() {
             apps = JSON5.parse(text);
             let links = [];
             apps.list.forEach( (val, index) => {
-                if ( val.url !== 'menu' ) {
+                // if ( val.url !== 'menu' ) {
                     // BUTTONS.add_scene_change_button(val.url, String(index) + '. ' + val.name, controls, scene, [0, height - 0.2*index, 0], 0.3, [0, 0, 0]);
-                    links.push({
-                        href: val.url,
-                        text: String(index) + '. ' + val.name })
-                }
+                links.push({
+                    href: val.url,
+                    text: String(index) + '. ' + val.name })
+                // }
             });
 
             // Create full-screen div
