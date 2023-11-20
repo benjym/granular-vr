@@ -587,9 +587,10 @@ var VRControls = class {
   getController(i) {
     const lineGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -1)]);
     const lineMaterial = new THREE.LineBasicMaterial({
-      color: 16777215,
+      color: new THREE.Color('#FFFFFF'),
       transparent: true,
-      opacity: 0.1
+      opacity: 1,
+      linewidth: 10
     });
     const line = new THREE.Line(lineGeometry, lineMaterial);
     line.name = "line";

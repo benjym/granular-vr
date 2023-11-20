@@ -5,7 +5,7 @@
         "speakingRate": 0.8
     },
     "input": {
-        "text": "This is a dam break. The particles are initially contained inside a box. After some time, we remove a wall and let the particles flow out."
+        "text": "This is a dam break. The particles are initially contained inside a box. After some time, we remove a wall and let the particles flow out. Eventually they will stop and form a pile. How does this compare to the simulations with yayd and Geo-XPM?"
     },
     "voice": {
         "languageCode": "en-au",

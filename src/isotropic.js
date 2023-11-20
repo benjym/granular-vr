@@ -24,13 +24,13 @@ export let params = {
     // L: 0.025,
     // H: 0.05,
     boxratio: 1.5,
-    initial_packing_fraction: 0.4,
+    initial_packing_fraction: 0.45,
     N: 300,
     epsilonv: 0,
     gravity: false,
     paused: false,
     H_cur: 0,
-    pressure_set_pt: 1e5,
+    pressure_set_pt: 1e6,
     deviatoric_set_pt: 0,
     d4: { cur: 0 },
     // r_max: 0.0033,
@@ -179,7 +179,7 @@ async function main() {
     animate();
 
     GRAPHS.update_nchildren(2000);
-    let graph = GRAPHS.add_axes("Solid Fraction", "Pressure", 0.4, 0.65, 0, params.target_stress, scene);
+    let graph = GRAPHS.add_axes("Solid Fraction (-)", "Pressure (Pa)", 0.4, 0.65, 0, params.target_stress, scene);
     graph.position.y = 1.6;
     graph.position.z = 1.5 * params.L;
     graph.rotateY(-Math.PI / 2.);

@@ -5,7 +5,7 @@
         "speakingRate": 0.8
     },
     "input": {
-        "text": "Hit all of the hyperspheres out of the hypercube that you are inside of. You can use the triggers on the controllers to fire the hyperspheres on your hands."
+        "text": "Hit all of the hyperspheres out of the hypercube that you are inside of. You can use the triggers on the controllers to fire the hyperspheres on your hands and knock other particles out of the box."
     },
     "voice": {
         "languageCode": "en-au",

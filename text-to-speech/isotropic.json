@@ -5,7 +5,7 @@
         "speakingRate": 0.8
     },
     "input": {
-        "text": "Now we're going to squeeze a whole pile of grains. Click on the Loading Active button to start squeezing. As the particles compress, you can see the forces between them as the white cylinders. We use these kinds of simulations to understand how systems of grains behave, like sand on a beach or soil under a building. What you're seeing here is cyclic compression, where we squeeze, then release, many times to densify the soil."
+        "text": "Now we're going to squeeze a whole pile of grains. As the particles compress, you can see the forces between them as the white cylinders. We use these kinds of simulations to understand how systems of grains behave, like sand on a beach or soil under a building. What you're seeing here is cyclic compression, where we squeeze, then release, many times to densify the soil."
     },
     "voice": {
         "languageCode": "en-au",

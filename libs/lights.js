@@ -4,6 +4,10 @@ export function add_default_lights( scene ) {
 
     let fill_light = new THREE.PointLight(0x999999);
     fill_light.position.set( 0, 2.5, 2 ); 
+    // fill_light.castShadow = true;
+    // fill_light.shadowMap.mapSize.width = 1024;
+    // fill_light.shadowMap.mapSize.height = 1024;
+    
     scene.add( fill_light );
 }
 

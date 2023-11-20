@@ -5,7 +5,7 @@
         "speakingRate": 0.8
     },
     "input" : {
-        "text" : "In front of you are two three dimensional spheres. Try walking around the spheres to see that they have volume and fill a three D space. When you are ready, click the sign to move to the next room."
+        "text" : "In front of you are two three dimensional spheres. Try walking around the spheres to see that they have volume and fill a three D space. The white line represents the force between them. The top particle is falling under gravity. When the particles collide, there is a force that pushes it back upwards. The thickness of the line is proportional to the force being applied. When you are ready, click the sign to move to the next room."
     },
     "voice": {
         "languageCode": "en-au",

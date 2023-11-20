@@ -27,9 +27,9 @@
         },
         {
             "url": "isotropic",
-            "name": "Squeezing lots of grains",
+            "name": "Cyclic compression",
             "button_delay": 20000,
-            "audio_track" : "isotropic-grain-days.mp3",
+            "audio_track" : "isotropic-grain-days-2023.mp3",
             "audio_delay" : 3000
         },
         {

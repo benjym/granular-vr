@@ -100,8 +100,8 @@ async function main() {
     await NDDEMPhysics();
 
     const base_geometry = new THREE.PlaneGeometry(20, 2*params.L);
-    const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
-    const plane = new THREE.Mesh(base_geometry, base_material);
+    // const base_material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
+    const plane = new THREE.Mesh(base_geometry, WALLS.wall_material);
     plane.rotateX(Math.PI / 2.);
     plane.position.y = 0;//-0.5 * params.r_min;
     plane.position.x = 10 - params.L;
@@ -202,9 +202,11 @@ function animate() {
             if (extra_params.has('forces')) { SPHERES.draw_force_network(S, params, scene); }
             if ( controls !== undefined ) {
                 controls.update();
+                params = CONTROLLERS.moveInD4(params, controls);
                 // CONTROLLERS.toggleParticleOpacity(params,controls);
             }
         }
+        WALLS.update_d4(params);
         renderer.render(scene, camera);
     });
 

@@ -46,8 +46,9 @@ export function add_axes(xlabel, ylabel, xmin, xmax, ymin, ymax, scene) {
     axes.add(BUTTONS.make_text(ymin, 0xFFFFFF, [-0.07, -0.5, 0], 0.2));
     axes.add(BUTTONS.make_text(ymax, 0xFFFFFF, [-0.38, 0.47, 0], 0.2));
 
-    let fg_mat = new THREE.PointsMaterial({ color: 0xeeeeee });
-    let fg_geom = new THREE.CircleGeometry(0.005, 8);
+    let fg_mat = new THREE.PointsMaterial({ color: 0xeeeeee, side: THREE.DoubleSide });
+    let fg_geom = new THREE.CircleGeometry(0.005, 4);
+    fg_geom.applyMatrix4(new THREE.Matrix4().makeRotationZ(Math.PI/2.));
     let data_point = new THREE.Mesh(fg_geom, fg_mat);
     data_point.position.set(null, null, null); // don't show to begin with
 
@@ -82,13 +83,13 @@ export function update_data(xvalue, yvalue) {
 //         // data_points.children[data_points.last_updated].position.z = (ref_location.z + old_ref_location.z)/2.;
 //         // if ( params.dimension === 4) { data_points.children[data_points.last_updated].d4 = x[0][3]; }
 
-//         console.log(ref_location)
+//         // console.log(ref_location)
 
 //         let l = ref_location.distanceTo(old_ref_location);
 //         data_points.children[data_points.last_updated].scale.z = l;
 //         data_points.children[data_points.last_updated].lookAt(ref_location);
 
-//         console.log(l);
+//         // console.log(l);
 
 //         data_points.last_updated += 1;
 

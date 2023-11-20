@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input": {
+        "text": "Now we're going to squeeze a whole pile of grains. We will cyclicly increase and decrease the pressure from zero up to 1 Mega Pascal. As the particles compress, you can see the forces between them as the white cylinders. The behaviour of the entire system is shown on the graph to the right. What you're seeing here is cyclic compression, where we squeeze, then release, then squeeze again many times. In this case, we are densifying the grains, which you can see either by looking at the particles, or noticing that the graph is slowly moving to the right with each cycle."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}

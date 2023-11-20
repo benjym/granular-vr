@@ -81,7 +81,6 @@ async function add_common_properties() {
     }
 
     // renderer.shadowMap.enabled = true;
-    // renderer.shadowMap.mapSize = new THREE.Vector2(512,512);
     // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     // renderer.outputEncoding = THREE.sRGBEncoding;
     container.appendChild(renderer.domElement);
@@ -213,6 +212,12 @@ async function wipe_scene() {
     }
 
     AUDIO.end_current_track();
+
+    // clear all timeouts
+    var id = window.setTimeout(function() {}, 0);
+    while (id--) {
+        window.clearTimeout(id); // will do nothing if no timeout with id is present
+    }
 }
 
 add_common_properties().then(load_json_apps);

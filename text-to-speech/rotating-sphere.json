@@ -5,7 +5,7 @@
         "speakingRate": 0.8
     },
     "input" : {
-        "text" : "Now the particles are a mix of two different sizes placed inside a rotating sphere. Watch them segregate by size."
+        "text" : "Now the particles are a mix of two different sizes placed inside a rotating sphere. Watch them segregate by size. How would you describe the pattern that evolves?"
     },
     "voice": {
         "languageCode": "en-au",

@@ -5,7 +5,7 @@
         "speakingRate": 0.8
     },
     "input" : {
-        "text" : "The colour of these particles represents their size. They are flowing down an inclined plane. Gravity is tilted diagonally. As they flow, the particles are segregating, with small particles slowly working their way towards the bottom, and large particles rising to the top."
+        "text" : "The colour of these particles represents their size. They are flowing down a rough inclined plane, where we have stuck some particles to the base to make it very rough. Gravity is tilted diagonally. As the particles flow, they are segregating, with small particles slowly working their way towards the bottom, and large particles rising to the top. Stay and watch for a while and you will see what happens."
     },
     "voice": {
         "languageCode": "en-au",

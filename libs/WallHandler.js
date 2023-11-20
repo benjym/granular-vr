@@ -125,11 +125,12 @@ export function add_cuboid_walls(params) {
 }
 
 export function hide_right() {
-    back.position.y = 1e10;
+    // back.position.y = 1e10;
+    back.visible = false;
 }
 
-export function show_right() {
-    back.position.y = -params.L;
+export function show_right(params) {
+    back.visible = true;
 }
 
 export function add_dam_break_walls(params) {
@@ -165,7 +166,7 @@ export function add_dam_break_walls(params) {
     });
 
     walls.position.y = params.H; // needed when the floor is not moving
-
+    // wall_material.wireframe = false;
 
 }
 
