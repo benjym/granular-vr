@@ -24,10 +24,17 @@ import * as RAYCAST from "../libs/RaycastHandler";
 //   console.log('UNLOADING PAGE')
 //   window.history.replaceState(initialState, '', initialUrl);
 // });
+let urlParams = new URLSearchParams(window.location.search);
+
 
 let server = 'https://granular-vr.glitch.me/'
 let socket = io(server);
 // let socket_id;
+
+let master;
+if ( urlParams.has('master') ) { master = urlParams.get('master') }
+else { master = "ISS"; }
+// else { master = "grain-days-2023"; }
 
 function replaceQueryParam(param, newval, search) {
     var regex = new RegExp("([?;&])" + param + "[^&;]*[;&]?");
@@ -36,7 +43,6 @@ function replaceQueryParam(param, newval, search) {
     return (query.length > 2 ? query + "&" : "?") + (newval ? param + "=" + newval : '');
 }
 
-let urlParams = new URLSearchParams(window.location.search);
 export let extra_params;
 export let human_height = 1.6;
 
@@ -45,7 +51,6 @@ document.body.appendChild(container);
 
 export let camera, scene, renderer, controls, clock, apps, NDDEMCGLib;
 
-let master;
 let worker = new Worker(new URL('../libs/worker.js', import.meta.url));
 let wrapped_worker = Comlink.wrap(worker);
 
@@ -88,10 +93,6 @@ async function add_common_properties() {
     scene = new THREE.Scene();
     scene.keep_me = true;
     scene.background = new THREE.Color(0x111);
-
-    if ( urlParams.has('master') ) { master = urlParams.get('master') }
-    // else { master = "ISS"; }
-    else { master = "grain-days-2023"; }
 
     controls = new ImmersiveControls(camera, renderer, scene, {
         initialPosition: new THREE.Vector3(0, human_height, 2),
