@@ -1,0 +1,15 @@
+{
+  "audioConfig": {
+    "audioEncoding": "LINEAR16",
+    "pitch": 0,
+    "speakingRate": 0.8
+  },
+  "input": {
+    "text": "You have 4D hyperspheres stuck to each of your hands, and a pile of hyperspheres in front of you. Destroy the pile."
+  },
+  "voice": {
+    "languageCode": "en-au",
+    "name": "en-AU-Neural2-C",
+    "ssmlGender": "FEMALE"
+  }
+}

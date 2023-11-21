@@ -1,0 +1,15 @@
+{
+  "audioConfig": {
+    "audioEncoding": "LINEAR16",
+    "pitch": 0,
+    "speakingRate": 0.8
+  },
+  "input": {
+    "text": "In four dimensions, we can rotate along six possible axes. In front of you are six spheres demonstrating those rotations. On the top row you have the same rotations as in three D. On the bottom row you have new rotations that move through the fourth dimension. The position of the spheres in the fourth dimension is determined by their colour so when you see their colour change, they are moving through the fourth dimension. When you are ready click the sign to begin playing some pool."
+  },
+  "voice": {
+    "languageCode": "en-au",
+    "name": "en-AU-Neural2-C",
+    "ssmlGender": "FEMALE"
+  }
+}

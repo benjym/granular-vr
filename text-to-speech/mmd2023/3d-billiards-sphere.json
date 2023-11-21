@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input" : {
+        "text" : "Watch how this ball moves inside a sphere. Think about how it moves differently in a three dimensional sphere compared to the two dimensional circle. What would happen if you threw the ball from the centre of the sphere? Would the same thing happen if you hit a hockey puck from the centre of a circular ice rink? When you are ready click the sign to start learning about the fourth dimension."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}

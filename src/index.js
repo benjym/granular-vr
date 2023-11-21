@@ -33,8 +33,9 @@ let socket = io(server);
 
 let master;
 if ( urlParams.has('master') ) { master = urlParams.get('master') }
-else { master = "ISS"; }
+// else { master = "ISS"; }
 // else { master = "grain-days-2023"; }
+else { master = "mega-maths-day-2023"; }
 
 function replaceQueryParam(param, newval, search) {
     var regex = new RegExp("([?;&])" + param + "[^&;]*[;&]?");

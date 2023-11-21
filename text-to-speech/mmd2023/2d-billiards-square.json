@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input" : {
+        "text" : "Let’s begin to study the shape of the space and the trajectory of the moving object. In front of you is a circle moving inside a square. The circle represents a billiard ball in two dimensions, the square represents the billiard table, and the line tracks the trajectory of the ball as it moves. What do you notice about the trajectory of the ball? Does it make any interesting shapes? What is special about the angles the ball makes when it bounces off the sides of the box? When you are ready, move on to the circle."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}

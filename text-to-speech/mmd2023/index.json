@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+      "audioEncoding": "LINEAR16",
+      "pitch": 0,
+      "speakingRate": 0.8
+    },
+    "input": {
+      "text": "Welcome to Hyperspace! Today you will be using virtual reality to learn about the fourth dimension and play some four D pool. Move your head to look around. You are in a four dimensional box with four dimensional hyperspheres flying around you. To study geometry of moving objects in four dimensions we care about three things, the shape of the object that is moving, the shape of space that the object is moving within and the shapes made by the trajectory of the object. When you are ready to begin click the sign to go to the next room using the button on your right hand controller."
+    },
+    "voice": {
+      "languageCode": "en-au",
+      "name": "en-AU-Neural2-C",
+      "ssmlGender": "FEMALE"
+    }
+  }

@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input": {
+        "text": "First we will study the shape of the moving object. In front of you is a wall of two dimensional circles in three dimensional space. You can move around using the joystick on the controller in your right hand. When you walk through the circles you can see that they have no thickness since they only exist in two dimensions. However, the concept of thickness, or depth, will become important when we move to three and four dimensions. When you are ready move on to three dimensions."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}

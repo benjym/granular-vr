@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+        "audioEncoding": "LINEAR16",
+        "pitch": 0,
+        "speakingRate": 0.8
+    },
+    "input" : {
+        "text" : "When we study geometry in three dimensions, the ball has another dimension it can move in. This leads to more complicated behaviour. Look at the ball that is bouncing around you. In two dimensions, the ball bouncing around a square is the same as a hockey puck bouncing around an ice rink. Now that we are in three dimensions, you can picture yourself throwing the ball off the side of the cube around you. How is this ball’s trajectory different to the two dimensional ones you saw before? Is it harder to tell what shapes are made when we are working with three dimensions? In a square, we could see the angles made when the ball bounced off the boundary. Can you see what angles are made when the ball bounces off the side of the cube? Move on to the sphere when you are ready."
+    },
+    "voice": {
+        "languageCode": "en-au",
+        "name": "en-AU-Neural2-C",
+        "ssmlGender": "FEMALE"
+    }
+}

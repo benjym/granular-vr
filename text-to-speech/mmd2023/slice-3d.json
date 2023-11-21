@@ -1,0 +1,15 @@
+{
+    "audioConfig": {
+      "audioEncoding": "LINEAR16",
+      "pitch": 0,
+      "speakingRate": 0.8
+    },
+    "input": {
+      "text": "Here, you can slice a 3D sphere with a 2D plane. In front of you there is a white sphere and a pink plane. When the plane slices the sphere, the intersection of the two is a circle. You can see that circle to your right. Try moving the plane around now by moving the right joystick up and down. When the two intersect, you can see a circle which is the intersection. As you move the plane, you can see the circle growing and shrinking. When the plane is at the middle of the sphere, the circle is as large as the sphere is. When the plane doesn't pass through the sphere, there is no intersection, and you can't see the circle. Next, let's try this in 4 dimensions. Click on the 'Intro to 4D' button to continue."
+    },
+    "voice": {
+      "languageCode": "en-au",
+      "name": "en-AU-Neural2-C",
+      "ssmlGender": "FEMALE"
+    }
+  }
