@@ -1,0 +1,133 @@
+{
+    "list": [
+        {
+            "url": "menu",
+            "name": "Main menu"
+        },
+        {
+            "url": "box",
+            "name": "Welcome to hyperspace",
+            "button_delay": 40000,
+            "audio_track" : "mmd2023/index.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "2d-rain",
+            "name": "Intro to 2D",
+            "button_delay": 24000,
+            "audio_track" : "mmd2023/2d-rain.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "two-particle-collision",
+            "name": "Intro to 3D",
+            "button_delay": 20000,
+            "audio_track" : "mmd2023/two-particle-collision.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "2d-billiards?boundary=square",
+            "name": "2D billiards in a square",
+            "button_delay": 20000,
+            "audio_track" : "mmd2023/2d-billiards-square.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "2d-billiards?boundary=circle",
+            "name": "2D billiards in a circle",
+            "button_delay": 20000,
+            "audio_track" : "mmd2023/2d-billiards-circle.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "2d-billiards?boundary=ellipse",
+            "name": "2D billiards in an ellipse",
+            "button_delay": 20000,
+            "audio_track" : "mmd2023/2d-billiards-ellipse.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "3d-billiards?boundary=cube",
+            "name": "3D billiards in a cube",
+            "button_delay": 30000,
+            "audio_track" : "mmd2023/3d-billiards-cube.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "3d-billiards?boundary=sphere",
+            "name": "3D billiards in a sphere",
+            "button_delay": 30000,
+            "audio_track" : "mmd2023/3d-billiards-sphere.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "hyperspheres",
+            "name": "What is a hypersphere?",
+            "button_delay": 48000,
+            "audio_track" : "mmd2023/hyperspheres.mp3",
+            "audio_delay" : 5000
+        },
+        {
+            "url": "slice-3d",
+            "name": "Slicing space",
+            "button_delay": 52000,
+            "audio_track" : "mmd2023/slice-3d.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "slice-4d",
+            "name": "Intro to 4D",
+            "button_delay": 49000,
+            "audio_track" : "mmd2023/slice-4d.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "rotation-3d",
+            "name": "Rotation in 3D",
+            "button_delay": 33000,
+            "audio_track" : "mmd2023/rotation-3d.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "rotation-4d",
+            "name": "Rotation in 4D",
+            "button_delay": 27000,
+            "audio_track" : "mmd2023/rotation-4d.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "4d-billiards?boundary=hypercube",
+            "params" : {"boundary" : "hypercube"},
+            "name": "4D billiards in a hypbercube",
+            "button_delay": 20000,
+            "audio_track" : "mmd2023/4d-billiards-hypercube.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "4d-billiards?boundary=hypersphere",
+            "name": "4D billiards in a hypersphere",
+            "button_delay": 30000,
+            "audio_track" : "mmd2023/4d-billiards-hypersphere.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "3d-pool",
+            "name": "3D pool",
+            "audio_track" : "mmd2023/3d-pool.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "4d-pool",
+            "name": "4D pool",
+            "audio_track" : "mmd2023/4d-pool.mp3",
+            "audio_delay" : 3000
+        },
+        {
+            "url": "tennis",
+            "name": "Bonus game",
+            "audio_track" : "mmd2023/tennis.mp3",
+            "audio_delay" : 3000
+        }
+    ],
+    "current": 1
+}
