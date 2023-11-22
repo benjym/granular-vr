@@ -33,6 +33,7 @@ module.exports = [
         patterns: [
           { from: path.resolve(__dirname, "master/*.json"), },
           { from: path.resolve(__dirname, "text-to-speech/*.mp3"), },
+          { from: path.resolve(__dirname, "text-to-speech/mmd2023/*.mp3"), }
         ],
       }),
       new HtmlWebpackPlugin({
