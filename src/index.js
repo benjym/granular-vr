@@ -338,6 +338,8 @@ document.addEventListener('keydown', function(event) {
         move_to(apps.current + 1);
     } else if (event.key === 'm') {
         move_to(0);
+    } else if (event.key === 'h') {
+        window.open('extra.html', '_blank');
     }
 });
 
