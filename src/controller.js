@@ -39,7 +39,7 @@ let urlParams = new URLSearchParams(window.location.search);
 let master;
 if ( urlParams.has('master') ) { master = urlParams.get('master') }
 //else { master = "grain-days-2023"; }
-else { master = "mega-maths-day-2023": }
+else { master = "mega-maths-day-2023"; }
 
 function init() {
     fetch('master/' + master + '.json')
