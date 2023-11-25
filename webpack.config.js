@@ -33,7 +33,8 @@ module.exports = [
         patterns: [
           { from: path.resolve(__dirname, "master/*.json"), },
           { from: path.resolve(__dirname, "text-to-speech/*.mp3"), },
-          { from: path.resolve(__dirname, "text-to-speech/mmd2023/*.mp3"), }
+          { from: path.resolve(__dirname, "text-to-speech/mmd2023/*.mp3"), },
+          { from: path.resolve(__dirname, "extra.html"), }
         ],
       }),
       new HtmlWebpackPlugin({
@@ -119,12 +120,6 @@ module.exports = [
         template: "index.html",
         filename: "controller.html",
         chunks: ['controller']
-      }),
-      new HtmlWebpackPlugin({
-        title: 'Extras',
-        favicon: "./resources/favicon512.png",
-        template: "extra.html",
-        filename: "extra.html"
       }),
     ],
     resolve: {
