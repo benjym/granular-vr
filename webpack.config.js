@@ -119,7 +119,13 @@ module.exports = [
         template: "index.html",
         filename: "controller.html",
         chunks: ['controller']
-      })
+      }),
+      new HtmlWebpackPlugin({
+        title: 'Extras',
+        favicon: "./resources/favicon512.png",
+        template: "extra.html",
+        filename: "extra.html"
+      }),
     ],
     resolve: {
       fallback: {
